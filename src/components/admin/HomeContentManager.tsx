@@ -15,6 +15,7 @@ interface HomeContent {
   subtitle: string | null;
   content: string | null;
   is_active: boolean;
+  display_order: number;
 }
 
 export const HomeContentManager = ({
@@ -29,14 +30,27 @@ export const HomeContentManager = ({
   const { toast } = useToast();
 
   const handleAdd = async () => {
+    // First, get the highest display_order
+    const { data: existingContent } = await supabase
+      .from('home_content')
+      .select('display_order')
+      .order('display_order', { ascending: false })
+      .limit(1);
+
+    const maxOrder = existingContent && existingContent.length > 0 
+      ? existingContent[0].display_order 
+      : -1;
+
     const { error } = await supabase
       .from('home_content')
-      .insert([{
+      .insert({
         section_name: 'Nouvelle section',
         title: 'Nouveau titre',
         subtitle: 'Nouveau sous-titre',
-        content: 'Nouveau contenu'
-      }]);
+        content: 'Nouveau contenu',
+        display_order: maxOrder + 1,
+        is_active: true
+      });
 
     if (error) {
       toast({
