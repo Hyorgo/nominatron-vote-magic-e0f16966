@@ -4,23 +4,44 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 const Contact = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const name = formData.get('name') as string;
     const message = formData.get('message') as string;
 
     try {
-      const { error } = await supabase
+      // Enregistrer la tentative de contact
+      const { error: contactError } = await supabase
         .from('contact_attempts')
         .insert([{ email, success: true }]);
 
-      if (error) throw error;
+      if (contactError) throw contactError;
+
+      // Envoyer l'email via la fonction Edge
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ name, email, message }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'envoi du message');
+      }
 
       toast({
         title: "Message envoyé",
@@ -29,11 +50,14 @@ const Contact = () => {
 
       (e.target as HTMLFormElement).reset();
     } catch (error) {
+      console.error('Error:', error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de l'envoi du message.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -90,8 +114,9 @@ const Contact = () => {
             <Button 
               type="submit" 
               className="w-full bg-gradient-to-r from-gold/80 to-gold hover:from-gold hover:to-gold-light transition-all duration-300 text-navy font-semibold py-6"
+              disabled={isSubmitting}
             >
-              Envoyer le message
+              {isSubmitting ? "Envoi en cours..." : "Envoyer le message"}
             </Button>
           </form>
         </div>
