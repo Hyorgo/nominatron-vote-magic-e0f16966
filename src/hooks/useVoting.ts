@@ -15,6 +15,7 @@ export const useVoting = () => {
 
   useEffect(() => {
     loadVotingConfig();
+    loadPreviousVotes();
   }, []);
 
   const loadVotingConfig = async () => {
@@ -46,17 +47,43 @@ export const useVoting = () => {
     }
   };
 
+  const loadPreviousVotes = async () => {
+    try {
+      const email = 'user@example.com'; // À remplacer par l'email de l'utilisateur connecté
+      const { data: previousVotes, error } = await supabase
+        .from('votes')
+        .select('category_id, nominee_id')
+        .eq('email', email);
+
+      if (error) throw error;
+
+      if (previousVotes && previousVotes.length > 0) {
+        const votesMap = previousVotes.reduce((acc, vote) => ({
+          ...acc,
+          [vote.category_id]: vote.nominee_id,
+        }), {});
+        
+        setSelectedNominees(votesMap);
+        
+        console.log("Votes précédents chargés:", votesMap);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des votes précédents:', error);
+    }
+  };
+
   const handleNomineeSelect = async (categoryId: string, nomineeId: string) => {
     if (!isVotingOpen) return;
 
     try {
+      const email = 'user@example.com'; // À remplacer par l'email de l'utilisateur connecté
       const { error } = await supabase
         .from('votes')
         .upsert(
           {
             category_id: categoryId,
             nominee_id: nomineeId,
-            email: 'user@example.com' // À remplacer par l'email de l'utilisateur connecté
+            email: email
           },
           {
             onConflict: 'category_id,email',
