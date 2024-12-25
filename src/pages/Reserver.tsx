@@ -4,12 +4,16 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { EventInfoCard } from "@/components/event/EventInfoCard";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 const Reserver = () => {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    
     const formData = new FormData(e.currentTarget);
     
     const reservationData = {
@@ -20,6 +24,8 @@ const Reserver = () => {
     };
 
     try {
+      console.log('Envoi des données de réservation:', reservationData);
+
       // Vérifier la disponibilité des billets
       const { data: ticketsAvailable } = await supabase
         .rpc('check_tickets_availability', { 
@@ -36,31 +42,35 @@ const Reserver = () => {
       }
 
       // Créer la session de paiement Stripe
+      console.log('Création de la session de paiement...');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: reservationData
       });
 
+      console.log('Réponse complète de create-checkout:', data);
+
       if (error) {
-        console.error('Erreur lors de la création de la session:', error);
+        console.error('Erreur détaillée lors de la création de la session:', error);
         throw error;
       }
 
-      console.log('Réponse de create-checkout:', data);
-
-      if (data?.url) {
-        console.log('Redirection vers:', data.url);
-        window.location.href = data.url;
-      } else {
+      if (!data?.url) {
+        console.error('Pas d\'URL de paiement dans la réponse:', data);
         throw new Error('Pas d\'URL de paiement reçue');
       }
 
+      console.log('Redirection vers Stripe:', data.url);
+      window.location.assign(data.url);
+
     } catch (error) {
-      console.error('Erreur détaillée:', error);
+      console.error('Erreur complète:', error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue lors de la création de votre réservation.",
+        description: "Une erreur est survenue lors de la création de votre réservation. Veuillez réessayer.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,6 +105,7 @@ const Reserver = () => {
                     placeholder="Votre prénom" 
                     required 
                     className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -105,6 +116,7 @@ const Reserver = () => {
                     placeholder="Votre nom" 
                     required 
                     className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -119,6 +131,7 @@ const Reserver = () => {
                     placeholder="votre@email.com" 
                     required 
                     className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -132,6 +145,7 @@ const Reserver = () => {
                     defaultValue="1" 
                     required 
                     className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -139,8 +153,9 @@ const Reserver = () => {
               <Button 
                 type="submit" 
                 className="w-full bg-gradient-to-r from-gold/80 to-gold hover:from-gold hover:to-gold-light transition-all duration-300 text-navy font-semibold py-6"
+                disabled={isLoading}
               >
-                Réserver maintenant
+                {isLoading ? 'Traitement en cours...' : 'Réserver maintenant'}
               </Button>
             </form>
           </div>
