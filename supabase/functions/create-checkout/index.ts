@@ -49,13 +49,6 @@ serve(async (req) => {
         lastName,
         numberOfTickets,
       },
-      payment_intent_data: {
-        metadata: {
-          firstName,
-          lastName,
-          numberOfTickets,
-        },
-      },
       expires_at: Math.floor(Date.now() / 1000) + (30 * 60), // 30 minutes expiration
     })
     
