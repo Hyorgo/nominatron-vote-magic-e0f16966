@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface FinishVotingButtonProps {
   selectedNominees: Record<string, string>;
@@ -9,6 +10,7 @@ interface FinishVotingButtonProps {
 
 export const FinishVotingButton = ({ selectedNominees, categories }: FinishVotingButtonProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleFinishVoting = () => {
     const missingVotes = categories.filter(category => !selectedNominees[category.id]);
@@ -26,6 +28,9 @@ export const FinishVotingButton = ({ selectedNominees, categories }: FinishVotin
       title: "Votes terminés",
       description: "Merci d'avoir participé aux votes !",
     });
+
+    // Redirection vers la page de remerciement
+    navigate("/thank-you");
   };
 
   return (
