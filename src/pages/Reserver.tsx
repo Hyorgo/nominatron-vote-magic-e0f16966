@@ -36,22 +36,12 @@ const Reserver = () => {
       }
 
       // Créer la session de paiement Stripe
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify(reservationData),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: reservationData
+      });
 
-      const { url, error } = await response.json();
-
-      if (error) throw new Error(error);
-      if (url) window.location.href = url;
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
 
     } catch (error) {
       toast({

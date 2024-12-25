@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 import Stripe from 'https://esm.sh/stripe@14.21.0'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -42,7 +43,7 @@ serve(async (req) => {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'Billet d\'entrée',
+              name: 'Réservation',
               description: `Réservation pour ${firstName} ${lastName}`,
             },
             unit_amount: unitPrice,
@@ -69,6 +70,7 @@ serve(async (req) => {
       }
     )
   } catch (error) {
+    console.error('Erreur lors de la création de la session de paiement:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
