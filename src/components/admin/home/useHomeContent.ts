@@ -10,6 +10,7 @@ export const useHomeContent = (onUpdate: () => void) => {
   const { toast } = useToast();
 
   const handleAdd = async () => {
+    // First, get the highest display_order
     const { data: existingContent } = await supabase
       .from('home_content')
       .select('display_order')
