@@ -24,19 +24,19 @@ const Footer = () => {
           </div>
 
           {/* Contact section */}
-          <div className="flex flex-col items-center justify-start text-gold/90 space-y-2">
-            <h3 className="text-gold font-semibold self-center mb-4">Nos coordonnées</h3>
+          <div className="flex flex-col items-center justify-start text-white space-y-2">
+            <h3 className="text-white font-semibold self-center mb-4">Nos coordonnées</h3>
             <a 
               href="https://www.ideai.fr" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-gold transition-colors"
+              className="hover:text-gold transition-colors text-white"
             >
               www.ideai.fr
             </a>
             <a 
               href="tel:0451220225" 
-              className="hover:text-gold transition-colors"
+              className="hover:text-gold transition-colors text-white"
             >
               04 51 22 02 25
             </a>
@@ -44,10 +44,10 @@ const Footer = () => {
 
           {/* Services section */}
           <div className="flex flex-col items-end">
-            <h3 className="text-gold font-semibold mb-4">Nos services</h3>
-            <ul className="text-right text-gold/90">
+            <h3 className="text-white font-semibold mb-4">Nos services</h3>
+            <ul className="text-right text-white">
               {services.map((service, index) => (
-                <li key={index} className="mb-1">{service}</li>
+                <li key={index} className="mb-1 hover:text-gold transition-colors">{service}</li>
               ))}
             </ul>
           </div>
