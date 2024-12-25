@@ -7,6 +7,7 @@ import { ScrollingTextManager } from "./admin/ScrollingTextManager";
 import { BackgroundManager } from "./admin/BackgroundManager";
 import { HomeContentManager } from "./admin/HomeContentManager";
 import { LogoManager } from "./admin/LogoManager";
+import { HomeSettingsManager } from "./admin/HomeSettingsManager";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ export const AdminDashboard = () => {
   const [backgrounds, setBackgrounds] = useState<any[]>([]);
   const [homeContent, setHomeContent] = useState<any[]>([]);
   const [headerLogo, setHeaderLogo] = useState("");
+  const [homeLogo, setHomeLogo] = useState("");
+  const [homeYearText, setHomeYearText] = useState("");
 
   useEffect(() => {
     checkAdmin();
@@ -71,14 +74,19 @@ export const AdminDashboard = () => {
       setHomeContent(contentData);
     }
 
-    const { data: logoData } = await supabase
+    // Charger les paramètres du site
+    const { data: siteSettings } = await supabase
       .from('site_settings')
-      .select('setting_value')
-      .eq('setting_name', 'header_logo')
-      .single();
+      .select('setting_name, setting_value');
     
-    if (logoData) {
-      setHeaderLogo(logoData.setting_value);
+    if (siteSettings) {
+      const headerLogoSetting = siteSettings.find(s => s.setting_name === 'header_logo');
+      const homeLogoSetting = siteSettings.find(s => s.setting_name === 'home_logo');
+      const homeYearSetting = siteSettings.find(s => s.setting_name === 'home_year_text');
+      
+      if (headerLogoSetting) setHeaderLogo(headerLogoSetting.setting_value);
+      if (homeLogoSetting) setHomeLogo(homeLogoSetting.setting_value);
+      if (homeYearSetting) setHomeYearText(homeYearSetting.setting_value);
     }
   };
 
@@ -107,6 +115,11 @@ export const AdminDashboard = () => {
         </TabsList>
 
         <TabsContent value="home" className="space-y-4">
+          <HomeSettingsManager 
+            currentLogo={homeLogo}
+            currentYear={homeYearText}
+            onUpdate={loadHomePageData}
+          />
           <HomeContentManager 
             homeContent={homeContent}
             onUpdate={loadHomePageData}
