@@ -17,17 +17,17 @@ export const HomeContentManager = ({
   const { toast } = useToast();
 
   const handleAdd = async () => {
-    const maxOrder = Math.max(...homeContent.map(content => content.display_order || 0), 0);
+    const maxOrder = Math.max(...homeContent.map(content => content.display_order), 0);
     
     const { error } = await supabase
       .from('home_content')
-      .insert([{
+      .insert({
         section_name: 'Nouvelle section',
         title: 'Nouveau titre',
         subtitle: 'Nouveau sous-titre',
         content: 'Nouveau contenu',
         display_order: maxOrder + 1
-      }]);
+      });
 
     if (error) {
       toast({
@@ -53,7 +53,8 @@ export const HomeContentManager = ({
         section_name: content.section_name,
         title: content.title,
         subtitle: content.subtitle,
-        content: content.content
+        content: content.content,
+        display_order: content.display_order
       })
       .eq('id', content.id);
 
@@ -122,7 +123,6 @@ export const HomeContentManager = ({
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    // Update display order in the database
     const updates = items.map((item, index) => ({
       id: item.id,
       section_name: item.section_name,
