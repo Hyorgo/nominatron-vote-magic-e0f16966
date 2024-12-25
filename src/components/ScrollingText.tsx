@@ -31,7 +31,7 @@ export const ScrollingText = () => {
 
   return (
     <div 
-      className={`fixed bottom-0 left-0 right-0 bg-navy/80 backdrop-blur-sm border-t border-gold/20 py-4 z-50 transition-opacity duration-700 ${
+      className={`w-full bg-navy/80 backdrop-blur-sm border-t border-gold/20 py-4 transition-opacity duration-700 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
