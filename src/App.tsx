@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import Reserver from "./pages/Reserver";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const Footer = () => (
   <footer className="footer-glass py-6 mt-16">
@@ -48,6 +50,8 @@ const App = () => (
             <Route path="/categories" element={<Categories />} />
             <Route path="/reserver" element={<Reserver />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
           <Footer />
         </BrowserRouter>
