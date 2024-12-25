@@ -47,10 +47,10 @@ const Reserver = () => {
         body: reservationData
       });
 
-      console.log('Réponse complète de create-checkout:', data);
+      console.log('Réponse de create-checkout:', data);
 
       if (error) {
-        console.error('Erreur détaillée lors de la création de la session:', error);
+        console.error('Erreur lors de la création de la session:', error);
         throw error;
       }
 
@@ -59,8 +59,9 @@ const Reserver = () => {
         throw new Error('Pas d\'URL de paiement reçue');
       }
 
-      console.log('Redirection vers Stripe:', data.url);
-      window.location.assign(data.url);
+      console.log('Redirection vers:', data.url);
+      // Utiliser window.location.href au lieu de assign
+      window.location.href = data.url;
 
     } catch (error) {
       console.error('Erreur complète:', error);

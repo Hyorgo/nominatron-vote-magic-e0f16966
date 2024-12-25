@@ -23,18 +23,17 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     })
 
-    console.log('Creating payment session...')
+    console.log('Creating basic payment session...')
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
             currency: 'eur',
-            unit_amount: 19200,
             product_data: {
               name: 'Billet pour l\'événement',
               description: `Réservation pour ${numberOfTickets} personne${numberOfTickets > 1 ? 's' : ''}`,
             },
+            unit_amount: 19200,
           },
           quantity: numberOfTickets,
         },
@@ -43,22 +42,24 @@ serve(async (req) => {
       success_url: `${req.headers.get('origin')}/thank-you`,
       cancel_url: `${req.headers.get('origin')}/reserver`,
       customer_email: email,
-      locale: 'fr',
       metadata: {
         firstName,
         lastName,
         numberOfTickets: numberOfTickets.toString(),
       },
-      expires_at: Math.floor(Date.now() / 1000) + (30 * 60), // 30 minutes expiration
+      locale: 'fr',
     })
     
-    console.log('Payment session created successfully:', session.id)
+    console.log('Session created successfully:', session.id)
     console.log('Checkout URL:', session.url)
 
     return new Response(
       JSON.stringify({ url: session.url }),
       { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+        },
         status: 200,
       }
     )
