@@ -8,9 +8,10 @@ interface ActionCardProps {
   subtitle: string;
   buttonText: string;
   to: string;
+  showButton?: boolean;
 }
 
-export const ActionCard = ({ icon: Icon, title, subtitle, buttonText, to }: ActionCardProps) => {
+export const ActionCard = ({ icon: Icon, title, subtitle, buttonText, to, showButton = true }: ActionCardProps) => {
   return (
     <div className="bg-card rounded-lg p-6 text-center space-y-4">
       <Icon className="w-12 h-12 mx-auto text-primary" />
@@ -18,9 +19,11 @@ export const ActionCard = ({ icon: Icon, title, subtitle, buttonText, to }: Acti
       <p className="text-muted-foreground">
         {subtitle}
       </p>
-      <Button asChild>
-        <Link to={to}>{buttonText}</Link>
-      </Button>
+      {showButton && (
+        <Button asChild>
+          <Link to={to}>{buttonText}</Link>
+        </Button>
+      )}
     </div>
   );
 };
