@@ -9,14 +9,7 @@ interface VotingCardProps {
 export const VotingCard = ({ votingStatus }: VotingCardProps) => {
   const { isVotingOpen, votingNotStarted, votingEnded } = votingStatus;
 
-  console.log("État des votes (VotingCard):", {
-    isVotingOpen,
-    votingNotStarted,
-    votingEnded,
-  });
-
   const getVotingCardContent = () => {
-    // Vérifions d'abord si les votes sont terminés
     if (votingEnded) {
       return {
         title: "Les votes sont terminés",
@@ -26,7 +19,6 @@ export const VotingCard = ({ votingStatus }: VotingCardProps) => {
       };
     }
     
-    // Ensuite, vérifions si les votes n'ont pas commencé
     if (votingNotStarted) {
       return {
         title: "Les votes ne sont pas encore ouverts",
@@ -36,7 +28,6 @@ export const VotingCard = ({ votingStatus }: VotingCardProps) => {
       };
     }
     
-    // Par défaut, si les votes sont ouverts
     return {
       title: "Les votes sont ouverts !",
       subtitle: "C'est le moment de soutenir vos favoris ! Votez maintenant et faites entendre votre voix.",

@@ -16,15 +16,23 @@ export const useVotingStatus = () => {
 
   useEffect(() => {
     checkVotingPeriod();
+    // Mettre à jour le statut toutes les minutes
+    const interval = setInterval(checkVotingPeriod, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const checkVotingPeriod = async () => {
     try {
-      const { data: configs } = await supabase
+      const { data: configs, error } = await supabase
         .from('voting_config')
         .select('start_date, end_date')
         .order('created_at', { ascending: false })
         .limit(1);
+
+      if (error) {
+        console.error('Erreur lors du chargement de la configuration:', error);
+        return;
+      }
 
       if (configs && configs.length > 0) {
         const config = configs[0];
@@ -50,15 +58,10 @@ export const useVotingStatus = () => {
           }
         });
 
-        // Mise à jour de la logique pour déterminer l'état des votes
-        const isVotingOpen = nowTs >= startTs && nowTs <= endTs;
-        const votingNotStarted = nowTs < startTs;
-        const votingEnded = nowTs > endTs;
-        
         setStatus({
-          isVotingOpen,
-          votingNotStarted,
-          votingEnded
+          isVotingOpen: nowTs >= startTs && nowTs <= endTs,
+          votingNotStarted: nowTs < startTs,
+          votingEnded: nowTs > endTs
         });
       }
     } catch (error) {
