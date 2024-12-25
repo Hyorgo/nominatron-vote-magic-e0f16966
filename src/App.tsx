@@ -9,14 +9,18 @@ import { ScrollingText } from "@/components/ScrollingText";
 function App() {
   return (
     <Router>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/thank-you" element={<ThankYou />} />
-        <Route path="/reserver" element={<Reserver />} />
-      </Routes>
-      <ScrollingText />
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/reserver" element={<Reserver />} />
+          </Routes>
+        </main>
+        <ScrollingText />
+      </div>
     </Router>
   );
 }
