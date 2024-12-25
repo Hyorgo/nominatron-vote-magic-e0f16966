@@ -8,6 +8,7 @@ export const ActionCards = () => {
   const [content, setContent] = useState<Record<string, HomeContent>>({});
   const [isVotingOpen, setIsVotingOpen] = useState(false);
   const [votingNotStarted, setVotingNotStarted] = useState(false);
+  const [votingEnded, setVotingEnded] = useState(false);
 
   useEffect(() => {
     loadContent();
@@ -48,31 +49,55 @@ export const ActionCards = () => {
           debut: startDate.toLocaleString(),
           fin: endDate.toLocaleString(),
           votesOuverts: now >= startDate && now <= endDate,
-          votesNonCommences: now < startDate
+          votesNonCommences: now < startDate,
+          votesTermines: now > endDate
         });
         
         setIsVotingOpen(now >= startDate && now <= endDate);
         setVotingNotStarted(now < startDate);
+        setVotingEnded(now > endDate);
       }
     } catch (error) {
       console.error('Erreur lors du chargement de la configuration:', error);
     }
   };
 
+  const getVotingCardContent = () => {
+    if (votingEnded) {
+      return {
+        title: "Les votes sont terminés",
+        subtitle: "Merci à tous les participants ! Les résultats seront bientôt annoncés.",
+        showButton: false,
+        votingNotStarted: false
+      };
+    }
+    
+    if (votingNotStarted) {
+      return {
+        title: "Les votes ne sont pas encore ouverts",
+        subtitle: "Inscrivez-vous pour être notifié dès l'ouverture des votes et ne manquez pas l'occasion de soutenir vos favoris !",
+        showButton: false,
+        votingNotStarted: true
+      };
+    }
+    
+    return {
+      title: "Les votes sont ouverts !",
+      subtitle: "C'est le moment de soutenir vos favoris ! Votez maintenant et faites entendre votre voix.",
+      showButton: true,
+      votingNotStarted: false
+    };
+  };
+
+  const votingCard = {
+    icon: Trophy,
+    ...getVotingCardContent(),
+    buttonText: "Voter maintenant",
+    to: "/categories"
+  };
+
   const cards = [
-    {
-      icon: Trophy,
-      title: content.card_vote?.title || "",
-      subtitle: isVotingOpen 
-        ? "Découvrez les nominés et votez pour vos favoris dans chaque catégorie"
-        : votingNotStarted 
-          ? "Les votes ne sont pas encore ouverts. Inscrivez-vous pour être notifié de l'ouverture des votes."
-          : "La période de vote est terminée. Merci de votre participation !",
-      buttonText: content.card_vote?.content || "",
-      to: "/categories",
-      showButton: isVotingOpen,
-      votingNotStarted: votingNotStarted
-    },
+    votingCard,
     {
       icon: Calendar,
       title: content.card_book?.title || "",
