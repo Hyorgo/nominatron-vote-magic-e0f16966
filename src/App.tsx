@@ -9,9 +9,9 @@ import { ScrollingText } from "@/components/ScrollingText";
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
+      <div className="flex flex-col min-h-screen relative">
         <Navigation />
-        <main className="flex-grow">
+        <main className="flex-grow pb-20">
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/categories" element={<Categories />} />
