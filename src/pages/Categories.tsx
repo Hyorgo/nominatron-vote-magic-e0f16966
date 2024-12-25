@@ -22,9 +22,6 @@ const Categories = () => {
   return (
     <main className="min-h-screen bg-background">
       <div className="container py-8 animate-fade-in">
-        <h1 className="text-4xl font-bold mb-8 golden-reflection text-center">
-          Catégories
-        </h1>
         <VotingInterface />
       </div>
     </main>
