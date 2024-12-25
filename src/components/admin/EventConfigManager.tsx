@@ -32,15 +32,20 @@ export const EventConfigManager = () => {
 
   const loadEventConfig = async () => {
     try {
-      const { data: votingConfig } = await supabase
+      const { data: votingConfigs } = await supabase
         .from('voting_config')
         .select('*')
-        .single();
+        .order('created_at', { ascending: false })
+        .limit(1);
 
-      const { data: eventInfo } = await supabase
+      const { data: eventInfos } = await supabase
         .from('event_information')
         .select('*')
-        .single();
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      const votingConfig = votingConfigs?.[0];
+      const eventInfo = eventInfos?.[0];
 
       if (votingConfig) {
         setValue('start_date', format(new Date(votingConfig.start_date), "yyyy-MM-dd'T'HH:mm"));
@@ -80,7 +85,7 @@ export const EventConfigManager = () => {
       toast({
         title: "Attention",
         description: "L'événement devrait avoir lieu après la fin des votes",
-        variant: "destructive", // Changed from "warning" to "destructive"
+        variant: "destructive",
       });
     }
 
