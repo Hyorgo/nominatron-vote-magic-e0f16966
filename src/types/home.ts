@@ -5,5 +5,5 @@ export interface HomeContent {
   subtitle: string | null;
   content: string | null;
   is_active: boolean;
-  display_order?: number;
+  display_order: number;
 }

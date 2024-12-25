@@ -17,13 +17,16 @@ export const HomeContentManager = ({
   const { toast } = useToast();
 
   const handleAdd = async () => {
+    const maxOrder = Math.max(...homeContent.map(content => content.display_order || 0), 0);
+    
     const { error } = await supabase
       .from('home_content')
       .insert([{
         section_name: 'Nouvelle section',
         title: 'Nouveau titre',
         subtitle: 'Nouveau sous-titre',
-        content: 'Nouveau contenu'
+        content: 'Nouveau contenu',
+        display_order: maxOrder + 1
       }]);
 
     if (error) {
@@ -119,32 +122,32 @@ export const HomeContentManager = ({
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    // Mettre à jour l'ordre dans la base de données
-    try {
-      const updates = items.map((item, index) => ({
-        id: item.id,
-        display_order: index
-      }));
+    // Update display order in the database
+    const updates = items.map((item, index) => ({
+      id: item.id,
+      section_name: item.section_name,
+      display_order: index
+    }));
 
-      const { error } = await supabase
-        .from('home_content')
-        .upsert(updates);
+    const { error } = await supabase
+      .from('home_content')
+      .upsert(updates);
 
-      if (error) throw error;
-
-      toast({
-        title: "Succès",
-        description: "Ordre des sections mis à jour"
-      });
-
-      onUpdate();
-    } catch (error) {
+    if (error) {
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour l'ordre des sections",
         variant: "destructive"
       });
+      return;
     }
+
+    toast({
+      title: "Succès",
+      description: "Ordre des sections mis à jour"
+    });
+
+    onUpdate();
   };
 
   return (
