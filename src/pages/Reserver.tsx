@@ -16,7 +16,7 @@ const Reserver = () => {
 
   return (
     <div className="container max-w-2xl py-8 animate-fade-in">
-      <h1 className="text-4xl font-bold mb-8">Réserver sa place</h1>
+      <h1 className="text-4xl font-bold mb-8">Réserver ma place</h1>
       <div className="bg-card rounded-lg p-6 shadow-lg">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
