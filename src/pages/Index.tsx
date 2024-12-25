@@ -6,21 +6,19 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <div className="container py-16 space-y-16">
-        <div className="flex flex-col items-start">
+        <div className="text-center space-y-4">
           <img 
             src="/lovable-uploads/1017081c-8fa6-42cf-966b-318e893a0f68.png" 
             alt="Lyon d'Or" 
-            className="w-[400px] mb-8 animate-fade-in"
+            className="mx-auto w-[400px] mb-8 animate-fade-in"
           />
-          <div className="w-full text-center">
-            <h1 className="text-5xl font-bold text-primary animate-fade-in">
-              Cérémonie des Awards
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
-              Participez à la plus prestigieuse cérémonie de récompenses et votez pour
-              vos nominés favoris dans chaque catégorie.
-            </p>
-          </div>
+          <h1 className="text-5xl font-bold text-primary animate-fade-in">
+            Cérémonie des Awards
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
+            Participez à la plus prestigieuse cérémonie de récompenses et votez pour
+            vos nominés favoris dans chaque catégorie.
+          </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3 animate-fade-in">
