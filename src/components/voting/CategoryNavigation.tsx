@@ -84,11 +84,11 @@ export const CategoryNavigation = ({
         </Button>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 bg-background/50 p-4 rounded-lg border border-border backdrop-blur-sm">
         <div className="flex justify-between text-sm text-muted-foreground">
           <span>Progression</span>
           <span className="font-medium">
-            {votedCategories} / {totalCategories} catégories
+            {votedCategories} / {totalCategories} catégories votées
           </span>
         </div>
         <Progress value={progress} className="h-2" />

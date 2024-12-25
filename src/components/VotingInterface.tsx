@@ -60,11 +60,10 @@ export const VotingInterface = () => {
       description: "Votre choix a été sauvegardé avec succès.",
     });
 
-    // Passer automatiquement à la catégorie suivante après un vote
     if (currentCategory < categories.length - 1) {
       setTimeout(() => {
         setCurrentCategory(prev => prev + 1);
-      }, 500); // Délai pour laisser le temps à l'animation de confirmation de se jouer
+      }, 500);
     }
   };
 
@@ -89,6 +88,8 @@ export const VotingInterface = () => {
       </div>
     );
   }
+
+  console.log("Voted categories:", getVotedCategoriesCount(), "Total categories:", categories.length); // Debug log
 
   return (
     <div className="container max-w-7xl py-8 animate-fade-in">
