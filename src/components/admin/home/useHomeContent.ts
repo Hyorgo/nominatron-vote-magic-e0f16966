@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { HomeContent, HomeContentFormData } from "./types";
 import { useToast } from "@/hooks/use-toast";
-import { DragEndEvent } from "@hello-pangea/dnd";
+import type { DragDropContextProps } from "@hello-pangea/dnd";
 
 export const useHomeContent = (onUpdate: () => void) => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -10,7 +10,6 @@ export const useHomeContent = (onUpdate: () => void) => {
   const { toast } = useToast();
 
   const handleAdd = async () => {
-    // Calculate the highest current display_order
     const { data: existingContent } = await supabase
       .from('home_content')
       .select('display_order')
@@ -129,19 +128,16 @@ export const useHomeContent = (onUpdate: () => void) => {
     onUpdate();
   };
 
-  const handleDragEnd = async (result: DragEndEvent) => {
+  const handleDragEnd: DragDropContextProps['onDragEnd'] = async (result) => {
     if (!result.destination) return;
 
-    const items = Array.from(result.source.droppableId === 'home-content' ? result.source.index : []) as HomeContent[];
+    const items = Array.from(result.draggableId ? [result.draggableId] : []);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    // Update display_order for all affected items
-    const updates = items.map((item, index) => ({
-      id: item.id,
-      section_name: item.section_name,
-      display_order: index,
-      is_active: item.is_active
+    const updates = items.map((id, index) => ({
+      id,
+      display_order: index
     }));
 
     const { error } = await supabase
@@ -156,11 +152,6 @@ export const useHomeContent = (onUpdate: () => void) => {
       });
       return;
     }
-
-    toast({
-      title: "Succès",
-      description: "Ordre des sections mis à jour"
-    });
 
     onUpdate();
   };

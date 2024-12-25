@@ -6,6 +6,8 @@ export interface HomeContent {
   content: string | null;
   is_active: boolean;
   display_order: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface HomeContentFormData {
@@ -13,6 +15,6 @@ export interface HomeContentFormData {
   title: string | null;
   subtitle: string | null;
   content: string | null;
-  display_order?: number;
-  is_active?: boolean;
+  display_order: number;
+  is_active: boolean;
 }

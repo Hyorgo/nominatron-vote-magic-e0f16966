@@ -1,10 +1,10 @@
-import { DragDropContext, Droppable, Draggable, DragEndEvent } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable, type DragDropContextProps } from "@hello-pangea/dnd";
 import { HomeContent } from "./types";
 import { HomeContentCard } from "./HomeContentCard";
 
 interface DraggableHomeContentProps {
   contents: HomeContent[];
-  onDragEnd: (result: DragEndEvent) => void;
+  onDragEnd: DragDropContextProps['onDragEnd'];
   onEdit: (content: HomeContent) => void;
   onDelete: (id: string) => void;
   onToggle: (id: string, currentState: boolean) => void;
