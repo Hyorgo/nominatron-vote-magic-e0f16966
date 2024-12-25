@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Vote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Category {
   id: string;
@@ -22,11 +23,12 @@ const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [nominees, setNominees] = useState<Nominee[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedNominees, setSelectedNominees] = useState<string[]>([]);
+  const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchCategoriesAndNominees();
-    fetchSelectedNominees();
+    fetchUserVotes();
   }, []);
 
   const fetchCategoriesAndNominees = async () => {
@@ -43,29 +45,72 @@ const Categories = () => {
       setNominees(nomineesResponse.data);
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger les données",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchSelectedNominees = async () => {
+  const fetchUserVotes = async () => {
     try {
       const { data: votesData, error } = await supabase
         .from("votes")
-        .select("nominee_id");
+        .select("nominee_id, category_id");
 
       if (error) throw error;
 
-      const selectedIds = [...new Set(votesData.map(vote => vote.nominee_id))];
-      setSelectedNominees(selectedIds);
+      const votesMap: Record<string, string> = {};
+      votesData?.forEach((vote) => {
+        if (vote.category_id) {
+          votesMap[vote.category_id] = vote.nominee_id;
+        }
+      });
+      setSelectedNominees(votesMap);
     } catch (error) {
       console.error("Erreur lors du chargement des votes:", error);
     }
   };
 
-  const handleVote = async (nomineeId: string) => {
-    // La logique de vote sera implémentée plus tard
-    console.log("Vote pour le nominé:", nomineeId);
+  const handleVote = async (nomineeId: string, categoryId: string) => {
+    try {
+      // Si on clique sur le même nominé déjà sélectionné, on ne fait rien
+      if (selectedNominees[categoryId] === nomineeId) {
+        return;
+      }
+
+      const { error } = await supabase
+        .from("votes")
+        .upsert({
+          nominee_id: nomineeId,
+          category_id: categoryId,
+          email: 'user@example.com' // À remplacer par l'email de l'utilisateur connecté
+        }, {
+          onConflict: 'category_id,email'
+        });
+
+      if (error) throw error;
+
+      setSelectedNominees(prev => ({
+        ...prev,
+        [categoryId]: nomineeId
+      }));
+
+      toast({
+        title: "Vote enregistré",
+        description: "Votre choix a été sauvegardé",
+      });
+    } catch (error) {
+      console.error("Erreur lors du vote:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'enregistrer votre vote",
+      });
+    }
   };
 
   if (loading) {
@@ -136,7 +181,7 @@ const Categories = () => {
                       <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
                         {nominee.name}
                       </h3>
-                      {selectedNominees.includes(nominee.id) && (
+                      {selectedNominees[category.id] === nominee.id && (
                         <Star className="h-5 w-5 text-gold fill-gold animate-scale-in" />
                       )}
                     </div>
@@ -144,12 +189,12 @@ const Categories = () => {
                       {nominee.description}
                     </p>
                     <Button 
-                      onClick={() => handleVote(nominee.id)}
-                      variant={selectedNominees.includes(nominee.id) ? "secondary" : "default"}
+                      onClick={() => handleVote(nominee.id, category.id)}
+                      variant={selectedNominees[category.id] === nominee.id ? "secondary" : "default"}
                       className="w-full"
                     >
                       <Vote className="mr-2 h-4 w-4" />
-                      {selectedNominees.includes(nominee.id) ? "Sélectionné" : "Voter"}
+                      {selectedNominees[category.id] === nominee.id ? "Sélectionné" : "Voter"}
                     </Button>
                   </div>
                 ))}
