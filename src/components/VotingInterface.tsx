@@ -59,6 +59,13 @@ export const VotingInterface = () => {
       title: "Vote enregistré !",
       description: "Votre choix a été sauvegardé avec succès.",
     });
+
+    // Passer automatiquement à la catégorie suivante après un vote
+    if (currentCategory < categories.length - 1) {
+      setTimeout(() => {
+        setCurrentCategory(prev => prev + 1);
+      }, 500); // Délai pour laisser le temps à l'animation de confirmation de se jouer
+    }
   };
 
   const getVotedCategoriesCount = () => {
@@ -128,6 +135,8 @@ export const VotingInterface = () => {
             votedCategories={getVotedCategoriesCount()}
             onPrevious={() => setCurrentCategory((prev) => Math.max(0, prev - 1))}
             onNext={() => setCurrentCategory((prev) => Math.min(categories.length - 1, prev + 1))}
+            onSelectCategory={(index) => setCurrentCategory(index)}
+            categories={categories}
           />
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
