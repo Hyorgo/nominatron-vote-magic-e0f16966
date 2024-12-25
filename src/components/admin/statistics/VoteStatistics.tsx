@@ -174,7 +174,7 @@ export const VoteStatistics = () => {
                 category.nominees.map((nominee, index) => (
                   <TableRow 
                     key={`${category.categoryName}-${nominee.name}`}
-                    className={categoryIndex % 2 === 0 ? "bg-navy/10" : "bg-navy/5"}
+                    className={categoryIndex % 2 === 0 ? "bg-navy/20" : "bg-navy/10"}
                   >
                     {index === 0 && (
                       <TableCell rowSpan={category.nominees.length}>
