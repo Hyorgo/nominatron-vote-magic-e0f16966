@@ -11,34 +11,50 @@ const ThankYou = () => {
     // Créer les confettis
     const createConfetti = () => {
       const confetti = document.createElement("div");
-      confetti.className = "confetti";
+      
+      // Forme aléatoire
+      const shapes = ["rectangle", "circle"];
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      confetti.className = `confetti ${shape}`;
       
       // Position aléatoire horizontale
       confetti.style.left = Math.random() * 100 + "vw";
       
+      // Taille aléatoire
+      const size = 6 + Math.random() * 6;
+      confetti.style.width = `${size}px`;
+      confetti.style.height = shape === "rectangle" ? `${size * 0.6}px` : `${size}px`;
+      
       // Couleur aléatoire
       const colors = ["#D946EF", "#c9a55c", "#0EA5E9", "#ffffff"];
       confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      
+      // Rotation initiale aléatoire
+      confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+      
+      // Vitesse de chute aléatoire
+      const duration = 2 + Math.random() * 2;
+      confetti.style.animation = `confettiFall ${duration}s linear forwards, confettiSway 1.5s ease-in-out infinite`;
       
       document.body.appendChild(confetti);
 
       // Supprimer après l'animation
       setTimeout(() => {
         confetti.remove();
-      }, 2000);
+      }, duration * 1000);
     };
 
     // Créer plusieurs confettis
     const interval = setInterval(() => {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 5; i++) {
         createConfetti();
       }
-    }, 200);
+    }, 100);
 
-    // Nettoyer après 3 secondes
+    // Nettoyer après 4 secondes
     setTimeout(() => {
       clearInterval(interval);
-    }, 3000);
+    }, 4000);
 
     // Cleanup
     return () => {

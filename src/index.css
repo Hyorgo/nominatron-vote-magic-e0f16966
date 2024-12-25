@@ -106,18 +106,45 @@
     transform: translateY(-100vh) rotate(0deg);
     opacity: 1;
   }
+  50% {
+    opacity: 1;
+  }
   100% {
-    transform: translateY(100vh) rotate(360deg);
+    transform: translateY(100vh) rotate(720deg);
     opacity: 0;
+  }
+}
+
+@keyframes confettiSway {
+  0% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(-5px);
   }
 }
 
 .confetti {
   position: fixed;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   top: -20px;
-  border-radius: 50%;
-  animation: confettiFall 2s linear forwards;
+  border-radius: 2px;
+  animation: confettiFall 3s linear forwards, confettiSway 1.5s ease-in-out infinite;
   z-index: 50;
+  transform-origin: center center;
+}
+
+.confetti.rectangle {
+  width: 10px;
+  height: 6px;
+}
+
+.confetti.circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
