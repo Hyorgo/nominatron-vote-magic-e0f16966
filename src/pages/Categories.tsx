@@ -6,7 +6,6 @@ const Categories = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate any initial loading that might be needed
     const timer = setTimeout(() => setIsLoading(false), 100);
     return () => clearTimeout(timer);
   }, []);
@@ -21,7 +20,7 @@ const Categories = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="container py-8 animate-fade-in">
+      <div className="container px-4 sm:px-6 lg:px-8 py-4 sm:py-8 animate-fade-in">
         <VotingInterface />
       </div>
     </main>

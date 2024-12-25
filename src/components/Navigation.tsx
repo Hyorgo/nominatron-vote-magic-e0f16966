@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { Menu, X } from "lucide-react";
 
 export const Navigation = () => {
   const location = useLocation();
   const [logoUrl, setLogoUrl] = useState("/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     loadLogo();
@@ -31,15 +33,30 @@ export const Navigation = () => {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-white/5 backdrop-blur-md backdrop-saturate-150 supports-[backdrop-filter]:bg-white/5">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex-shrink-0">
           <img 
             src={logoUrl}
             alt="Sortir Lyon x Sixtynine Event" 
-            className="h-12"
+            className="h-8 sm:h-12"
           />
         </Link>
-        <div className="flex gap-6 text-sm">
+
+        {/* Mobile menu button */}
+        <button 
+          className="md:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? (
+            <X className="h-6 w-6 text-white" />
+          ) : (
+            <Menu className="h-6 w-6 text-white" />
+          )}
+        </button>
+
+        {/* Desktop navigation */}
+        <div className="hidden md:flex gap-6 text-sm">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -55,6 +72,29 @@ export const Navigation = () => {
             </Link>
           ))}
         </div>
+
+        {/* Mobile navigation */}
+        {isMenuOpen && (
+          <div className="absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-lg md:hidden border-b border-white/10">
+            <div className="container py-4 flex flex-col space-y-4">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={cn(
+                    "transition-colors hover:text-primary px-4 py-2",
+                    location.pathname === link.href
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
