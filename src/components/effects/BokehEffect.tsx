@@ -1,7 +1,7 @@
 const BokehEffect = () => {
-  // Générer une taille aléatoire entre 40px et 160px
+  // Générer une taille aléatoire entre 20px et 250px pour plus de variation
   const getRandomSize = () => {
-    return Math.floor(Math.random() * (160 - 40) + 40);
+    return Math.floor(Math.random() * (250 - 20) + 20);
   };
 
   return (
