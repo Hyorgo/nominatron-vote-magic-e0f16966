@@ -4,12 +4,21 @@ import { Link } from "react-router-dom";
 import { Trophy, Calendar, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+interface HomeContent {
+  section_name: string;
+  title: string | null;
+  subtitle: string | null;
+  content: string | null;
+}
+
 const Index = () => {
   const [homeLogo, setHomeLogo] = useState("/lovable-uploads/1017081c-8fa6-42cf-966b-318e893a0f68.png");
   const [yearText, setYearText] = useState("2025");
+  const [content, setContent] = useState<Record<string, HomeContent>>({});
 
   useEffect(() => {
     loadSettings();
+    loadContent();
   }, []);
 
   const loadSettings = async () => {
@@ -26,6 +35,21 @@ const Index = () => {
     }
   };
 
+  const loadContent = async () => {
+    const { data } = await supabase
+      .from('home_content')
+      .select('*')
+      .eq('is_active', true);
+
+    if (data) {
+      const contentMap = data.reduce((acc, item) => {
+        acc[item.section_name] = item;
+        return acc;
+      }, {} as Record<string, HomeContent>);
+      setContent(contentMap);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <div className="container py-16 space-y-16">
@@ -39,42 +63,41 @@ const Index = () => {
             <span className="golden-reflection" data-text={yearText}>{yearText}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
-            Participez à la plus prestigieuse cérémonie de récompenses et votez pour
-            vos nominés favoris dans chaque catégorie.
+            {content.intro?.content}
           </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3 animate-fade-in">
           <div className="bg-card rounded-lg p-6 text-center space-y-4">
             <Trophy className="w-12 h-12 mx-auto text-primary" />
-            <h2 className="text-xl font-semibold">Votez</h2>
+            <h2 className="text-xl font-semibold">{content.card_vote?.title}</h2>
             <p className="text-muted-foreground">
-              Découvrez les nominés et votez pour vos favoris dans chaque catégorie.
+              {content.card_vote?.subtitle}
             </p>
             <Button asChild>
-              <Link to="/categories">Voir les catégories</Link>
+              <Link to="/categories">{content.card_vote?.content}</Link>
             </Button>
           </div>
 
           <div className="bg-card rounded-lg p-6 text-center space-y-4">
             <Calendar className="w-12 h-12 mx-auto text-primary" />
-            <h2 className="text-xl font-semibold">Réservez</h2>
+            <h2 className="text-xl font-semibold">{content.card_book?.title}</h2>
             <p className="text-muted-foreground">
-              Assistez à la cérémonie en réservant vos places dès maintenant.
+              {content.card_book?.subtitle}
             </p>
             <Button asChild>
-              <Link to="/reserver">Réserver sa place</Link>
+              <Link to="/reserver">{content.card_book?.content}</Link>
             </Button>
           </div>
 
           <div className="bg-card rounded-lg p-6 text-center space-y-4">
             <Mail className="w-12 h-12 mx-auto text-primary" />
-            <h2 className="text-xl font-semibold">Contact</h2>
+            <h2 className="text-xl font-semibold">{content.card_contact?.title}</h2>
             <p className="text-muted-foreground">
-              Une question ? Contactez-nous pour plus d'informations.
+              {content.card_contact?.subtitle}
             </p>
             <Button asChild>
-              <Link to="/contact">Nous contacter</Link>
+              <Link to="/contact">{content.card_contact?.content}</Link>
             </Button>
           </div>
         </div>
