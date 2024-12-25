@@ -44,18 +44,28 @@ export const ActionCards = () => {
         const startDate = new Date(config.start_date);
         const endDate = new Date(config.end_date);
         
+        // Convertir les dates en timestamps pour une comparaison plus précise
+        const nowTs = now.getTime();
+        const startTs = startDate.getTime();
+        const endTs = endDate.getTime();
+        
         console.log("État des votes (ActionCards):", {
           maintenant: now.toLocaleString(),
           debut: startDate.toLocaleString(),
           fin: endDate.toLocaleString(),
-          votesOuverts: now >= startDate && now <= endDate,
-          votesNonCommences: now < startDate,
-          votesTermines: now > endDate
+          votesOuverts: nowTs >= startTs && nowTs <= endTs,
+          votesNonCommences: nowTs < startTs,
+          votesTermines: nowTs > endTs,
+          timestamps: {
+            now: nowTs,
+            start: startTs,
+            end: endTs
+          }
         });
         
-        setIsVotingOpen(now >= startDate && now <= endDate);
-        setVotingNotStarted(now < startDate);
-        setVotingEnded(now > endDate);
+        setIsVotingOpen(nowTs >= startTs && nowTs <= endTs);
+        setVotingNotStarted(nowTs < startTs);
+        setVotingEnded(nowTs > endTs);
       }
     } catch (error) {
       console.error('Erreur lors du chargement de la configuration:', error);
