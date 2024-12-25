@@ -19,27 +19,13 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     })
 
-    // Récupérer le prix depuis ticket_pricing
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-    )
-    
-    const { data: pricingData } = await supabaseClient
-      .from('ticket_pricing')
-      .select('*')
-      .single()
-
-    if (!pricingData) {
-      throw new Error('Prix non trouvé')
-    }
-
     console.log('Creating payment session...')
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       line_items: [
         {
-          price: 'price_1QZGf3AU4Uv1i5TAitQnqyXl',
+          // Utilisez le Price ID de test ici
+          price: 'price_test_votre_id',
           quantity: numberOfTickets,
         },
       ],
