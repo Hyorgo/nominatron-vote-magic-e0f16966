@@ -1,3 +1,4 @@
+import React from "react";
 import { Loader2 } from "lucide-react";
 import { TopNominee } from "./components/TopNominee";
 import { VotesChart } from "./components/VotesChart";
@@ -9,14 +10,14 @@ export const VoteStatistics = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center p-4">
-        <Loader2 className="h-6 w-6 animate-spin" />
+      <div className="flex justify-center items-center p-12">
+        <Loader2 className="h-8 w-8 animate-spin text-gold" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {topNominee && (
         <TopNominee
           name={topNominee.name}
