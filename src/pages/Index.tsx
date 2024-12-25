@@ -5,8 +5,9 @@ import "@/styles/bokeh.css";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       <BokehEffect />
+      <div className="gold-halo" />
       <div className="container py-16 space-y-16">
         <HomeHero />
         <ActionCards />
