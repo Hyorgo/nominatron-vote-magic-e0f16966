@@ -19,20 +19,14 @@
 
 .bokeh-0 {
   background: radial-gradient(circle at center, #c9a55c 0%, transparent 60%);
-  width: 100px;
-  height: 100px;
 }
 
 .bokeh-1 {
   background: radial-gradient(circle at center, rgba(217, 70, 239, 0.6) 0%, transparent 60%);
-  width: 80px;
-  height: 80px;
 }
 
 .bokeh-2 {
   background: radial-gradient(circle at center, rgba(14, 165, 233, 0.6) 0%, transparent 60%);
-  width: 120px;
-  height: 120px;
 }
 
 @keyframes float {
