@@ -34,20 +34,12 @@ serve(async (req) => {
       throw new Error('Prix non trouvé')
     }
 
-    const unitPrice = Math.round(pricingData.price_ht * (1 + pricingData.tva_rate / 100) * 100)
-
+    console.log('Creating payment session...')
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       line_items: [
         {
-          price_data: {
-            currency: 'eur',
-            product_data: {
-              name: 'Réservation',
-              description: `Réservation pour ${firstName} ${lastName}`,
-            },
-            unit_amount: unitPrice,
-          },
+          price: 'price_1QZGf3AU4Uv1i5TAitQnqyXl',
           quantity: numberOfTickets,
         },
       ],
@@ -62,6 +54,7 @@ serve(async (req) => {
       },
     })
 
+    console.log('Payment session created:', session.id)
     return new Response(
       JSON.stringify({ url: session.url }),
       { 
