@@ -11,9 +11,10 @@ interface ActionCardProps {
   title: string;
   subtitle: string;
   buttonText: string;
-  to: string;
+  to?: string;
   showButton?: boolean;
   votingNotStarted?: boolean;
+  onClick?: () => void;
 }
 
 export const ActionCard = ({ 
@@ -23,7 +24,8 @@ export const ActionCard = ({
   buttonText, 
   to, 
   showButton = true,
-  votingNotStarted = false 
+  votingNotStarted = false,
+  onClick 
 }: ActionCardProps) => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,9 +79,15 @@ export const ActionCard = ({
       </div>
       <div className="mt-6">
         {showButton && (
-          <Button asChild className="w-full">
-            <Link to={to}>{buttonText}</Link>
-          </Button>
+          onClick ? (
+            <Button onClick={onClick} className="w-full">
+              {buttonText}
+            </Button>
+          ) : (
+            <Button asChild className="w-full">
+              <Link to={to || "#"}>{buttonText}</Link>
+            </Button>
+          )
         )}
         {votingNotStarted && (
           <form onSubmit={handleNotificationSignup} className="space-y-2">
