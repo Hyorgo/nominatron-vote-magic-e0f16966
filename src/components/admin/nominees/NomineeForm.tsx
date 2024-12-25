@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Trophy, PlusCircle } from "lucide-react";
 import { Category } from "../../../types/nominees";
 
 interface NomineeFormProps {
@@ -60,14 +60,17 @@ export const NomineeForm = ({ categories, onSubmit }: NomineeFormProps) => {
         <SelectContent>
           {categories.map((category) => (
             <SelectItem key={category.id} value={category.id}>
-              {category.name}
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-gold" />
+                {category.name}
+              </div>
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
 
-      <Button onClick={handleSubmit}>
-        <Plus className="h-4 w-4 mr-2" />
+      <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
+        <PlusCircle className="h-4 w-4 mr-2" />
         Ajouter le nominé
       </Button>
     </div>
