@@ -1,11 +1,11 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Edit, Trash2, Eye, Save, GripVertical } from "lucide-react";
+import { Edit, Trash2, Eye, Save } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { HomeContent } from "@/types/home";
+import { HomeContent } from "./types";
+import { useState } from "react";
 
 interface HomeContentCardProps {
   content: HomeContent;
@@ -30,9 +30,9 @@ export const HomeContentCard = ({
   };
 
   return (
-    <Card className="border border-border p-4 space-y-4 transition-all duration-300 hover:border-primary/50">
+    <Card className="border border-border p-4 space-y-4">
       {isEditing ? (
-        <div className="space-y-4 animate-fade-in">
+        <div className="space-y-4">
           <div>
             <label className="text-sm font-medium">Nom de la section</label>
             <Input
@@ -78,10 +78,7 @@ export const HomeContentCard = ({
       ) : (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <GripVertical className="h-5 w-5 text-muted-foreground cursor-move" />
-              <h3 className="text-lg font-semibold">{content.section_name}</h3>
-            </div>
+            <h3 className="text-lg font-semibold">{content.section_name}</h3>
             <div className="flex items-center gap-4">
               <Switch
                 checked={content.is_active}
@@ -111,7 +108,7 @@ export const HomeContentCard = ({
             </div>
           </div>
           {showPreview ? (
-            <div className="p-4 bg-secondary/50 rounded-lg space-y-2 animate-fade-in">
+            <div className="p-4 bg-secondary/50 rounded-lg space-y-2">
               {content.title && <h4 className="text-xl font-bold">{content.title}</h4>}
               {content.subtitle && <h5 className="text-lg text-muted-foreground">{content.subtitle}</h5>}
               {content.content && <p className="text-sm">{content.content}</p>}
