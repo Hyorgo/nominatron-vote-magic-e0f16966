@@ -3,16 +3,64 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { EventInfoCard } from "@/components/event/EventInfoCard";
+import { supabase } from "@/integrations/supabase/client";
 
 const Reserver = () => {
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: "Réservation envoyée",
-      description: "Nous vous contacterons prochainement pour confirmer votre réservation.",
-    });
+    const formData = new FormData(e.currentTarget);
+    
+    const reservationData = {
+      firstName: formData.get('name') as string,
+      lastName: formData.get('lastName') as string,
+      email: formData.get('email') as string,
+      numberOfTickets: parseInt(formData.get('guests') as string),
+    };
+
+    try {
+      // Vérifier la disponibilité des billets
+      const { data: ticketsAvailable } = await supabase
+        .rpc('check_tickets_availability', { 
+          requested_tickets: reservationData.numberOfTickets 
+        });
+
+      if (!ticketsAvailable) {
+        toast({
+          title: "Erreur de réservation",
+          description: "Désolé, il n'y a plus assez de billets disponibles.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Créer la session de paiement Stripe
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(reservationData),
+        }
+      );
+
+      const { url, error } = await response.json();
+
+      if (error) throw new Error(error);
+      if (url) window.location.href = url;
+
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la création de votre réservation.",
+        variant: "destructive",
+      });
+      console.error('Erreur de réservation:', error);
+    }
   };
 
   return (
@@ -39,20 +87,21 @@ const Reserver = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-gold/90">Nom complet</Label>
+                  <Label htmlFor="name" className="text-gold/90">Prénom</Label>
                   <Input 
                     id="name" 
-                    placeholder="Votre nom" 
+                    name="name"
+                    placeholder="Votre prénom" 
                     required 
                     className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-gold/90">Email</Label>
+                  <Label htmlFor="lastName" className="text-gold/90">Nom</Label>
                   <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="votre@email.com" 
+                    id="lastName" 
+                    name="lastName"
+                    placeholder="Votre nom" 
                     required 
                     className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
                   />
@@ -61,11 +110,12 @@ const Reserver = () => {
 
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-gold/90">Téléphone</Label>
+                  <Label htmlFor="email" className="text-gold/90">Email</Label>
                   <Input 
-                    id="phone" 
-                    type="tel" 
-                    placeholder="Votre numéro" 
+                    id="email" 
+                    name="email"
+                    type="email" 
+                    placeholder="votre@email.com" 
                     required 
                     className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
                   />
@@ -74,6 +124,7 @@ const Reserver = () => {
                   <Label htmlFor="guests" className="text-gold/90">Nombre de personnes</Label>
                   <Input 
                     id="guests" 
+                    name="guests"
                     type="number" 
                     min="1" 
                     max="10" 
