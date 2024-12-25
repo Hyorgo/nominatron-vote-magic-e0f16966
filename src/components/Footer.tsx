@@ -9,11 +9,8 @@ const Footer = () => {
             <img 
               src="/lovable-uploads/780999f0-d95d-41a7-bc28-00565fb1cc46.png" 
               alt="ideAI Logo" 
-              className="h-20 w-20 object-contain" // Augmentation de la taille de 16 à 20
+              className="h-20 w-20 object-contain"
             />
-            <div className="text-sm text-gold/90">
-              © {currentYear} Nominatron. Tous droits réservés.
-            </div>
           </div>
           <div className="flex gap-6">
             <a href="#" className="text-sm text-gold/90 hover:text-gold transition-colors">
@@ -27,6 +24,9 @@ const Footer = () => {
             </a>
           </div>
         </div>
+      </div>
+      <div className="text-sm text-gold/90 text-center mt-4">
+        © {currentYear} Nominatron. Tous droits réservés.
       </div>
     </footer>
   );
