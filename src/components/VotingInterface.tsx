@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useVoting } from "@/hooks/useVoting";
@@ -6,19 +6,17 @@ import { Category } from "@/types/nominees";
 import { VotingHeader } from "./voting/VotingHeader";
 import { VotingDialog } from "./voting/VotingDialog";
 import { VotingContent } from "./voting/VotingContent";
+import { useToast } from "./ui/use-toast";
 
 export const VotingInterface = () => {
   const [currentCategory, setCurrentCategory] = useState(0);
   const { isVotingOpen, selectedNominees, handleNomineeSelect } = useVoting();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [categoriesResponse, nomineesResponse] = await Promise.all([
         supabase.from("categories").select("*").order("display_order"),
@@ -38,12 +36,30 @@ export const VotingInterface = () => {
       setCategories(categoriesWithNominees);
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger les catégories et les nominés",
+      });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  };
+  }, [toast]);
 
-  if (loading) {
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleCategoryChange = useCallback((index: number) => {
+    setCurrentCategory(index);
+  }, []);
+
+  const currentCategoryData = useMemo(() => 
+    categories[currentCategory], 
+    [categories, currentCategory]
+  );
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -71,12 +87,12 @@ export const VotingInterface = () => {
         onOpenChange={setDialogOpen}
       />
 
-      {isVotingOpen && (
+      {isVotingOpen && currentCategoryData && (
         <VotingContent
           currentCategory={currentCategory}
           categories={categories}
           selectedNominees={selectedNominees}
-          onCategoryChange={setCurrentCategory}
+          onCategoryChange={handleCategoryChange}
           onVote={handleNomineeSelect}
         />
       )}
