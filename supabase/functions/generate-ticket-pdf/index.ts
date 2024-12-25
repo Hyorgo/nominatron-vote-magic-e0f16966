@@ -24,30 +24,41 @@ serve(async (req) => {
       lastName,
       email,
       numberOfTickets,
-      paymentStatus: 'success'
+      timestamp: new Date().toISOString()
     })
+    
+    console.log('Generating QR code with data:', qrData)
     
     // Generate QR code
     const qrCodeDataUrl = await QRCode.toDataURL(qrData)
     const qrCodeImage = qrCodeDataUrl.split(',')[1]
+
+    console.log('QR code generated successfully')
 
     // Create PDF
     const pdfDoc = await PDFDocument.create()
     const page = pdfDoc.addPage([595.28, 841.89]) // A4 size
     const { width, height } = page.getSize()
     
-    // Get logo from Supabase storage
+    // Get event information from Supabase
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Get event information
+    console.log('Fetching event information from database...')
+
     const { data: eventInfo } = await supabase
       .from('event_information')
       .select('*')
       .limit(1)
       .single()
+
+    if (!eventInfo) {
+      throw new Error('Event information not found')
+    }
+
+    console.log('Event information retrieved successfully')
 
     // Get logo URL from site settings
     const { data: siteSettings } = await supabase
@@ -56,81 +67,88 @@ serve(async (req) => {
       .eq('setting_name', 'header_logo')
       .single()
 
+    console.log('Logo URL retrieved:', siteSettings?.setting_value)
+
     if (siteSettings?.setting_value) {
-      const logoResponse = await fetch(siteSettings.setting_value)
-      const logoArrayBuffer = await logoResponse.arrayBuffer()
-      const logoImage = await pdfDoc.embedPng(new Uint8Array(logoArrayBuffer))
-      const logoDims = logoImage.scale(0.5) // Scale logo to 50%
-      page.drawImage(logoImage, {
-        x: (width - logoDims.width) / 2,
-        y: height - logoDims.height - 50,
-        width: logoDims.width,
-        height: logoDims.height,
-      })
+      try {
+        const logoResponse = await fetch(siteSettings.setting_value)
+        const logoArrayBuffer = await logoResponse.arrayBuffer()
+        const logoImage = await pdfDoc.embedPng(new Uint8Array(logoArrayBuffer))
+        const logoDims = logoImage.scale(0.5)
+        page.drawImage(logoImage, {
+          x: (width - logoDims.width) / 2,
+          y: height - logoDims.height - 50,
+          width: logoDims.width,
+          height: logoDims.height,
+        })
+        console.log('Logo embedded successfully')
+      } catch (error) {
+        console.error('Error embedding logo:', error)
+        // Continue without logo if there's an error
+      }
     }
 
     // Add QR code
-    const qrCodeImageBytes = Uint8Array.from(atob(qrCodeImage), c => c.charCodeAt(0))
-    const qrCodePdfImage = await pdfDoc.embedPng(qrCodeImageBytes)
-    const qrCodeDims = qrCodePdfImage.scale(0.5)
-    page.drawImage(qrCodePdfImage, {
-      x: (width - qrCodeDims.width) / 2,
-      y: height - 300,
-      width: qrCodeDims.width,
-      height: qrCodeDims.height,
-    })
+    try {
+      const qrCodeImageBytes = Uint8Array.from(atob(qrCodeImage), c => c.charCodeAt(0))
+      const qrCodePdfImage = await pdfDoc.embedPng(qrCodeImageBytes)
+      const qrCodeDims = qrCodePdfImage.scale(0.5)
+      page.drawImage(qrCodePdfImage, {
+        x: (width - qrCodeDims.width) / 2,
+        y: height - 300,
+        width: qrCodeDims.width,
+        height: qrCodeDims.height,
+      })
+      console.log('QR code embedded successfully')
+    } catch (error) {
+      console.error('Error embedding QR code:', error)
+      throw new Error('Failed to embed QR code in PDF')
+    }
 
     // Add text
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+    const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
     const fontSize = 12
     
-    // Informations personnelles
-    page.drawText('Informations de réservation', {
+    // Title
+    page.drawText('BILLET D\'ENTRÉE', {
       x: 50,
       y: height - 400,
-      size: 16,
+      size: 24,
       font,
       color: rgb(0, 0, 0),
     })
 
+    // Informations personnelles
     page.drawText(`Nom: ${lastName}`, {
-      x: 50,
-      y: height - 430,
-      size: fontSize,
-      font,
-    })
-
-    page.drawText(`Prénom: ${firstName}`, {
       x: 50,
       y: height - 450,
       size: fontSize,
       font,
     })
 
-    page.drawText(`Email: ${email}`, {
+    page.drawText(`Prénom: ${firstName}`, {
       x: 50,
       y: height - 470,
       size: fontSize,
       font,
     })
 
-    page.drawText(`Nombre de places: ${numberOfTickets}`, {
+    page.drawText(`Email: ${email}`, {
       x: 50,
       y: height - 490,
       size: fontSize,
       font,
     })
 
+    page.drawText(`Nombre de places: ${numberOfTickets}`, {
+      x: 50,
+      y: height - 510,
+      size: fontSize,
+      font,
+    })
+
     // Informations de l'événement
     if (eventInfo) {
-      page.drawText('Informations de l\'événement', {
-        x: 50,
-        y: height - 530,
-        size: 16,
-        font,
-        color: rgb(0, 0, 0),
-      })
-
       const eventDate = new Date(eventInfo.event_date)
       const formattedDate = eventDate.toLocaleDateString('fr-FR', {
         weekday: 'long',
@@ -141,33 +159,43 @@ serve(async (req) => {
         minute: '2-digit'
       })
 
-      page.drawText(`Date: ${formattedDate}`, {
+      page.drawText('Informations de l\'événement', {
         x: 50,
-        y: height - 560,
-        size: fontSize,
+        y: height - 550,
+        size: 16,
         font,
+        color: rgb(0, 0, 0),
       })
 
-      page.drawText(`Lieu: ${eventInfo.location}`, {
+      page.drawText(`Date: ${formattedDate}`, {
         x: 50,
         y: height - 580,
         size: fontSize,
         font,
       })
 
-      page.drawText(`Adresse: ${eventInfo.address}`, {
+      page.drawText(`Lieu: ${eventInfo.location}`, {
         x: 50,
         y: height - 600,
         size: fontSize,
         font,
       })
+
+      page.drawText(`Adresse: ${eventInfo.address}`, {
+        x: 50,
+        y: height - 620,
+        size: fontSize,
+        font,
+      })
     }
 
-    // Generate PDF bytes
+    console.log('Generating final PDF bytes...')
     const pdfBytes = await pdfDoc.save()
+    console.log('PDF generated successfully, size:', pdfBytes.length, 'bytes')
     
     // Encode PDF bytes to base64
     const base64Pdf = base64Encode(pdfBytes)
+    console.log('PDF encoded to base64 successfully')
 
     return new Response(
       JSON.stringify(base64Pdf),
