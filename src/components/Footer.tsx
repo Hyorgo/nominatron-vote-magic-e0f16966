@@ -25,6 +25,7 @@ const Footer = () => {
 
           {/* Contact section */}
           <div className="flex flex-col items-center justify-center text-gold/90 space-y-2">
+            <h3 className="text-gold mb-2 font-semibold">Nos coordonnées</h3>
             <a 
               href="https://www.ideai.fr" 
               target="_blank" 
