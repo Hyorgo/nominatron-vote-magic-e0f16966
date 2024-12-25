@@ -1,5 +1,4 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollingTextManager } from "../ScrollingTextManager";
 import { BackgroundManager } from "../BackgroundManager";
 import { HomeContentManager } from "../home/HomeContentManager";
 import { LogoManager } from "../LogoManager";
@@ -48,10 +47,6 @@ export const AdminTabs = ({
         />
         <HomeContentManager 
           homeContent={homeContent}
-          onUpdate={onUpdate}
-        />
-        <ScrollingTextManager 
-          scrollingTexts={scrollingTexts}
           onUpdate={onUpdate}
         />
         <BackgroundManager 
