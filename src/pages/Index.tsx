@@ -12,7 +12,7 @@ const Index = () => {
             alt="Lyon d'Or" 
             className="mx-auto w-[400px] mb-8 animate-fade-in"
           />
-          <h1 className="text-9xl font-bold animate-fade-in">
+          <h1 className="text-8xl font-bold animate-fade-in">
             <span className="golden-reflection" data-text="2025">2025</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
