@@ -32,13 +32,13 @@ serve(async (req) => {
         Messages: [
           {
             From: {
-              Email: "contact@leslumieres.art",
-              Name: "Les Lumières Contact"
+              Email: "contact@lyon-dor.fr",
+              Name: "Lyon d'Or Contact"
             },
             To: [
               {
-                Email: "contact@leslumieres.art",
-                Name: "Les Lumières"
+                Email: "contact@lyon-dor.fr",
+                Name: "Lyon d'Or"
               }
             ],
             Subject: "Nouveau message de contact",
