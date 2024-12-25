@@ -58,11 +58,12 @@ export const ActionCards = () => {
       subtitle: isVotingOpen 
         ? "Découvrez les nominés et votez pour vos favoris dans chaque catégorie"
         : votingNotStarted 
-          ? "Les votes ne sont pas encore ouverts. Revenez bientôt pour découvrir les nominés et voter pour vos favoris."
+          ? "Les votes ne sont pas encore ouverts. Inscrivez-vous pour être notifié de l'ouverture des votes."
           : "La période de vote est terminée. Merci de votre participation !",
       buttonText: content.card_vote?.content || "",
       to: "/categories",
-      showButton: isVotingOpen
+      showButton: isVotingOpen,
+      votingNotStarted: votingNotStarted
     },
     {
       icon: Calendar,
