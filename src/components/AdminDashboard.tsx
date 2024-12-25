@@ -12,6 +12,7 @@ import { CategoriesManager } from "./admin/CategoriesManager";
 import { NomineesManager } from "./admin/NomineesManager";
 import { VoteStatistics } from "./admin/statistics/VoteStatistics";
 import { VoteParticipants } from "./admin/statistics/components/VoteParticipants";
+import { EventConfigManager } from "./admin/EventConfigManager";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -115,6 +116,7 @@ export const AdminDashboard = () => {
         <TabsList>
           <TabsTrigger value="home">Page d'accueil</TabsTrigger>
           <TabsTrigger value="competition">Compétition</TabsTrigger>
+          <TabsTrigger value="event">Événement</TabsTrigger>
           <TabsTrigger value="statistics">Statistiques</TabsTrigger>
           <TabsTrigger value="participants">Participants</TabsTrigger>
           <TabsTrigger value="settings">Paramètres</TabsTrigger>
@@ -143,6 +145,10 @@ export const AdminDashboard = () => {
         <TabsContent value="competition" className="space-y-4">
           <CategoriesManager onUpdate={loadHomePageData} />
           <NomineesManager onUpdate={loadHomePageData} />
+        </TabsContent>
+
+        <TabsContent value="event" className="space-y-4">
+          <EventConfigManager />
         </TabsContent>
 
         <TabsContent value="statistics" className="space-y-4">
