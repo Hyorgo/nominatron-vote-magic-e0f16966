@@ -58,35 +58,39 @@ export const ActionCard = ({
   };
 
   return (
-    <div className="bg-card rounded-lg p-6 text-center space-y-4">
-      <Icon className="w-12 h-12 mx-auto text-primary" />
-      <h2 className="text-xl font-semibold">{title}</h2>
-      <p className="text-muted-foreground">
-        {subtitle}
-      </p>
-      {showButton && (
-        <Button asChild>
-          <Link to={to}>{buttonText}</Link>
-        </Button>
-      )}
-      {votingNotStarted && (
-        <form onSubmit={handleNotificationSignup} className="space-y-2">
-          <Input
-            type="email"
-            placeholder="Votre email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Button 
-            type="submit" 
-            disabled={isSubmitting}
-            className="w-full"
-          >
-            {isSubmitting ? "En cours..." : "M'avertir de l'ouverture"}
+    <div className="bg-card rounded-lg p-6 flex flex-col h-full">
+      <div className="flex-grow space-y-4">
+        <Icon className="w-12 h-12 mx-auto text-primary" />
+        <h2 className="text-xl font-semibold">{title}</h2>
+        <p className="text-muted-foreground">
+          {subtitle}
+        </p>
+      </div>
+      <div className="mt-6">
+        {showButton && (
+          <Button asChild className="w-full">
+            <Link to={to}>{buttonText}</Link>
           </Button>
-        </form>
-      )}
+        )}
+        {votingNotStarted && (
+          <form onSubmit={handleNotificationSignup} className="space-y-2">
+            <Input
+              type="email"
+              placeholder="Votre email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full"
+            >
+              {isSubmitting ? "En cours..." : "M'avertir de l'ouverture"}
+            </Button>
+          </form>
+        )}
+      </div>
     </div>
   );
 };
