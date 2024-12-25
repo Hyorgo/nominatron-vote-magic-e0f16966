@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollingTextManager } from "./admin/ScrollingTextManager";
 import { BackgroundManager } from "./admin/BackgroundManager";
-import { HomeContentManager } from "./admin/HomeContentManager";
+import { HomeContentManager } from "./admin/home/HomeContentManager";
 import { LogoManager } from "./admin/LogoManager";
 import { HomeSettingsManager } from "./admin/HomeSettingsManager";
 import { CategoriesManager } from "./admin/CategoriesManager";
@@ -76,7 +76,6 @@ export const AdminDashboard = () => {
       setHomeContent(contentData);
     }
 
-    // Charger les paramètres du site
     const { data: siteSettings } = await supabase
       .from('site_settings')
       .select('setting_name, setting_value');
