@@ -1,22 +1,10 @@
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Trash2, Plus, Edit } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-
-interface HomeContent {
-  id: string;
-  section_name: string;
-  title: string | null;
-  subtitle: string | null;
-  content: string | null;
-  is_active: boolean;
-  display_order: number;
-}
+import { HomeContentEditForm } from "./home/HomeContentEditForm";
+import { useHomeContentManager } from "@/hooks/useHomeContentManager";
+import type { HomeContent } from "@/types/home";
 
 export const HomeContentManager = ({
   homeContent,
@@ -25,127 +13,16 @@ export const HomeContentManager = ({
   homeContent: HomeContent[];
   onUpdate: () => void;
 }) => {
-  const [isEditing, setIsEditing] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<Partial<HomeContent>>({});
-  const { toast } = useToast();
-
-  const handleAdd = async () => {
-    // First, get the highest display_order
-    const { data: existingContent } = await supabase
-      .from('home_content')
-      .select('display_order')
-      .order('display_order', { ascending: false })
-      .limit(1);
-
-    const maxOrder = existingContent && existingContent.length > 0 
-      ? existingContent[0].display_order 
-      : -1;
-
-    const { error } = await supabase
-      .from('home_content')
-      .insert({
-        section_name: 'Nouvelle section',
-        title: 'Nouveau titre',
-        subtitle: 'Nouveau sous-titre',
-        content: 'Nouveau contenu',
-        display_order: maxOrder + 1,
-        is_active: true
-      });
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter la section",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Section ajoutée avec succès"
-    });
-    
-    onUpdate();
-  };
-
-  const handleEdit = (content: HomeContent) => {
-    setIsEditing(content.id);
-    setEditForm(content);
-  };
-
-  const handleSave = async () => {
-    if (!isEditing || !editForm.section_name) return;
-
-    const { error } = await supabase
-      .from('home_content')
-      .update({
-        section_name: editForm.section_name,
-        title: editForm.title,
-        subtitle: editForm.subtitle,
-        content: editForm.content
-      })
-      .eq('id', isEditing);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder les modifications",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Modifications sauvegardées avec succès"
-    });
-
-    setIsEditing(null);
-    setEditForm({});
-    onUpdate();
-  };
-
-  const handleToggle = async (id: string, currentState: boolean) => {
-    const { error } = await supabase
-      .from('home_content')
-      .update({ is_active: !currentState })
-      .eq('id', id);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de modifier le statut",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    onUpdate();
-  };
-
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase
-      .from('home_content')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer la section",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Section supprimée avec succès"
-    });
-    
-    onUpdate();
-  };
+  const {
+    isEditing,
+    editForm,
+    setEditForm,
+    handleAdd,
+    handleEdit,
+    handleSave,
+    handleToggle,
+    handleDelete
+  } = useHomeContentManager(onUpdate);
 
   return (
     <Card>
@@ -163,43 +40,14 @@ export const HomeContentManager = ({
         
         <div className="space-y-4">
           {homeContent.map((content) => (
-            <div key={content.id} className="border border-border rounded-lg p-4 space-y-4">
+            <div key={content.id} className="border border-border rounded-lg p-4">
               {isEditing === content.id ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium">Nom de la section</label>
-                    <Input
-                      value={editForm.section_name || ''}
-                      onChange={(e) => setEditForm({ ...editForm, section_name: e.target.value })}
-                      placeholder="Nom de la section"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Titre</label>
-                    <Input
-                      value={editForm.title || ''}
-                      onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                      placeholder="Titre"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Sous-titre</label>
-                    <Input
-                      value={editForm.subtitle || ''}
-                      onChange={(e) => setEditForm({ ...editForm, subtitle: e.target.value })}
-                      placeholder="Sous-titre"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Contenu</label>
-                    <Textarea
-                      value={editForm.content || ''}
-                      onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
-                      placeholder="Contenu"
-                    />
-                  </div>
-                  <Button onClick={handleSave}>Sauvegarder</Button>
-                </div>
+                <HomeContentEditForm
+                  editForm={editForm}
+                  setEditForm={setEditForm}
+                  onSave={handleSave}
+                  onCancel={() => setEditForm({})}
+                />
               ) : (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
