@@ -26,6 +26,10 @@ const Reserver = () => {
         <EventInfoCard />
       </div>
 
+      <div className="text-center mb-8">
+        <p className="text-gold/80">Rejoignez-nous pour une soirée exceptionnelle</p>
+      </div>
+
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg blur-xl" />
         
