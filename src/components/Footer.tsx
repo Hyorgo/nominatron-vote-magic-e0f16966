@@ -13,7 +13,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="flex flex-wrap justify-center items-center gap-6 mt-4 text-sm text-gold/90">
-        <span>© {currentYear} Nominatron. Tous droits réservés.</span>
+        <span>© {currentYear} ideAI. Tous droits réservés.</span>
         <span className="hidden sm:inline">•</span>
         <a href="#" className="hover:text-gold transition-colors">
           Mentions légales
