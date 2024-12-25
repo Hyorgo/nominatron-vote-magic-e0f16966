@@ -4,12 +4,11 @@ import Index from "@/pages/Index";
 import Categories from "@/pages/Categories";
 import ThankYou from "@/pages/ThankYou";
 import Reserver from "@/pages/Reserver";
-import { ScrollingText } from "@/components/ScrollingText";
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen pb-16">
+      <div className="min-h-screen">
         <Navigation />
         <main>
           <Routes>
@@ -19,7 +18,6 @@ function App() {
             <Route path="/reserver" element={<Reserver />} />
           </Routes>
         </main>
-        <ScrollingText />
       </div>
     </Router>
   );
