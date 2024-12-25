@@ -11,7 +11,7 @@ export const ActionCards = () => {
   const cards = [
     {
       icon: Calendar,
-      title: content.card_book?.title || "",
+      title: "Réserver mes places",
       subtitle: content.card_book?.subtitle || "",
       buttonText: content.card_book?.content || "",
       to: "/reserver",
