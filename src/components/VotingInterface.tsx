@@ -13,27 +13,27 @@ import {
 import { VotingRegistrationForm } from "./voting/VotingRegistrationForm";
 
 interface Nominee {
-  id: number;
+  id: string;
   name: string;
   description: string;
 }
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
   nominees: Nominee[];
 }
 
 const mockCategories: Category[] = [
   {
-    id: 1,
+    id: "1",
     name: "Meilleur Restaurant",
     nominees: [
-      { id: 1, name: "Le Gourmet", description: "Cuisine française raffinée" },
-      { id: 2, name: "Sushi Master", description: "Sushi et cuisine japonaise" },
-      { id: 3, name: "La Trattoria", description: "Authentique cuisine italienne" },
-      { id: 4, name: "Le Bistrot", description: "Cuisine traditionnelle" },
-      { id: 5, name: "L'Innovation", description: "Cuisine fusion moderne" },
+      { id: "1", name: "Le Gourmet", description: "Cuisine française raffinée" },
+      { id: "2", name: "Sushi Master", description: "Sushi et cuisine japonaise" },
+      { id: "3", name: "La Trattoria", description: "Authentique cuisine italienne" },
+      { id: "4", name: "Le Bistrot", description: "Cuisine traditionnelle" },
+      { id: "5", name: "L'Innovation", description: "Cuisine fusion moderne" },
     ],
   },
 ];
