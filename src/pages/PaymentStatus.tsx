@@ -67,12 +67,24 @@ const PaymentStatus = () => {
 
     try {
       setIsDownloading(true);
+      console.log('Envoi des données pour génération du PDF:', bookingInfo);
+      
       const { data, error } = await supabase.functions.invoke('generate-ticket-pdf', {
         body: bookingInfo
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur lors de la génération du PDF:', error);
+        throw error;
+      }
 
+      if (!data) {
+        console.error('Pas de données reçues du serveur');
+        throw new Error('Pas de données reçues du serveur');
+      }
+
+      console.log('Données PDF reçues, création du blob...');
+      
       // Convertir le base64 en Uint8Array
       const pdfBytes = Uint8Array.from(atob(data), c => c.charCodeAt(0));
       
