@@ -60,6 +60,11 @@ const Categories = () => {
     );
   }
 
+  // Diviser les catégories en deux groupes
+  const midPoint = Math.ceil(categories.length / 2);
+  const firstRow = categories.slice(0, midPoint);
+  const secondRow = categories.slice(midPoint);
+
   return (
     <div className="container py-8 animate-fade-in">
       <h1 className="text-4xl font-bold mb-8 golden-reflection">
@@ -67,17 +72,33 @@ const Categories = () => {
       </h1>
 
       <Tabs defaultValue={categories[0]?.id} className="w-full">
-        <TabsList className="w-full justify-start mb-8 bg-background/50 backdrop-blur-sm">
-          {categories.map((category) => (
-            <TabsTrigger
-              key={category.id}
-              value={category.id}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              {category.name}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="space-y-2 mb-8">
+          {/* Première ligne de catégories */}
+          <TabsList className="w-full justify-start bg-background/50 backdrop-blur-sm">
+            {firstRow.map((category) => (
+              <TabsTrigger
+                key={category.id}
+                value={category.id}
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {category.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          
+          {/* Deuxième ligne de catégories */}
+          <TabsList className="w-full justify-start bg-background/50 backdrop-blur-sm">
+            {secondRow.map((category) => (
+              <TabsTrigger
+                key={category.id}
+                value={category.id}
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {category.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
         {categories.map((category) => (
           <TabsContent key={category.id} value={category.id}>
