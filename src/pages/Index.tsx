@@ -5,6 +5,7 @@ import { Trophy, Calendar, Mail } from "lucide-react";
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <div className="gold-halo" aria-hidden="true" />
       <div className="container py-16 space-y-16">
         <div className="text-center space-y-4">
           <img 
