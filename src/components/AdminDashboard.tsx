@@ -10,21 +10,21 @@ import { LogoManager } from "./admin/LogoManager";
 import { HomeSettingsManager } from "./admin/HomeSettingsManager";
 import { CategoriesManager } from "./admin/CategoriesManager";
 import { NomineesManager } from "./admin/NomineesManager";
+import { AdminSidebar } from "./admin/AdminSidebar";
+import { AdminBreadcrumbs } from "./admin/AdminBreadcrumbs";
+import { AdminSearch } from "./admin/AdminSearch";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [scrollingTexts, setScrollingTexts] = useState<any[]>([]);
   const [backgrounds, setBackgrounds] = useState<any[]>([]);
   const [homeContent, setHomeContent] = useState<any[]>([]);
   const [headerLogo, setHeaderLogo] = useState("");
   const [homeLogo, setHomeLogo] = useState("");
   const [homeYearText, setHomeYearText] = useState("");
-
-  useEffect(() => {
-    checkAdmin();
-    loadHomePageData();
-  }, []);
 
   const checkAdmin = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -96,58 +96,86 @@ export const AdminDashboard = () => {
     navigate('/admin');
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query.toLowerCase());
+  };
+
+  useEffect(() => {
+    checkAdmin();
+    loadHomePageData();
+  }, []);
+
   if (loading) {
     return <div className="container mx-auto p-6">Chargement...</div>;
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Tableau de bord administrateur</h1>
-        <Button onClick={handleLogout}>
-          Déconnexion
-        </Button>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AdminSidebar />
+        <div className="flex-1">
+          <div className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container flex h-16 items-center gap-4">
+              <SidebarTrigger />
+              <AdminBreadcrumbs />
+              <div className="ml-auto w-[200px]">
+                <AdminSearch onSearch={handleSearch} />
+              </div>
+              <Button onClick={handleLogout} variant="outline">
+                Déconnexion
+              </Button>
+            </div>
+          </div>
+
+          <div className="container py-6">
+            <div className="space-y-6">
+              <div id="home-settings">
+                <HomeSettingsManager
+                  currentLogo={homeLogo}
+                  currentYear={homeYearText}
+                  onUpdate={loadHomePageData}
+                />
+              </div>
+
+              <div id="home-content">
+                <HomeContentManager
+                  homeContent={homeContent}
+                  onUpdate={loadHomePageData}
+                />
+              </div>
+
+              <div id="scrolling-text">
+                <ScrollingTextManager
+                  scrollingTexts={scrollingTexts}
+                  onUpdate={loadHomePageData}
+                />
+              </div>
+
+              <div id="backgrounds">
+                <BackgroundManager
+                  backgrounds={backgrounds}
+                  onUpdate={loadHomePageData}
+                />
+              </div>
+
+              <div id="categories">
+                <CategoriesManager onUpdate={loadHomePageData} />
+              </div>
+
+              <div id="nominees">
+                <NomineesManager onUpdate={loadHomePageData} />
+              </div>
+
+              <div id="logo">
+                <LogoManager
+                  currentLogo={headerLogo}
+                  onUpdate={loadHomePageData}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <Tabs defaultValue="home" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="home">Page d'accueil</TabsTrigger>
-          <TabsTrigger value="competition">Compétition</TabsTrigger>
-          <TabsTrigger value="settings">Paramètres</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="home" className="space-y-4">
-          <HomeSettingsManager 
-            currentLogo={homeLogo}
-            currentYear={homeYearText}
-            onUpdate={loadHomePageData}
-          />
-          <HomeContentManager 
-            homeContent={homeContent}
-            onUpdate={loadHomePageData}
-          />
-          <ScrollingTextManager 
-            scrollingTexts={scrollingTexts}
-            onUpdate={loadHomePageData}
-          />
-          <BackgroundManager 
-            backgrounds={backgrounds}
-            onUpdate={loadHomePageData}
-          />
-        </TabsContent>
-
-        <TabsContent value="competition" className="space-y-4">
-          <CategoriesManager onUpdate={loadHomePageData} />
-          <NomineesManager onUpdate={loadHomePageData} />
-        </TabsContent>
-
-        <TabsContent value="settings" className="space-y-4">
-          <LogoManager
-            currentLogo={headerLogo}
-            onUpdate={loadHomePageData}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
+    </SidebarProvider>
   );
 };
