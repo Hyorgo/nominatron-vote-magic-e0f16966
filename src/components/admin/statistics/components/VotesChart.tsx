@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
   BarChart,
@@ -22,9 +22,37 @@ const CHART_COLORS = [
   "#D946EF", // Magenta Pink
   "#F97316", // Bright Orange
   "#0EA5E9", // Ocean Blue
+  "#10B981", // Emerald
+  "#F59E0B", // Amber
+  "#EC4899", // Pink
+  "#6366F1", // Indigo
 ];
 
 export const VotesChart = ({ data }: VotesChartProps) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  const handleMouseEnter = (index: number) => {
+    setActiveIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setActiveIndex(null);
+  };
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-navy p-3 rounded-lg border border-border/20 shadow-xl">
+          <p className="text-gold font-medium mb-1">{label}</p>
+          <p className="text-sm text-foreground">
+            {payload[0].value} votes
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className="p-6 animate-fade-in delay-100">
       <h3 className="text-lg font-semibold mb-6 text-gold">
@@ -46,28 +74,19 @@ export const VotesChart = ({ data }: VotesChartProps) => {
               tick={{ fill: '#999' }}
               axisLine={{ stroke: '#333' }}
             />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "hsl(var(--navy))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "8px",
-              }}
-              cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
-            />
-            <Bar 
-              dataKey="votes" 
-              fill="#8884d8"
-              radius={[4, 4, 0, 0]}
-              background={{ fill: "rgba(255, 255, 255, 0.05)" }}
-            >
-              {data.map((_, index) => (
-                <Bar
-                  key={`bar-${index}`}
-                  dataKey="votes"
-                  fill={CHART_COLORS[index % CHART_COLORS.length]}
-                />
-              ))}
-            </Bar>
+            <Tooltip content={<CustomTooltip />} />
+            {data.map((entry, index) => (
+              <Bar
+                key={`bar-${index}`}
+                dataKey="votes"
+                fill={CHART_COLORS[index % CHART_COLORS.length]}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={handleMouseLeave}
+                opacity={activeIndex === null || activeIndex === index ? 1 : 0.3}
+                radius={[4, 4, 0, 0]}
+                className="transition-opacity duration-300"
+              />
+            ))}
           </BarChart>
         </ResponsiveContainer>
       </div>
