@@ -27,12 +27,12 @@ export const ScrollingText = () => {
     <div className="fixed bottom-16 left-0 right-0 backdrop-blur-md bg-white/5 border-t border-b border-white/10">
       <div className="relative flex overflow-hidden py-4">
         <div className="animate-[scroll_20s_linear_infinite] whitespace-nowrap flex">
-          <span className="mx-32 text-primary/90">{content}</span>
-          <span className="mx-32 text-primary/90">{content}</span>
+          <span className="mx-48 text-primary/90">{content}</span>
+          <span className="mx-48 text-primary/90">{content}</span>
         </div>
         <div className="animate-[scroll_20s_linear_infinite] whitespace-nowrap flex absolute left-[100%]">
-          <span className="mx-32 text-primary/90">{content}</span>
-          <span className="mx-32 text-primary/90">{content}</span>
+          <span className="mx-48 text-primary/90">{content}</span>
+          <span className="mx-48 text-primary/90">{content}</span>
         </div>
       </div>
     </div>
