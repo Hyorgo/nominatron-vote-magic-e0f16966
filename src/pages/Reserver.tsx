@@ -15,30 +15,74 @@ const Reserver = () => {
   };
 
   return (
-    <div className="container max-w-2xl py-8 animate-fade-in">
-      <h1 className="text-4xl font-bold mb-8">Réserver ma place</h1>
-      <div className="bg-card rounded-lg p-6 shadow-lg">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nom complet</Label>
-            <Input id="name" placeholder="Votre nom" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="votre@email.com" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Téléphone</Label>
-            <Input id="phone" type="tel" placeholder="Votre numéro de téléphone" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="guests">Nombre de personnes</Label>
-            <Input id="guests" type="number" min="1" max="10" defaultValue="1" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Réserver
-          </Button>
-        </form>
+    <div className="container max-w-2xl py-12 animate-fade-in relative z-10">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold mb-3 golden-reflection">Réserver ma place</h1>
+        <p className="text-gold/80">Rejoignez-nous pour une soirée exceptionnelle</p>
+      </div>
+
+      <div className="relative">
+        {/* Effet de halo derrière le formulaire */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg blur-xl" />
+        
+        {/* Formulaire avec effet glassmorphism */}
+        <div className="relative bg-white/5 backdrop-blur-lg rounded-lg p-8 shadow-2xl border border-white/10">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gold/90">Nom complet</Label>
+                <Input 
+                  id="name" 
+                  placeholder="Votre nom" 
+                  required 
+                  className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gold/90">Email</Label>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="votre@email.com" 
+                  required 
+                  className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-gold/90">Téléphone</Label>
+                <Input 
+                  id="phone" 
+                  type="tel" 
+                  placeholder="Votre numéro" 
+                  required 
+                  className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guests" className="text-gold/90">Nombre de personnes</Label>
+                <Input 
+                  id="guests" 
+                  type="number" 
+                  min="1" 
+                  max="10" 
+                  defaultValue="1" 
+                  required 
+                  className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+                />
+              </div>
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-gold/80 to-gold hover:from-gold hover:to-gold-light transition-all duration-300 text-navy font-semibold py-6"
+            >
+              Réserver maintenant
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );
