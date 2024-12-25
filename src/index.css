@@ -135,6 +135,7 @@
   border-radius: 2px;
   animation: confettiFall 3s linear forwards, confettiSway 1.5s ease-in-out infinite;
   z-index: 50;
+  pointer-events: none;
   transform-origin: center center;
 }
 

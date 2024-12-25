@@ -8,7 +8,7 @@ const ThankYou = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Créer les confettis
+    // Fonction pour créer un confetti
     const createConfetti = () => {
       const confetti = document.createElement("div");
       
@@ -17,8 +17,8 @@ const ThankYou = () => {
       const shape = shapes[Math.floor(Math.random() * shapes.length)];
       confetti.className = `confetti ${shape}`;
       
-      // Position aléatoire horizontale
-      confetti.style.left = Math.random() * 100 + "vw";
+      // Position aléatoire horizontale (ajustée pour être visible)
+      confetti.style.left = `${Math.random() * window.innerWidth}px`;
       
       // Taille aléatoire
       const size = 6 + Math.random() * 6;
@@ -44,7 +44,12 @@ const ThankYou = () => {
       }, duration * 1000);
     };
 
-    // Créer plusieurs confettis
+    // Créer immédiatement quelques confettis au chargement
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => createConfetti(), i * 50);
+    }
+
+    // Continuer à créer des confettis pendant quelques secondes
     const interval = setInterval(() => {
       for (let i = 0; i < 5; i++) {
         createConfetti();
@@ -52,15 +57,16 @@ const ThankYou = () => {
     }, 100);
 
     // Nettoyer après 4 secondes
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       clearInterval(interval);
     }, 4000);
 
     // Cleanup
     return () => {
       clearInterval(interval);
+      clearTimeout(timeout);
     };
-  }, []);
+  }, []); // Le tableau vide assure que l'effet ne s'exécute qu'une fois au montage
 
   return (
     <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in">
