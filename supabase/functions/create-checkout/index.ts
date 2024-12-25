@@ -15,6 +15,10 @@ serve(async (req) => {
     const { firstName, lastName, email, numberOfTickets } = await req.json()
     console.log('Received request data:', { firstName, lastName, email, numberOfTickets })
 
+    if (!firstName || !lastName || !email || !numberOfTickets) {
+      throw new Error('Missing required fields')
+    }
+
     const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
       apiVersion: '2023-10-16',
     })
@@ -30,7 +34,7 @@ serve(async (req) => {
               name: 'Billet pour l\'événement',
               description: `Réservation pour ${numberOfTickets} personne${numberOfTickets > 1 ? 's' : ''}`,
             },
-            unit_amount: 19200, // 192€ TTC par billet
+            unit_amount: 19200,
           },
           quantity: numberOfTickets,
         },
@@ -54,6 +58,11 @@ serve(async (req) => {
     })
     
     console.log('Payment session created successfully:', session.id)
+    console.log('Checkout URL:', session.url)
+
+    if (!session.url) {
+      throw new Error('No checkout URL returned from Stripe')
+    }
 
     return new Response(
       JSON.stringify({ url: session.url }),
