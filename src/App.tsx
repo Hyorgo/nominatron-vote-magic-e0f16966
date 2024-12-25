@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Navigation } from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import Index from "@/pages/Index";
 import Contact from "@/pages/Contact";
 import Categories from "@/pages/Categories";
@@ -11,16 +13,22 @@ import PaymentStatus from "@/pages/PaymentStatus";
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/thank-you" element={<ThankYou />} />
-        <Route path="/reserver" element={<Reserver />} />
-        <Route path="/payment-status" element={<PaymentStatus />} />
-      </Routes>
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/reserver" element={<Reserver />} />
+            <Route path="/payment-status" element={<PaymentStatus />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   );
 }
