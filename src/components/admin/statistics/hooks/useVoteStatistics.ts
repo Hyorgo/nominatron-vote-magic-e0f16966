@@ -34,7 +34,7 @@ interface VotesSummaryData {
 export const useVoteStatistics = () => {
   const [loading, setLoading] = useState(true);
   const [statistics, setStatistics] = useState<CategoryStats[]>([]);
-  const [topNominee, setTopNominee] = useState<TopNominee | null>(null);
+  const [topNominees, setTopNominees] = useState<TopNominee[]>([]);
   const [summaryData, setSummaryData] = useState<VotesSummaryData>({
     totalVotes: 0,
     participationRate: 0,
@@ -69,7 +69,6 @@ export const useVoteStatistics = () => {
 
   const fetchStatistics = async () => {
     try {
-      // Fetch vote statistics
       const { data, error } = await supabase
         .from("vote_statistics")
         .select("*")
@@ -79,9 +78,19 @@ export const useVoteStatistics = () => {
 
       // Process statistics
       const statsMap = new Map<string, CategoryStats>();
-      let maxVotes = 0;
-      let topNomineeData = null;
       let totalVotesCount = 0;
+
+      // Prepare top nominees array
+      const allNominees = data?.map((stat: VoteStatistic) => ({
+        name: stat.nominee_name || "Inconnu",
+        votes: stat.vote_count || 0,
+        category: stat.category_name || "Inconnu",
+      })) || [];
+
+      // Sort by votes and take top 3
+      const topThreeNominees = allNominees
+        .sort((a, b) => b.votes - a.votes)
+        .slice(0, 3);
 
       data?.forEach((stat: VoteStatistic) => {
         if (!statsMap.has(stat.category_id)) {
@@ -97,24 +106,12 @@ export const useVoteStatistics = () => {
         categoryStats.totalVotes += voteCount;
         totalVotesCount += voteCount;
 
-        if (voteCount > maxVotes) {
-          maxVotes = voteCount;
-          topNomineeData = {
-            name: stat.nominee_name || "Inconnu",
-            votes: voteCount,
-            category: stat.category_name || "Inconnu",
-          };
-        }
-      });
-
-      data?.forEach((stat: VoteStatistic) => {
-        const categoryStats = statsMap.get(stat.category_id)!;
         categoryStats.nominees.push({
           name: stat.nominee_name || "Inconnu",
-          votes: stat.vote_count || 0,
+          votes: voteCount,
           percentage:
             categoryStats.totalVotes > 0
-              ? ((stat.vote_count || 0) / categoryStats.totalVotes) * 100
+              ? (voteCount / categoryStats.totalVotes) * 100
               : 0,
         });
       });
@@ -122,14 +119,13 @@ export const useVoteStatistics = () => {
       // Calculate voting trend
       const trend = await calculateVotingTrend();
 
-      // Fetch total expected voters (from validated_emails table)
+      // Fetch total expected voters
       const { count: totalExpectedVoters } = await supabase
         .from('validated_emails')
         .select('*', { count: 'exact' });
 
-      // Update state
       setStatistics(Array.from(statsMap.values()));
-      setTopNominee(topNomineeData);
+      setTopNominees(topThreeNominees);
       setSummaryData({
         totalVotes: totalVotesCount,
         participationRate: totalExpectedVoters ? (totalVotesCount / totalExpectedVoters) * 100 : 0,
@@ -145,7 +141,7 @@ export const useVoteStatistics = () => {
   return {
     loading,
     statistics,
-    topNominee,
+    topNominees,
     summaryData,
   };
 };
