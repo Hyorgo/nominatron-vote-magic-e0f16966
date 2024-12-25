@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { EventFormFields } from "./event/EventFormFields";
 
 interface EventConfig {
@@ -48,12 +47,17 @@ export const EventConfigManager = () => {
       const eventInfo = eventInfos?.[0];
 
       if (votingConfig) {
-        setValue('start_date', format(new Date(votingConfig.start_date), "yyyy-MM-dd'T'HH:mm"));
-        setValue('end_date', format(new Date(votingConfig.end_date), "yyyy-MM-dd'T'HH:mm"));
+        // Convertir les dates UTC en dates locales pour l'affichage
+        const localStartDate = new Date(votingConfig.start_date);
+        const localEndDate = new Date(votingConfig.end_date);
+        
+        setValue('start_date', format(localStartDate, "yyyy-MM-dd'T'HH:mm"));
+        setValue('end_date', format(localEndDate, "yyyy-MM-dd'T'HH:mm"));
       }
 
       if (eventInfo) {
-        setValue('event_date', format(new Date(eventInfo.event_date), "yyyy-MM-dd'T'HH:mm"));
+        const localEventDate = new Date(eventInfo.event_date);
+        setValue('event_date', format(localEventDate, "yyyy-MM-dd'T'HH:mm"));
         setValue('location', eventInfo.location);
         setValue('address', eventInfo.address);
       }
@@ -71,6 +75,11 @@ export const EventConfigManager = () => {
     const start = new Date(data.start_date);
     const end = new Date(data.end_date);
     const event = new Date(data.event_date);
+
+    // Convertir les dates locales en UTC pour le stockage
+    const startUTC = start.toISOString();
+    const endUTC = end.toISOString();
+    const eventUTC = event.toISOString();
 
     if (end <= start) {
       toast({
@@ -94,8 +103,8 @@ export const EventConfigManager = () => {
       const { error: votingError } = await supabase
         .from('voting_config')
         .upsert({
-          start_date: data.start_date,
-          end_date: data.end_date,
+          start_date: startUTC,
+          end_date: endUTC,
         });
 
       if (votingError) throw votingError;
@@ -103,7 +112,7 @@ export const EventConfigManager = () => {
       const { error: eventError } = await supabase
         .from('event_information')
         .upsert({
-          event_date: data.event_date,
+          event_date: eventUTC,
           location: data.location,
           address: data.address,
         });
