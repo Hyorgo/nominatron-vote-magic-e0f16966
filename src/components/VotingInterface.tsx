@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CategoryNavigation } from "./voting/CategoryNavigation";
 import { NomineeCard } from "./voting/NomineeCard";
 import { useVoting } from "@/hooks/useVoting";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,39 +13,61 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { VotingRegistrationForm } from "./voting/VotingRegistrationForm";
-
-interface Nominee {
-  id: string;
-  name: string;
-  description: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  nominees: Nominee[];
-}
-
-const mockCategories: Category[] = [
-  {
-    id: "1",
-    name: "Meilleur Restaurant",
-    nominees: [
-      { id: "1", name: "Le Gourmet", description: "Cuisine française raffinée" },
-      { id: "2", name: "Sushi Master", description: "Sushi et cuisine japonaise" },
-      { id: "3", name: "La Trattoria", description: "Authentique cuisine italienne" },
-      { id: "4", name: "Le Bistrot", description: "Cuisine traditionnelle" },
-      { id: "5", name: "L'Innovation", description: "Cuisine fusion moderne" },
-    ],
-  },
-];
+import { Category, Nominee } from "@/types/nominees";
 
 export const VotingInterface = () => {
   const [currentCategory, setCurrentCategory] = useState(0);
   const { isVotingOpen, selectedNominees, handleNomineeSelect } = useVoting();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const category = mockCategories[currentCategory];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [categoriesResponse, nomineesResponse] = await Promise.all([
+        supabase.from("categories").select("*").order("display_order"),
+        supabase.from("nominees").select("*"),
+      ]);
+
+      if (categoriesResponse.error) throw categoriesResponse.error;
+      if (nomineesResponse.error) throw nomineesResponse.error;
+
+      const categoriesWithNominees = categoriesResponse.data.map((category) => ({
+        ...category,
+        nominees: nomineesResponse.data.filter(
+          (nominee) => nominee.category_id === category.id
+        ),
+      }));
+
+      setCategories(categoriesWithNominees);
+    } catch (error) {
+      console.error("Erreur lors du chargement des données:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  const category = categories[currentCategory];
+
+  if (!category) {
+    return (
+      <div className="text-center py-8">
+        Aucune catégorie disponible pour le moment.
+      </div>
+    );
+  }
 
   return (
     <div className="container py-8 animate-fade-in">
@@ -86,9 +110,9 @@ export const VotingInterface = () => {
           <CategoryNavigation
             categoryName={category.name}
             currentIndex={currentCategory}
-            totalCategories={mockCategories.length}
+            totalCategories={categories.length}
             onPrevious={() => setCurrentCategory((prev) => Math.max(0, prev - 1))}
-            onNext={() => setCurrentCategory((prev) => Math.min(mockCategories.length - 1, prev + 1))}
+            onNext={() => setCurrentCategory((prev) => Math.min(categories.length - 1, prev + 1))}
           />
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
