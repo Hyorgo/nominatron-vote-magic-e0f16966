@@ -89,8 +89,6 @@ export const VotingInterface = () => {
     );
   }
 
-  console.log("Voted categories:", getVotedCategoriesCount(), "Total categories:", categories.length); // Debug log
-
   return (
     <div className="container max-w-7xl py-8 animate-fade-in">
       <div className="text-center mb-8">

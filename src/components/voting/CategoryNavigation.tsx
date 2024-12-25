@@ -84,14 +84,24 @@ export const CategoryNavigation = ({
         </Button>
       </div>
 
-      <div className="space-y-2 bg-background/50 p-4 rounded-lg border border-border backdrop-blur-sm">
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Progression</span>
-          <span className="font-medium">
-            {votedCategories} / {totalCategories} catégories votées
-          </span>
+      <div className="bg-card/50 p-6 rounded-lg border border-border backdrop-blur-sm shadow-lg">
+        <div className="flex flex-col space-y-4">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium">Progression des votes</span>
+            <span className="text-sm font-bold text-primary">
+              {votedCategories} / {totalCategories} catégories votées
+            </span>
+          </div>
+          <div className="space-y-2">
+            <Progress 
+              value={progress} 
+              className="h-3 bg-secondary"
+            />
+            <p className="text-xs text-muted-foreground text-center">
+              {Math.round(progress)}% complété
+            </p>
+          </div>
         </div>
-        <Progress value={progress} className="h-2" />
       </div>
     </div>
   );
