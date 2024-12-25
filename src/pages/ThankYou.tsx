@@ -8,65 +8,43 @@ const ThankYou = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fonction pour créer un confetti
+    // Créer les confettis
     const createConfetti = () => {
       const confetti = document.createElement("div");
+      confetti.className = "confetti";
       
-      // Forme aléatoire
-      const shapes = ["rectangle", "circle"];
-      const shape = shapes[Math.floor(Math.random() * shapes.length)];
-      confetti.className = `confetti ${shape}`;
-      
-      // Position aléatoire horizontale (ajustée pour être visible)
-      confetti.style.left = `${Math.random() * window.innerWidth}px`;
-      
-      // Taille aléatoire
-      const size = 6 + Math.random() * 6;
-      confetti.style.width = `${size}px`;
-      confetti.style.height = shape === "rectangle" ? `${size * 0.6}px` : `${size}px`;
+      // Position aléatoire horizontale
+      confetti.style.left = Math.random() * 100 + "vw";
       
       // Couleur aléatoire
       const colors = ["#D946EF", "#c9a55c", "#0EA5E9", "#ffffff"];
       confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      
-      // Rotation initiale aléatoire
-      confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-      
-      // Vitesse de chute aléatoire
-      const duration = 2 + Math.random() * 2;
-      confetti.style.animation = `confettiFall ${duration}s linear forwards, confettiSway 1.5s ease-in-out infinite`;
       
       document.body.appendChild(confetti);
 
       // Supprimer après l'animation
       setTimeout(() => {
         confetti.remove();
-      }, duration * 1000);
+      }, 2000);
     };
 
-    // Créer immédiatement quelques confettis au chargement
-    for (let i = 0; i < 20; i++) {
-      setTimeout(() => createConfetti(), i * 50);
-    }
-
-    // Continuer à créer des confettis pendant quelques secondes
+    // Créer plusieurs confettis
     const interval = setInterval(() => {
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         createConfetti();
       }
-    }, 100);
+    }, 200);
 
-    // Nettoyer après 4 secondes
-    const timeout = setTimeout(() => {
+    // Nettoyer après 3 secondes
+    setTimeout(() => {
       clearInterval(interval);
-    }, 4000);
+    }, 3000);
 
     // Cleanup
     return () => {
       clearInterval(interval);
-      clearTimeout(timeout);
     };
-  }, []); // Le tableau vide assure que l'effet ne s'exécute qu'une fois au montage
+  }, []);
 
   return (
     <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in">

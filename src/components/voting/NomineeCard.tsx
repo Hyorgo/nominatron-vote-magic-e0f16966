@@ -14,8 +14,8 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   return (
     <div
-      className={`relative p-6 bg-card/80 backdrop-blur-md backdrop-saturate-150 rounded-lg border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-card/90 ${
-        isSelected ? "ring-2 ring-primary" : ""
+      className={`nominee-card animate-scale-in ${
+        isSelected ? "selected" : ""
       }`}
     >
       {isSelected && (
