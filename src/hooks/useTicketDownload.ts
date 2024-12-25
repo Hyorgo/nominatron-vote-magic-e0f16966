@@ -7,10 +7,11 @@ export const useTicketDownload = () => {
   const { toast } = useToast();
 
   const downloadTicket = async (bookingInfo: any) => {
-    if (!bookingInfo) {
+    if (!bookingInfo || !bookingInfo.firstName || !bookingInfo.lastName || !bookingInfo.email) {
+      console.error('Informations de réservation invalides:', bookingInfo);
       toast({
         title: "Erreur",
-        description: "Impossible de récupérer les informations de réservation",
+        description: "Informations de réservation manquantes ou invalides",
         variant: "destructive",
       });
       return;
@@ -46,7 +47,7 @@ export const useTicketDownload = () => {
       // Créer un lien temporaire pour télécharger le PDF
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'billet.pdf';
+      link.download = `billet-${bookingInfo.firstName}-${bookingInfo.lastName}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -57,7 +58,7 @@ export const useTicketDownload = () => {
         description: "Votre billet a été téléchargé",
       });
     } catch (error) {
-      console.error('Erreur lors du téléchargement du billet:', error);
+      console.error('Erreur détaillée lors du téléchargement du billet:', error);
       toast({
         title: "Erreur",
         description: "Impossible de télécharger votre billet. Veuillez réessayer.",

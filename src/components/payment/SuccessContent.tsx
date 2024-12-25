@@ -12,8 +12,14 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
   const { isDownloading, downloadTicket } = useTicketDownload();
 
   useEffect(() => {
-    if (bookingInfo) {
-      downloadTicket(bookingInfo);
+    console.log('SuccessContent mounted, bookingInfo:', bookingInfo);
+    if (bookingInfo && Object.keys(bookingInfo).length > 0) {
+      console.log('Démarrage du téléchargement automatique...');
+      setTimeout(() => {
+        downloadTicket(bookingInfo);
+      }, 1000);
+    } else {
+      console.error('Informations de réservation manquantes');
     }
   }, [bookingInfo]);
 
