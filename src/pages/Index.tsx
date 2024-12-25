@@ -10,7 +10,7 @@ const Index = () => {
           <img 
             src="/lovable-uploads/1017081c-8fa6-42cf-966b-318e893a0f68.png" 
             alt="Lyon d'Or" 
-            className="mx-auto w-[300px] mb-8 animate-fade-in"
+            className="mx-auto w-[400px] mb-8 animate-fade-in"
           />
           <h1 className="text-5xl font-bold text-primary animate-fade-in">
             Cérémonie des Awards
