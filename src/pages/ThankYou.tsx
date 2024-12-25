@@ -114,9 +114,18 @@ const ThankYou = () => {
       </p>
 
       <div className="mb-12 max-w-2xl">
-        <p className="mb-6 text-lg text-muted-foreground">
-          Aidez vos établissements favoris à gagner en partageant et en invitant vos amis à voter ! 🌟
-        </p>
+        <div className="mb-6 p-6 rounded-lg bg-secondary/30 backdrop-blur-sm border border-primary/20">
+          <p className="text-lg font-medium">
+            <span className="block mb-2 text-primary text-2xl">🌟 Faites la différence ! 🌟</span>
+            <span className="golden-reflection">
+              Aidez vos établissements favoris à gagner
+            </span>
+            <br />
+            <span className="text-muted-foreground">
+              en partageant et en invitant vos amis à voter !
+            </span>
+          </p>
+        </div>
         
         <div className="flex flex-wrap justify-center gap-4">
           <Button
