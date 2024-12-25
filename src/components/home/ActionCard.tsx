@@ -35,18 +35,27 @@ export const ActionCard = ({
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
+      // Enregistrer l'email dans la base de données
+      const { error: dbError } = await supabase
         .from('vote_opening_notifications')
         .insert([{ email }]);
 
-      if (error) throw error;
+      if (dbError) throw dbError;
+
+      // Envoyer l'email de confirmation
+      const { error: emailError } = await supabase.functions.invoke('notify-vote-opening', {
+        body: { email }
+      });
+
+      if (emailError) throw emailError;
 
       toast({
         title: "Inscription réussie",
-        description: "Vous serez notifié par email lors de l'ouverture des votes.",
+        description: "Vous recevrez un email de confirmation dans quelques instants.",
       });
       setEmail("");
     } catch (error) {
+      console.error('Error:', error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de l'inscription.",
