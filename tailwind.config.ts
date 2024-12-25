@@ -87,7 +87,7 @@ export default {
         },
         "scroll": {
           "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(calc(-50% - 2rem))" },
+          "100%": { transform: "translateX(-100%)" },
         },
       },
       animation: {
