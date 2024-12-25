@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollingTextManager } from "./admin/ScrollingTextManager";
 import { BackgroundManager } from "./admin/BackgroundManager";
+import { HomeContentManager } from "./admin/HomeContentManager";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [scrollingTexts, setScrollingTexts] = useState<any[]>([]);
   const [backgrounds, setBackgrounds] = useState<any[]>([]);
+  const [homeContent, setHomeContent] = useState<any[]>([]);
 
   useEffect(() => {
     checkAdmin();
@@ -57,6 +59,15 @@ export const AdminDashboard = () => {
     if (backgroundData) {
       setBackgrounds(backgroundData);
     }
+
+    const { data: contentData } = await supabase
+      .from('home_content')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (contentData) {
+      setHomeContent(contentData);
+    }
   };
 
   const handleLogout = async () => {
@@ -83,6 +94,10 @@ export const AdminDashboard = () => {
         </TabsList>
 
         <TabsContent value="home" className="space-y-4">
+          <HomeContentManager 
+            homeContent={homeContent}
+            onUpdate={loadHomePageData}
+          />
           <ScrollingTextManager 
             scrollingTexts={scrollingTexts}
             onUpdate={loadHomePageData}

@@ -143,6 +143,39 @@ export type Database = {
         }
         Relationships: []
       }
+      home_content: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          section_name: string
+          subtitle: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          section_name: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          section_name?: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       nominees: {
         Row: {
           category_id: string | null
