@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Loader2, Calendar, MapPin } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface EventConfig {
   start_date: string;
@@ -20,7 +22,12 @@ interface EventConfig {
 export const EventConfigManager = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { register, handleSubmit, setValue } = useForm<EventConfig>();
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } = useForm<EventConfig>();
+
+  // Watch form values for validation
+  const startDate = watch('start_date');
+  const endDate = watch('end_date');
+  const eventDate = watch('event_date');
 
   useEffect(() => {
     loadEventConfig();
@@ -28,13 +35,11 @@ export const EventConfigManager = () => {
 
   const loadEventConfig = async () => {
     try {
-      // Charger la configuration des votes
       const { data: votingConfig } = await supabase
         .from('voting_config')
         .select('*')
         .single();
 
-      // Charger les informations de l'événement
       const { data: eventInfo } = await supabase
         .from('event_information')
         .select('*')
@@ -61,9 +66,30 @@ export const EventConfigManager = () => {
   };
 
   const onSubmit = async (data: EventConfig) => {
+    // Validate dates
+    const start = new Date(data.start_date);
+    const end = new Date(data.end_date);
+    const event = new Date(data.event_date);
+
+    if (end <= start) {
+      toast({
+        title: "Erreur de validation",
+        description: "La date de fin doit être postérieure à la date de début",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (event <= end) {
+      toast({
+        title: "Attention",
+        description: "L'événement devrait avoir lieu après la fin des votes",
+        variant: "warning",
+      });
+    }
+
     setLoading(true);
     try {
-      // Mettre à jour la configuration des votes
       const { error: votingError } = await supabase
         .from('voting_config')
         .upsert({
@@ -73,7 +99,6 @@ export const EventConfigManager = () => {
 
       if (votingError) throw votingError;
 
-      // Mettre à jour les informations de l'événement
       const { error: eventError } = await supabase
         .from('event_information')
         .upsert({
@@ -101,64 +126,105 @@ export const EventConfigManager = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Configuration de l'événement</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="start_date">Date de début des votes</Label>
-              <Input
-                id="start_date"
-                type="datetime-local"
-                {...register('start_date')}
-              />
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Configuration des votes</CardTitle>
+          <CardDescription>
+            Définissez la période pendant laquelle les votes seront ouverts
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="start_date">
+                  <Calendar className="w-4 h-4 inline-block mr-2" />
+                  Date de début des votes
+                </Label>
+                <Input
+                  id="start_date"
+                  type="datetime-local"
+                  {...register('start_date')}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="end_date">
+                  <Calendar className="w-4 h-4 inline-block mr-2" />
+                  Date de fin des votes
+                </Label>
+                <Input
+                  id="end_date"
+                  type="datetime-local"
+                  {...register('end_date')}
+                />
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="end_date">Date de fin des votes</Label>
-              <Input
-                id="end_date"
-                type="datetime-local"
-                {...register('end_date')}
-              />
+            <Separator className="my-6" />
+
+            <CardTitle className="mb-4">Informations sur l'événement</CardTitle>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="event_date">
+                  <Calendar className="w-4 h-4 inline-block mr-2" />
+                  Date de l'événement
+                </Label>
+                <Input
+                  id="event_date"
+                  type="datetime-local"
+                  {...register('event_date')}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location">
+                  <MapPin className="w-4 h-4 inline-block mr-2" />
+                  Lieu de l'événement
+                </Label>
+                <Input
+                  id="location"
+                  type="text"
+                  placeholder="Ex: Le Grand Hôtel"
+                  {...register('location')}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">
+                  <MapPin className="w-4 h-4 inline-block mr-2" />
+                  Adresse complète
+                </Label>
+                <Input
+                  id="address"
+                  type="text"
+                  placeholder="Ex: 1 rue de la Paix, 75001 Paris"
+                  {...register('address')}
+                />
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="event_date">Date de l'événement</Label>
-              <Input
-                id="event_date"
-                type="datetime-local"
-                {...register('event_date')}
-              />
+            <div className="flex justify-end">
+              <Button 
+                type="submit" 
+                disabled={loading || !isDirty}
+                className="min-w-[150px]"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Mise à jour...
+                  </>
+                ) : (
+                  "Mettre à jour"
+                )}
+              </Button>
             </div>
-
-            <div>
-              <Label htmlFor="location">Lieu de l'événement</Label>
-              <Input
-                id="location"
-                type="text"
-                {...register('location')}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="address">Adresse de l'événement</Label>
-              <Input
-                id="address"
-                type="text"
-                {...register('address')}
-              />
-            </div>
-          </div>
-
-          <Button type="submit" disabled={loading}>
-            {loading ? "Mise à jour..." : "Mettre à jour"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
