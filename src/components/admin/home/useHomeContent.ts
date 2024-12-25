@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { HomeContent, HomeContentFormData } from "./types";
+import { HomeContent } from "./types";
 import { useToast } from "@/hooks/use-toast";
 import type { DragDropContextProps } from "@hello-pangea/dnd";
 
@@ -131,12 +131,20 @@ export const useHomeContent = (onUpdate: () => void) => {
   const handleDragEnd: DragDropContextProps['onDragEnd'] = async (result) => {
     if (!result.destination) return;
 
-    const items = Array.from(result.draggableId ? [result.draggableId] : []);
+    const { data: contents } = await supabase
+      .from('home_content')
+      .select('id, section_name')
+      .order('display_order', { ascending: true });
+
+    if (!contents) return;
+
+    const items = Array.from(contents);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    const updates = items.map((id, index) => ({
-      id,
+    const updates = items.map((item, index) => ({
+      id: item.id,
+      section_name: item.section_name,
       display_order: index
     }));
 
@@ -152,6 +160,11 @@ export const useHomeContent = (onUpdate: () => void) => {
       });
       return;
     }
+
+    toast({
+      title: "Succès",
+      description: "Ordre des sections mis à jour"
+    });
 
     onUpdate();
   };
