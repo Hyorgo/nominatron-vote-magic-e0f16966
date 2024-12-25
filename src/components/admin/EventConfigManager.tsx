@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Calendar, MapPin } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { EventFormFields } from "./event/EventFormFields";
 
 interface EventConfig {
   start_date: string;
@@ -24,7 +22,6 @@ export const EventConfigManager = () => {
   const { toast } = useToast();
   const { register, handleSubmit, setValue, watch, formState: { isDirty } } = useForm<EventConfig>();
 
-  // Watch form values for validation
   const startDate = watch('start_date');
   const endDate = watch('end_date');
   const eventDate = watch('event_date');
@@ -66,7 +63,6 @@ export const EventConfigManager = () => {
   };
 
   const onSubmit = async (data: EventConfig) => {
-    // Validate dates
     const start = new Date(data.start_date);
     const end = new Date(data.end_date);
     const event = new Date(data.event_date);
@@ -84,7 +80,7 @@ export const EventConfigManager = () => {
       toast({
         title: "Attention",
         description: "L'événement devrait avoir lieu après la fin des votes",
-        variant: "warning",
+        variant: "destructive",
       });
     }
 
@@ -136,76 +132,8 @@ export const EventConfigManager = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="start_date">
-                  <Calendar className="w-4 h-4 inline-block mr-2" />
-                  Date de début des votes
-                </Label>
-                <Input
-                  id="start_date"
-                  type="datetime-local"
-                  {...register('start_date')}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="end_date">
-                  <Calendar className="w-4 h-4 inline-block mr-2" />
-                  Date de fin des votes
-                </Label>
-                <Input
-                  id="end_date"
-                  type="datetime-local"
-                  {...register('end_date')}
-                />
-              </div>
-            </div>
-
-            <Separator className="my-6" />
-
-            <CardTitle className="mb-4">Informations sur l'événement</CardTitle>
+            <EventFormFields register={register} />
             
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="event_date">
-                  <Calendar className="w-4 h-4 inline-block mr-2" />
-                  Date de l'événement
-                </Label>
-                <Input
-                  id="event_date"
-                  type="datetime-local"
-                  {...register('event_date')}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="location">
-                  <MapPin className="w-4 h-4 inline-block mr-2" />
-                  Lieu de l'événement
-                </Label>
-                <Input
-                  id="location"
-                  type="text"
-                  placeholder="Ex: Le Grand Hôtel"
-                  {...register('location')}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address">
-                  <MapPin className="w-4 h-4 inline-block mr-2" />
-                  Adresse complète
-                </Label>
-                <Input
-                  id="address"
-                  type="text"
-                  placeholder="Ex: 1 rue de la Paix, 75001 Paris"
-                  {...register('address')}
-                />
-              </div>
-            </div>
-
             <div className="flex justify-end">
               <Button 
                 type="submit" 
