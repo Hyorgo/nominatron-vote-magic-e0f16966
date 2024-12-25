@@ -40,16 +40,27 @@ const Reserver = () => {
         body: reservationData
       });
 
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (error) {
+        console.error('Erreur lors de la création de la session:', error);
+        throw error;
+      }
+
+      console.log('Réponse de create-checkout:', data);
+
+      if (data?.url) {
+        console.log('Redirection vers:', data.url);
+        window.location.href = data.url;
+      } else {
+        throw new Error('Pas d\'URL de paiement reçue');
+      }
 
     } catch (error) {
+      console.error('Erreur détaillée:', error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la création de votre réservation.",
         variant: "destructive",
       });
-      console.error('Erreur de réservation:', error);
     }
   };
 

@@ -24,7 +24,7 @@ serve(async (req) => {
     })
 
     console.log('Creating payment session...')
-    const session = await stripe.checkout.sessions.create({
+    const sessionConfig = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -55,7 +55,11 @@ serve(async (req) => {
         email,
         numberOfTickets,
       },
-    })
+    }
+
+    console.log('Session configuration:', JSON.stringify(sessionConfig, null, 2))
+    
+    const session = await stripe.checkout.sessions.create(sessionConfig)
     
     console.log('Payment session created successfully:', session.id)
     console.log('Checkout URL:', session.url)
