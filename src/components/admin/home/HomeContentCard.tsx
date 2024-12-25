@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Edit, Trash2, Eye, Save } from "lucide-react";
+import { Edit, Trash2, Eye, Save, GripVertical } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { HomeContent } from "@/types/home";
 
@@ -32,7 +32,7 @@ export const HomeContentCard = ({
   return (
     <Card className="border border-border p-4 space-y-4 transition-all duration-300 hover:border-primary/50">
       {isEditing ? (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-in">
           <div>
             <label className="text-sm font-medium">Nom de la section</label>
             <Input
@@ -78,7 +78,10 @@ export const HomeContentCard = ({
       ) : (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">{content.section_name}</h3>
+            <div className="flex items-center gap-2">
+              <GripVertical className="h-5 w-5 text-muted-foreground cursor-move" />
+              <h3 className="text-lg font-semibold">{content.section_name}</h3>
+            </div>
             <div className="flex items-center gap-4">
               <Switch
                 checked={content.is_active}

@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, LayoutDashboard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { HomeContentCard } from "./HomeContentCard";
+import { DraggableHomeContent } from "./DraggableHomeContent";
 import { HomeContent } from "@/types/home";
 
 export const HomeContentManager = ({
@@ -113,6 +112,41 @@ export const HomeContentManager = ({
     onUpdate();
   };
 
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination) return;
+
+    const items = Array.from(homeContent);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Mettre à jour l'ordre dans la base de données
+    try {
+      const updates = items.map((item, index) => ({
+        id: item.id,
+        display_order: index
+      }));
+
+      const { error } = await supabase
+        .from('home_content')
+        .upsert(updates);
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "Ordre des sections mis à jour"
+      });
+
+      onUpdate();
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour l'ordre des sections",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -130,23 +164,13 @@ export const HomeContentManager = ({
           Ajouter une section
         </Button>
         
-        <Accordion type="single" collapsible className="space-y-4">
-          {homeContent.map((content, index) => (
-            <AccordionItem key={content.id} value={`item-${index}`}>
-              <AccordionTrigger className="hover:no-underline">
-                <span className="text-lg font-medium">{content.section_name}</span>
-              </AccordionTrigger>
-              <AccordionContent>
-                <HomeContentCard
-                  content={content}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onToggle={handleToggle}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <DraggableHomeContent
+          contents={homeContent}
+          onDragEnd={handleDragEnd}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onToggle={handleToggle}
+        />
       </CardContent>
     </Card>
   );
