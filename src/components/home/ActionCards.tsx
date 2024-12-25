@@ -31,12 +31,14 @@ export const ActionCards = () => {
 
   const checkVotingPeriod = async () => {
     try {
-      const { data: config } = await supabase
+      const { data: configs } = await supabase
         .from('voting_config')
         .select('start_date, end_date')
-        .single();
+        .order('created_at', { ascending: false })
+        .limit(1);
 
-      if (config) {
+      if (configs && configs.length > 0) {
+        const config = configs[0];
         const now = new Date();
         const startDate = new Date(config.start_date);
         const endDate = new Date(config.end_date);
