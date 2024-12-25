@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navigation from "@/components/Navigation";
+import { Navigation } from "@/components/Navigation";
 import Index from "@/pages/Index";
 import Categories from "@/pages/Categories";
 import ThankYou from "@/pages/ThankYou";
-import ScrollingText from "@/components/ScrollingText";
+import { ScrollingText } from "@/components/ScrollingText";
 
 function App() {
   return (
