@@ -14,6 +14,13 @@ export const Navigation = () => {
   return (
     <nav className="border-b border-border bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
       <div className="container flex h-16 items-center">
+        <Link to="/" className="mr-6">
+          <img 
+            src="/lovable-uploads/1017081c-8fa6-42cf-966b-318e893a0f68.png" 
+            alt="Lyon d'Or" 
+            className="h-12"
+          />
+        </Link>
         <div className="flex gap-6 text-sm">
           {links.map((link) => (
             <Link
