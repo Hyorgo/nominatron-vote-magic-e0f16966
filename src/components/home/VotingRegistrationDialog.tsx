@@ -39,8 +39,12 @@ export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrat
         .single();
 
       if (existingEmail) {
-        // Email déjà validé, fermer le dialogue et rediriger
+        // Email déjà validé, fermer le dialogue et informer l'utilisateur
         onOpenChange(false);
+        toast({
+          title: "Email déjà enregistré",
+          description: "Vous pouvez directement accéder aux votes.",
+        });
         navigate("/categories");
       } else {
         // Ajouter le nouvel email validé
