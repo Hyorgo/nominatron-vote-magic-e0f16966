@@ -170,9 +170,12 @@ export const VoteStatistics = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {statistics.map((category) =>
+              {statistics.map((category, categoryIndex) =>
                 category.nominees.map((nominee, index) => (
-                  <TableRow key={`${category.categoryName}-${nominee.name}`}>
+                  <TableRow 
+                    key={`${category.categoryName}-${nominee.name}`}
+                    className={categoryIndex % 2 === 0 ? "bg-navy/10" : "bg-navy/5"}
+                  >
                     {index === 0 && (
                       <TableCell rowSpan={category.nominees.length}>
                         {category.categoryName}
