@@ -1,26 +1,19 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Heart, Home, Download } from "lucide-react";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
+import { SuccessContent } from "@/components/payment/SuccessContent";
+import { ErrorContent } from "@/components/payment/ErrorContent";
 
 const PaymentStatus = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const status = searchParams.get('status');
   const isSuccess = status === 'success';
-  const { toast } = useToast();
-  const [isDownloading, setIsDownloading] = useState(false);
 
   // Récupérer les informations de réservation depuis sessionStorage
   const bookingInfo = JSON.parse(sessionStorage.getItem('bookingInfo') || '{}');
 
   useEffect(() => {
     if (isSuccess) {
-      // Déclencher le téléchargement automatique
-      handleDownloadTicket();
-
       let confettiInterval: NodeJS.Timeout;
       const confettiTimeout = setTimeout(() => {
         // Nettoyer tous les confettis après 10 secondes
@@ -67,135 +60,18 @@ const PaymentStatus = () => {
     }
   }, [isSuccess]);
 
-  const handleDownloadTicket = async () => {
-    if (!bookingInfo) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de récupérer les informations de réservation",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setIsDownloading(true);
-      console.log('Envoi des données pour génération du PDF:', bookingInfo);
-      
-      const { data, error } = await supabase.functions.invoke('generate-ticket-pdf', {
-        body: bookingInfo
-      });
-
-      if (error) {
-        console.error('Erreur lors de la génération du PDF:', error);
-        throw error;
-      }
-
-      if (!data) {
-        console.error('Pas de données reçues du serveur');
-        throw new Error('Pas de données reçues du serveur');
-      }
-
-      console.log('Données PDF reçues, création du blob...');
-      
-      // Convertir le base64 en Uint8Array
-      const pdfBytes = Uint8Array.from(atob(data), c => c.charCodeAt(0));
-      
-      // Créer un blob à partir des données
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      
-      // Créer un lien temporaire pour télécharger le PDF
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'billet.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      toast({
-        title: "Succès",
-        description: "Votre billet a été téléchargé",
-      });
-    } catch (error) {
-      console.error('Erreur lors du téléchargement du billet:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de télécharger votre billet. Veuillez réessayer.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
   return (
     <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in">
       {isSuccess ? (
-        <>
-          <div className="animate-[bounce_2s_ease-in-out_infinite]">
-            <Heart size={64} className="mb-6 text-[#D946EF] fill-[#D946EF]" />
-          </div>
-          <h1 className="mb-6 text-4xl font-bold golden-reflection">
-            Paiement confirmé !
-          </h1>
-          <p className="mb-8 text-xl text-muted-foreground">
-            Votre réservation a été enregistrée avec succès.
-          </p>
-          <div className="mb-12 max-w-2xl">
-            <div className="mb-6 p-6 rounded-lg bg-secondary/30 backdrop-blur-sm border border-primary/20">
-              <p className="text-lg">
-                <span className="block mb-2 text-primary text-2xl">🎉 Merci pour votre confiance ! 🎉</span>
-                <span className="golden-reflection block mb-2">
-                  Le téléchargement de votre billet devrait démarrer automatiquement
-                </span>
-                <span className="text-muted-foreground">
-                  Si ce n'est pas le cas, vous pouvez le télécharger en cliquant sur le bouton ci-dessous.
-                </span>
-              </p>
-            </div>
-            <Button
-              onClick={handleDownloadTicket}
-              className="w-full mb-6"
-              disabled={isDownloading}
-            >
-              <Download className="mr-2 h-4 w-4" />
-              {isDownloading ? "Téléchargement..." : "Télécharger mon billet"}
-            </Button>
-          </div>
-        </>
+        <SuccessContent 
+          bookingInfo={bookingInfo}
+          onNavigateHome={() => navigate("/")}
+        />
       ) : (
-        <>
-          <h1 className="mb-6 text-4xl font-bold text-destructive">
-            Paiement non complété
-          </h1>
-          <p className="mb-8 text-xl text-muted-foreground">
-            Une erreur est survenue lors du traitement de votre paiement.
-          </p>
-          <div className="mb-12 max-w-2xl">
-            <div className="mb-6 p-6 rounded-lg bg-destructive/10 backdrop-blur-sm border border-destructive/20">
-              <p className="text-lg">
-                <span className="block mb-2 text-destructive text-2xl">❌ Erreur de paiement</span>
-                <span className="block mb-2">
-                  Votre carte n'a pas été débitée.
-                </span>
-                <span className="text-muted-foreground">
-                  Vous pouvez réessayer votre réservation ou nous contacter si le problème persiste.
-                </span>
-              </p>
-            </div>
-          </div>
-        </>
+        <ErrorContent 
+          onNavigateHome={() => navigate("/")}
+        />
       )}
-
-      <Button 
-        onClick={() => navigate("/")}
-        variant="default"
-        size="lg"
-      >
-        <Home className="mr-2" />
-        Retour à l'accueil
-      </Button>
     </div>
   );
 };
