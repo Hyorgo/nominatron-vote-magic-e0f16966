@@ -21,6 +21,7 @@ serve(async (req) => {
 
     console.log('Creating payment session...')
     const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
       customer_email: email,
       line_items: [
         {
@@ -36,6 +37,12 @@ serve(async (req) => {
         lastName,
         email,
         numberOfTickets,
+      },
+      locale: 'fr',
+      allow_promotion_codes: true,
+      billing_address_collection: 'required',
+      phone_number_collection: {
+        enabled: true,
       },
     })
 
