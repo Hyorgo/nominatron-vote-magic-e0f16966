@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { SocialShare } from "./SocialShare";
 
 interface NomineeCardProps {
   nominee: {
@@ -87,7 +88,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </CardDescription>
         </CardHeader>
         
-        <CardContent className="p-4 sm:p-6 pt-0">
+        <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button 
@@ -113,6 +114,18 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                 : "Cliquez pour voter pour ce nominé"}
             </TooltipContent>
           </Tooltip>
+
+          {isSelected && (
+            <div className="pt-2 border-t">
+              <div className="text-sm text-muted-foreground mb-2">
+                Partagez votre vote !
+              </div>
+              <SocialShare 
+                nomineeId={nominee.id}
+                nomineeName={nominee.name}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
     </TooltipProvider>
