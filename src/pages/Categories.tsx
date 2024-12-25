@@ -131,10 +131,13 @@ const Categories = () => {
         ))}
       </Tabs>
 
-      <FinishVotingButton 
-        selectedNominees={selectedNominees}
-        categories={categories}
-      />
+      {/* Ajout d'une marge en bas pour éviter que le bouton soit caché */}
+      <div className="mb-32">
+        <FinishVotingButton 
+          selectedNominees={selectedNominees}
+          categories={categories}
+        />
+      </div>
     </div>
   );
 };
