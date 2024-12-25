@@ -17,7 +17,10 @@ export const HomeContentManager = ({
   const { toast } = useToast();
 
   const handleAdd = async () => {
-    const maxOrder = Math.max(...homeContent.map(content => content.display_order), 0);
+    // Calculate the highest current display_order
+    const maxOrder = homeContent.length > 0 
+      ? Math.max(...homeContent.map(content => content.display_order))
+      : -1;
     
     const { error } = await supabase
       .from('home_content')
@@ -26,7 +29,8 @@ export const HomeContentManager = ({
         title: 'Nouveau titre',
         subtitle: 'Nouveau sous-titre',
         content: 'Nouveau contenu',
-        display_order: maxOrder + 1
+        display_order: maxOrder + 1,
+        is_active: true
       });
 
     if (error) {
