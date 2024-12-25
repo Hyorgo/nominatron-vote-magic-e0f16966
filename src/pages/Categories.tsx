@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 
 interface Category {
   id: string;
@@ -21,34 +21,45 @@ const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [nominees, setNominees] = useState<Nominee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedNominees, setSelectedNominees] = useState<string[]>([]);
 
   useEffect(() => {
     fetchCategoriesAndNominees();
+    fetchSelectedNominees();
   }, []);
 
   const fetchCategoriesAndNominees = async () => {
     try {
-      // Charger les catégories
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from("categories")
-        .select("*")
-        .order("display_order");
+      const [categoriesResponse, nomineesResponse] = await Promise.all([
+        supabase.from("categories").select("*").order("display_order"),
+        supabase.from("nominees").select("*"),
+      ]);
 
-      if (categoriesError) throw categoriesError;
+      if (categoriesResponse.error) throw categoriesResponse.error;
+      if (nomineesResponse.error) throw nomineesResponse.error;
 
-      // Charger les nominés
-      const { data: nomineesData, error: nomineesError } = await supabase
-        .from("nominees")
-        .select("*");
-
-      if (nomineesError) throw nomineesError;
-
-      setCategories(categoriesData);
-      setNominees(nomineesData);
+      setCategories(categoriesResponse.data);
+      setNominees(nomineesResponse.data);
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSelectedNominees = async () => {
+    try {
+      const { data: votesData, error } = await supabase
+        .from("votes")
+        .select("nominee_id");
+
+      if (error) throw error;
+
+      // Extraire les IDs uniques des nominés votés
+      const selectedIds = [...new Set(votesData.map(vote => vote.nominee_id))];
+      setSelectedNominees(selectedIds);
+    } catch (error) {
+      console.error("Erreur lors du chargement des votes:", error);
     }
   };
 
@@ -119,9 +130,14 @@ const Categories = () => {
                         />
                       </div>
                     )}
-                    <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                      {nominee.name}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                        {nominee.name}
+                      </h3>
+                      {selectedNominees.includes(nominee.id) && (
+                        <Star className="h-5 w-5 text-gold fill-gold animate-scale-in" />
+                      )}
+                    </div>
                     <p className="text-muted-foreground">
                       {nominee.description}
                     </p>
