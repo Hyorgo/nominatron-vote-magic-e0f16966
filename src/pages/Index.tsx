@@ -62,7 +62,7 @@ const Index = () => {
           <h1 className="text-8xl font-bold animate-fade-in">
             <span className="golden-reflection" data-text={yearText}>{yearText}</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in whitespace-nowrap">
             {content.intro?.content}
           </p>
         </div>
