@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 import { PDFDocument, rgb, StandardFonts } from 'https://cdn.skypack.dev/pdf-lib@1.17.1'
 import QRCode from 'https://cdn.skypack.dev/qrcode@1.5.1'
-import { decode as base64Decode } from "https://deno.land/std@0.190.0/encoding/base64.ts";
+import { encode as base64Encode } from "https://deno.land/std@0.190.0/encoding/base64.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -59,7 +59,7 @@ serve(async (req) => {
     if (siteSettings?.setting_value) {
       const logoResponse = await fetch(siteSettings.setting_value)
       const logoArrayBuffer = await logoResponse.arrayBuffer()
-      const logoImage = await pdfDoc.embedPng(logoArrayBuffer)
+      const logoImage = await pdfDoc.embedPng(new Uint8Array(logoArrayBuffer))
       const logoDims = logoImage.scale(0.5) // Scale logo to 50%
       page.drawImage(logoImage, {
         x: (width - logoDims.width) / 2,
@@ -70,7 +70,7 @@ serve(async (req) => {
     }
 
     // Add QR code
-    const qrCodeImageBytes = base64Decode(qrCodeImage)
+    const qrCodeImageBytes = Uint8Array.from(atob(qrCodeImage), c => c.charCodeAt(0))
     const qrCodePdfImage = await pdfDoc.embedPng(qrCodeImageBytes)
     const qrCodeDims = qrCodePdfImage.scale(0.5)
     page.drawImage(qrCodePdfImage, {
@@ -165,14 +165,16 @@ serve(async (req) => {
 
     // Generate PDF bytes
     const pdfBytes = await pdfDoc.save()
+    
+    // Encode PDF bytes to base64
+    const base64Pdf = base64Encode(pdfBytes)
 
     return new Response(
-      pdfBytes,
+      JSON.stringify(base64Pdf),
       { 
         headers: { 
           ...corsHeaders,
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': 'attachment; filename="billet.pdf"'
+          'Content-Type': 'application/json'
         }
       }
     )

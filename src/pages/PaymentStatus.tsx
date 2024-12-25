@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, Home, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const PaymentStatus = () => {
   const navigate = useNavigate();
@@ -73,8 +73,11 @@ const PaymentStatus = () => {
 
       if (error) throw error;
 
+      // Convertir le base64 en Uint8Array
+      const pdfBytes = Uint8Array.from(atob(data), c => c.charCodeAt(0));
+      
       // Créer un blob à partir des données
-      const blob = new Blob([data], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       
       // Créer un lien temporaire pour télécharger le PDF
