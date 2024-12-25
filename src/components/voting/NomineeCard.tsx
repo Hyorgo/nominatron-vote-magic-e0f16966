@@ -41,8 +41,8 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
         {isSelected && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-primary text-primary-foreground rounded-full p-1 sm:p-1.5 shadow-lg animate-scale-in z-10 cursor-help">
-                <Check className="h-3 w-3 sm:h-4 sm:w-4" />
+              <div className="absolute top-3 right-3 bg-primary text-primary-foreground rounded-full p-1.5 shadow-lg animate-scale-in z-10 cursor-help">
+                <Check className="h-4 w-4" />
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -52,7 +52,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
         )}
         
         {nominee.image_url && (
-          <div className="relative h-36 sm:h-48 overflow-hidden rounded-t-lg">
+          <div className="relative h-48 sm:h-56 overflow-hidden rounded-t-lg">
             <img
               src={nominee.image_url}
               alt={nominee.name}
@@ -71,7 +71,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
         <CardHeader className="space-y-1 p-4 sm:p-6 flex-grow">
           <CardTitle 
             className={cn(
-              "text-base sm:text-lg transition-colors duration-300 line-clamp-2",
+              "text-lg sm:text-xl transition-colors duration-300 line-clamp-2",
               "group-hover:text-primary",
               isSelected && "text-primary"
             )}
@@ -80,7 +80,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </CardTitle>
           <CardDescription 
             className={cn(
-              "text-sm line-clamp-2 mt-1",
+              "text-sm sm:text-base line-clamp-2 mt-2",
               isSelected && "text-foreground/80"
             )}
           >
@@ -103,7 +103,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                   )}
                 >
                   <Vote className={cn(
-                    "mr-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300",
+                    "mr-2 h-4 w-4 transition-transform duration-300",
                     isSelected && "rotate-12"
                   )} />
                   {isSelected ? "Sélectionné" : "Voter"}
