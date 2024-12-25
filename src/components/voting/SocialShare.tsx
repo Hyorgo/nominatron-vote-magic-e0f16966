@@ -59,13 +59,13 @@ export const SocialShare = ({ nomineeId, nomineeName }: SocialShareProps) => {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-4 gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
               variant="outline"
               size="sm"
-              className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white border-none"
+              className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white border-none w-full"
               onClick={() => handleShare("facebook")}
             >
               <Facebook className="h-4 w-4" />
@@ -82,7 +82,7 @@ export const SocialShare = ({ nomineeId, nomineeName }: SocialShareProps) => {
             <Button
               variant="outline"
               size="sm"
-              className="bg-[#E4405F] hover:bg-[#E4405F]/90 text-white border-none"
+              className="bg-[#E4405F] hover:bg-[#E4405F]/90 text-white border-none w-full"
               onClick={() => handleShare("instagram")}
             >
               <Instagram className="h-4 w-4" />
@@ -99,7 +99,7 @@ export const SocialShare = ({ nomineeId, nomineeName }: SocialShareProps) => {
             <Button
               variant="outline"
               size="sm"
-              className="bg-[#0A66C2] hover:bg-[#0A66C2]/90 text-white border-none"
+              className="bg-[#0A66C2] hover:bg-[#0A66C2]/90 text-white border-none w-full"
               onClick={() => handleShare("linkedin")}
             >
               <Linkedin className="h-4 w-4" />
@@ -116,6 +116,7 @@ export const SocialShare = ({ nomineeId, nomineeName }: SocialShareProps) => {
             <Button
               variant="outline"
               size="sm"
+              className="w-full"
               onClick={() => handleShare("native")}
             >
               <Share2 className="h-4 w-4" />

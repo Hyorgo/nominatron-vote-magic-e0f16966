@@ -34,7 +34,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
         className={cn(
           "group relative overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg",
           "border border-border/50 hover:border-primary/50",
-          "animate-fade-in w-full",
+          "animate-fade-in w-full h-full flex flex-col",
           isSelected && "ring-2 ring-primary ring-offset-2 bg-primary/5"
         )}
       >
@@ -68,7 +68,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </div>
         )}
         
-        <CardHeader className="space-y-1 p-4 sm:p-6">
+        <CardHeader className="space-y-1 p-4 sm:p-6 flex-grow">
           <CardTitle 
             className={cn(
               "text-base sm:text-lg transition-colors duration-300 line-clamp-2",
@@ -88,44 +88,46 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </CardDescription>
         </CardHeader>
         
-        <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                onClick={onClick}
-                variant={isSelected ? "secondary" : "default"}
-                className={cn(
-                  "w-full transition-all duration-300",
-                  "text-sm sm:text-base",
-                  "group-hover:shadow-md",
-                  isSelected && "bg-primary/20 hover:bg-primary/30"
-                )}
-              >
-                <Vote className={cn(
-                  "mr-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300",
-                  isSelected && "rotate-12"
-                )} />
-                {isSelected ? "Sélectionné" : "Voter"}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {isSelected 
-                ? "Cliquez pour changer votre vote" 
-                : "Cliquez pour voter pour ce nominé"}
-            </TooltipContent>
-          </Tooltip>
+        <CardContent className="p-4 sm:p-6 pt-0 mt-auto">
+          <div className="space-y-4">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={onClick}
+                  variant={isSelected ? "secondary" : "default"}
+                  className={cn(
+                    "w-full transition-all duration-300",
+                    "text-sm sm:text-base",
+                    "group-hover:shadow-md",
+                    isSelected && "bg-primary/20 hover:bg-primary/30"
+                  )}
+                >
+                  <Vote className={cn(
+                    "mr-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300",
+                    isSelected && "rotate-12"
+                  )} />
+                  {isSelected ? "Sélectionné" : "Voter"}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {isSelected 
+                  ? "Cliquez pour changer votre vote" 
+                  : "Cliquez pour voter pour ce nominé"}
+              </TooltipContent>
+            </Tooltip>
 
-          {isSelected && (
-            <div className="pt-2 border-t">
-              <div className="text-sm text-muted-foreground mb-2">
-                Partagez votre vote !
+            {isSelected && (
+              <div className="pt-2 border-t space-y-2">
+                <div className="text-sm text-muted-foreground text-center">
+                  Partagez votre vote !
+                </div>
+                <SocialShare 
+                  nomineeId={nominee.id}
+                  nomineeName={nominee.name}
+                />
               </div>
-              <SocialShare 
-                nomineeId={nominee.id}
-                nomineeName={nominee.name}
-              />
-            </div>
-          )}
+            )}
+          </div>
         </CardContent>
       </Card>
     </TooltipProvider>
