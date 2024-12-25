@@ -38,17 +38,6 @@ interface CategoryStats {
   }[];
 }
 
-// Couleurs pastel pour l'alternance des catégories
-const categoryColors = [
-  "bg-[#F2FCE2]", // Soft Green
-  "bg-[#FEF7CD]", // Soft Yellow
-  "bg-[#FEC6A1]", // Soft Orange
-  "bg-[#E5DEFF]", // Soft Purple
-  "bg-[#FFDEE2]", // Soft Pink
-  "bg-[#FDE1D3]", // Soft Peach
-  "bg-[#D3E4FD]", // Soft Blue
-];
-
 export const VoteStatistics = () => {
   const [loading, setLoading] = useState(true);
   const [statistics, setStatistics] = useState<CategoryStats[]>([]);
@@ -181,12 +170,9 @@ export const VoteStatistics = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {statistics.map((category, categoryIndex) =>
+              {statistics.map((category) =>
                 category.nominees.map((nominee, index) => (
-                  <TableRow
-                    key={`${category.categoryName}-${nominee.name}`}
-                    className={categoryColors[categoryIndex % categoryColors.length]}
-                  >
+                  <TableRow key={`${category.categoryName}-${nominee.name}`}>
                     {index === 0 && (
                       <TableCell rowSpan={category.nominees.length}>
                         {category.categoryName}
