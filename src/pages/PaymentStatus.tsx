@@ -18,6 +18,14 @@ const PaymentStatus = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      let confettiInterval: NodeJS.Timeout;
+      const confettiTimeout = setTimeout(() => {
+        // Nettoyer tous les confettis après 10 secondes
+        const confettis = document.querySelectorAll('.confetti');
+        confettis.forEach(confetti => confetti.remove());
+        if (confettiInterval) clearInterval(confettiInterval);
+      }, 10000);
+
       const createConfetti = () => {
         const confetti = document.createElement("div");
         confetti.className = "confetti";
@@ -41,14 +49,15 @@ const PaymentStatus = () => {
         createConfetti();
       }
 
-      const interval = setInterval(() => {
+      confettiInterval = setInterval(() => {
         for (let i = 0; i < 10; i++) {
           createConfetti();
         }
       }, 3000);
 
       return () => {
-        clearInterval(interval);
+        if (confettiInterval) clearInterval(confettiInterval);
+        if (confettiTimeout) clearTimeout(confettiTimeout);
         const confettis = document.querySelectorAll('.confetti');
         confettis.forEach(confetti => confetti.remove());
       };

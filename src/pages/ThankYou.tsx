@@ -7,45 +7,41 @@ const ThankYou = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let confettiInterval: NodeJS.Timeout;
+    const confettiTimeout = setTimeout(() => {
+      // Nettoyer tous les confettis après 10 secondes
+      const confettis = document.querySelectorAll('.confetti');
+      confettis.forEach(confetti => confetti.remove());
+      if (confettiInterval) clearInterval(confettiInterval);
+    }, 10000);
+
     // Créer et ajouter les confettis en forme de cœur
     const createConfetti = () => {
       const confetti = document.createElement("div");
       confetti.className = "confetti";
-      
-      // Position aléatoire horizontale
       confetti.style.left = Math.random() * window.innerWidth + "px";
-      
-      // Couleurs aléatoires festives
       const colors = ["#FFD700", "#FF69B4", "#00CED1", "#FF6347", "#98FB98", "#DDA0DD"];
       const color = colors[Math.floor(Math.random() * colors.length)];
-      
-      // Créer le cœur avec un emoji
       confetti.innerHTML = "❤";
       confetti.style.color = color;
-      
-      // Taille aléatoire pour plus de variété
-      const size = Math.random() * 20 + 10; // entre 10px et 30px
+      const size = Math.random() * 20 + 10;
       confetti.style.fontSize = `${size}px`;
-      
-      // Rotation et délai aléatoires
       confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
       confetti.style.animationDelay = Math.random() * 3 + "s";
-      
       document.body.appendChild(confetti);
 
-      // Nettoyer après l'animation
       setTimeout(() => {
         confetti.remove();
       }, 5000);
     };
 
-    // Créer plusieurs confettis
+    // Créer plusieurs confettis initiaux
     for (let i = 0; i < 50; i++) {
       createConfetti();
     }
 
     // Créer de nouveaux confettis toutes les 3 secondes
-    const interval = setInterval(() => {
+    confettiInterval = setInterval(() => {
       for (let i = 0; i < 10; i++) {
         createConfetti();
       }
@@ -53,7 +49,8 @@ const ThankYou = () => {
 
     // Cleanup
     return () => {
-      clearInterval(interval);
+      if (confettiInterval) clearInterval(confettiInterval);
+      if (confettiTimeout) clearTimeout(confettiTimeout);
       const confettis = document.querySelectorAll('.confetti');
       confettis.forEach(confetti => confetti.remove());
     };
