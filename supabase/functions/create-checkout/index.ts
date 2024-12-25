@@ -14,13 +14,14 @@ serve(async (req) => {
 
   try {
     const { firstName, lastName, email, numberOfTickets } = await req.json()
+    console.log('Received request data:', { firstName, lastName, email, numberOfTickets })
 
     const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
       apiVersion: '2023-10-16',
     })
 
-    console.log('Creating payment session...')
-    const session = await stripe.checkout.sessions.create({
+    console.log('Creating payment session with price ID: price_1QZGfwAU4Uv1i5TAJHGKvvKx')
+    const sessionConfig = {
       payment_method_types: ['card'],
       customer_email: email,
       line_items: [
@@ -44,9 +45,12 @@ serve(async (req) => {
       phone_number_collection: {
         enabled: true,
       },
-    })
+    }
+    
+    console.log('Session configuration:', sessionConfig)
+    const session = await stripe.checkout.sessions.create(sessionConfig)
+    console.log('Payment session created successfully:', session.id)
 
-    console.log('Payment session created:', session.id)
     return new Response(
       JSON.stringify({ url: session.url }),
       { 
@@ -55,9 +59,15 @@ serve(async (req) => {
       }
     )
   } catch (error) {
-    console.error('Erreur lors de la création de la session de paiement:', error)
+    console.error('Detailed error:', error)
+    console.error('Error stack:', error.stack)
+    console.error('Stripe error details:', error.raw || error)
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.raw || error 
+      }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
