@@ -15,13 +15,11 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
     console.log('SuccessContent mounted, bookingInfo:', bookingInfo);
     if (bookingInfo && Object.keys(bookingInfo).length > 0) {
       console.log('Démarrage du téléchargement automatique...');
-      setTimeout(() => {
-        downloadTicket(bookingInfo);
-      }, 1000);
+      downloadTicket(bookingInfo);
     } else {
       console.error('Informations de réservation manquantes');
     }
-  }, [bookingInfo]);
+  }, [bookingInfo, downloadTicket]);
 
   return (
     <>

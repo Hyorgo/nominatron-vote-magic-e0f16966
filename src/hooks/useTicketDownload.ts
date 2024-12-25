@@ -22,7 +22,12 @@ export const useTicketDownload = () => {
       console.log('Envoi des données pour génération du PDF:', bookingInfo);
       
       const { data, error } = await supabase.functions.invoke('generate-ticket-pdf', {
-        body: bookingInfo
+        body: {
+          firstName: bookingInfo.firstName,
+          lastName: bookingInfo.lastName,
+          email: bookingInfo.email,
+          numberOfTickets: bookingInfo.numberOfTickets
+        }
       });
 
       if (error) {
