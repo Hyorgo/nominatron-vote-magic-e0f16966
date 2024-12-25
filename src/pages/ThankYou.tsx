@@ -167,7 +167,7 @@ const ThankYou = () => {
 
       <Button 
         onClick={() => navigate("/")}
-        variant="outline"
+        className="bg-navy hover:bg-navy-dark text-white border-none"
         size="lg"
       >
         <Home className="mr-2" />
