@@ -7,14 +7,15 @@ import { CategoryList } from "./categories/CategoryList";
 import { CategoryForm } from "./categories/CategoryForm";
 import { DeleteAllButton } from "./categories/DeleteAllButton";
 
-interface Category {
+// Définir un type local pour les catégories telles qu'elles sont reçues de Supabase
+interface CategoryData {
   id: string;
   name: string;
   display_order: number;
 }
 
 export const CategoriesManager = ({ onUpdate }: { onUpdate: () => void }) => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(false);

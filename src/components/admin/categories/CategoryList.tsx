@@ -11,7 +11,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Category } from "../../../types/nominees";
+
+interface Category {
+  id: string;
+  name: string;
+  display_order: number;
+}
 
 interface CategoryListProps {
   categories: Category[];
