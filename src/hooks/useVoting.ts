@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface VotingConfig {
   start_date: string;
@@ -27,14 +27,18 @@ export const useVoting = () => {
 
       if (configs && configs.length > 0) {
         const config = configs[0];
-        console.log("Configuration des votes:", {
-          start_date: new Date(config.start_date).toLocaleString(),
-          end_date: new Date(config.end_date).toLocaleString()
-        });
-        setVotingConfig(config);
         const now = new Date();
         const startDate = new Date(config.start_date);
         const endDate = new Date(config.end_date);
+        
+        console.log("Dates de vote:", {
+          maintenant: now.toLocaleString(),
+          debut: startDate.toLocaleString(),
+          fin: endDate.toLocaleString(),
+          votesOuverts: now >= startDate && now <= endDate
+        });
+
+        setVotingConfig(config);
         setIsVotingOpen(now >= startDate && now <= endDate);
       }
     } catch (error) {

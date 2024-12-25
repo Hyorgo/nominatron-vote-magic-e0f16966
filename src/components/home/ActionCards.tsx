@@ -43,6 +43,14 @@ export const ActionCards = () => {
         const startDate = new Date(config.start_date);
         const endDate = new Date(config.end_date);
         
+        console.log("État des votes (ActionCards):", {
+          maintenant: now.toLocaleString(),
+          debut: startDate.toLocaleString(),
+          fin: endDate.toLocaleString(),
+          votesOuverts: now >= startDate && now <= endDate,
+          votesNonCommences: now < startDate
+        });
+        
         setIsVotingOpen(now >= startDate && now <= endDate);
         setVotingNotStarted(now < startDate);
       }
