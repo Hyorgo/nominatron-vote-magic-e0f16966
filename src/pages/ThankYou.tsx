@@ -16,15 +16,15 @@ const ThankYou = () => {
           />
         </div>
         {/* Sparkles */}
-        <div className="absolute inset-0 -m-4">
+        <div className="absolute inset-0 -m-2">
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
               className={`absolute w-2 h-2 bg-[#D946EF] rounded-full
                 animate-[ping_1.5s_ease-in-out_infinite]`}
               style={{
-                top: `${Math.sin((i / 6) * Math.PI * 2) * 100 + 50}%`,
-                left: `${Math.cos((i / 6) * Math.PI * 2) * 100 + 50}%`,
+                top: `${Math.sin((i / 6) * Math.PI * 2) * 50 + 50}%`,
+                left: `${Math.cos((i / 6) * Math.PI * 2) * 50 + 50}%`,
                 animationDelay: `${i * 0.2}s`,
                 opacity: 0.6
               }}
