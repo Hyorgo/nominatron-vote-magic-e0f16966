@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, LayoutDashboard } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { DraggableHomeContent } from "./DraggableHomeContent";
-import { HomeContent } from "@/types/home";
+import { HomeContent } from "./types";
+import { useHomeContent } from "./useHomeContent";
 
 export const HomeContentManager = ({
   homeContent,
@@ -14,148 +14,17 @@ export const HomeContentManager = ({
   homeContent: HomeContent[];
   onUpdate: () => void;
 }) => {
-  const { toast } = useToast();
-
-  const handleAdd = async () => {
-    // Calculate the highest current display_order
-    const maxOrder = homeContent.length > 0 
-      ? Math.max(...homeContent.map(content => content.display_order))
-      : -1;
-    
-    const { error } = await supabase
-      .from('home_content')
-      .insert({
-        section_name: 'Nouvelle section',
-        title: 'Nouveau titre',
-        subtitle: 'Nouveau sous-titre',
-        content: 'Nouveau contenu',
-        display_order: maxOrder + 1,
-        is_active: true
-      });
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter la section",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Section ajoutée avec succès"
-    });
-    
-    onUpdate();
-  };
-
-  const handleEdit = async (content: HomeContent) => {
-    const { error } = await supabase
-      .from('home_content')
-      .update({
-        section_name: content.section_name,
-        title: content.title,
-        subtitle: content.subtitle,
-        content: content.content,
-        display_order: content.display_order,
-        is_active: content.is_active
-      })
-      .eq('id', content.id);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder les modifications",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Modifications sauvegardées avec succès"
-    });
-
-    onUpdate();
-  };
-
-  const handleToggle = async (id: string, currentState: boolean) => {
-    const { error } = await supabase
-      .from('home_content')
-      .update({ is_active: !currentState })
-      .eq('id', id);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de modifier le statut",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    onUpdate();
-  };
-
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase
-      .from('home_content')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de supprimer la section",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Section supprimée avec succès"
-    });
-    
-    onUpdate();
-  };
-
-  const handleDragEnd = async (result: any) => {
-    if (!result.destination) return;
-
-    const items = Array.from(homeContent);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    // Update display_order for all affected items
-    const updates = items.map((item, index) => ({
-      id: item.id,
-      section_name: item.section_name,
-      display_order: index,
-      is_active: item.is_active
-    }));
-
-    const { error } = await supabase
-      .from('home_content')
-      .upsert(updates);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour l'ordre des sections",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Succès",
-      description: "Ordre des sections mis à jour"
-    });
-
-    onUpdate();
-  };
+  const {
+    isEditing,
+    editForm,
+    setEditForm,
+    handleAdd,
+    handleEdit,
+    handleSave,
+    handleToggle,
+    handleDelete,
+    handleDragEnd
+  } = useHomeContent(onUpdate);
 
   return (
     <Card>
@@ -181,6 +50,52 @@ export const HomeContentManager = ({
           onDelete={handleDelete}
           onToggle={handleToggle}
         />
+
+        {isEditing && (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">
+            <div className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold">Modifier la section</h2>
+                <div>
+                  <label className="text-sm font-medium">Nom de la section</label>
+                  <Input
+                    value={editForm.section_name || ''}
+                    onChange={(e) => setEditForm({ ...editForm, section_name: e.target.value })}
+                    placeholder="Nom de la section"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Titre</label>
+                  <Input
+                    value={editForm.title || ''}
+                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                    placeholder="Titre"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Sous-titre</label>
+                  <Input
+                    value={editForm.subtitle || ''}
+                    onChange={(e) => setEditForm({ ...editForm, subtitle: e.target.value })}
+                    placeholder="Sous-titre"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Contenu</label>
+                  <Textarea
+                    value={editForm.content || ''}
+                    onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
+                    placeholder="Contenu"
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setEditForm({})}>Annuler</Button>
+                  <Button onClick={handleSave}>Sauvegarder</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
