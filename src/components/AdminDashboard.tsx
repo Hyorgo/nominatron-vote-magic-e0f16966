@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollingTextManager } from "./admin/ScrollingTextManager";
 import { BackgroundManager } from "./admin/BackgroundManager";
 import { HomeContentManager } from "./admin/HomeContentManager";
+import { LogoManager } from "./admin/LogoManager";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const AdminDashboard = () => {
   const [scrollingTexts, setScrollingTexts] = useState<any[]>([]);
   const [backgrounds, setBackgrounds] = useState<any[]>([]);
   const [homeContent, setHomeContent] = useState<any[]>([]);
+  const [headerLogo, setHeaderLogo] = useState("");
 
   useEffect(() => {
     checkAdmin();
@@ -68,6 +70,16 @@ export const AdminDashboard = () => {
     if (contentData) {
       setHomeContent(contentData);
     }
+
+    const { data: logoData } = await supabase
+      .from('site_settings')
+      .select('setting_value')
+      .eq('setting_name', 'header_logo')
+      .single();
+    
+    if (logoData) {
+      setHeaderLogo(logoData.setting_value);
+    }
   };
 
   const handleLogout = async () => {
@@ -91,6 +103,7 @@ export const AdminDashboard = () => {
       <Tabs defaultValue="home" className="space-y-4">
         <TabsList>
           <TabsTrigger value="home">Page d'accueil</TabsTrigger>
+          <TabsTrigger value="settings">Paramètres</TabsTrigger>
         </TabsList>
 
         <TabsContent value="home" className="space-y-4">
@@ -104,6 +117,13 @@ export const AdminDashboard = () => {
           />
           <BackgroundManager 
             backgrounds={backgrounds}
+            onUpdate={loadHomePageData}
+          />
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-4">
+          <LogoManager
+            currentLogo={headerLogo}
             onUpdate={loadHomePageData}
           />
         </TabsContent>

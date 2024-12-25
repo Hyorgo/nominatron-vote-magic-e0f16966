@@ -1,8 +1,27 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navigation = () => {
   const location = useLocation();
+  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png");
+
+  useEffect(() => {
+    loadLogo();
+  }, []);
+
+  const loadLogo = async () => {
+    const { data } = await supabase
+      .from('site_settings')
+      .select('setting_value')
+      .eq('setting_name', 'header_logo')
+      .single();
+    
+    if (data) {
+      setLogoUrl(data.setting_value);
+    }
+  };
 
   const links = [
     { href: "/", label: "Accueil" },
@@ -16,7 +35,7 @@ export const Navigation = () => {
       <div className="container flex h-16 items-center">
         <Link to="/" className="mr-6">
           <img 
-            src="/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png" 
+            src={logoUrl}
             alt="Sortir Lyon x Sixtynine Event" 
             className="h-12"
           />
