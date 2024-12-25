@@ -49,11 +49,16 @@ export const useVotingStatus = () => {
             end: endTs
           }
         });
+
+        // Mise à jour de la logique pour déterminer l'état des votes
+        const isVotingOpen = nowTs >= startTs && nowTs <= endTs;
+        const votingNotStarted = nowTs < startTs;
+        const votingEnded = nowTs > endTs;
         
         setStatus({
-          isVotingOpen: nowTs >= startTs && nowTs <= endTs,
-          votingNotStarted: nowTs < startTs,
-          votingEnded: nowTs > endTs
+          isVotingOpen,
+          votingNotStarted,
+          votingEnded
         });
       }
     } catch (error) {
