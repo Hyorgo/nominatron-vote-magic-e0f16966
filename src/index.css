@@ -35,23 +35,26 @@
     --radius: 0.5rem;
   }
 
-  /* Animation des confettis */
+  /* Animation des confettis en forme de cœur */
   .confetti {
     position: fixed;
-    width: 10px;
-    height: 10px;
     pointer-events: none;
     animation: confetti-fall 5s linear forwards;
     z-index: 1000;
+    user-select: none;
   }
 
   @keyframes confetti-fall {
     0% {
-      transform: translateY(-100vh) rotate(0deg);
+      transform: translateY(-100vh) rotate(0deg) scale(1);
       opacity: 1;
     }
+    50% {
+      transform: translateY(50vh) rotate(360deg) scale(1.2);
+      opacity: 0.8;
+    }
     100% {
-      transform: translateY(100vh) rotate(720deg);
+      transform: translateY(100vh) rotate(720deg) scale(1);
       opacity: 0;
     }
   }

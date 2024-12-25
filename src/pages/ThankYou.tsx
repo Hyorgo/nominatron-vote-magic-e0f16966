@@ -8,7 +8,7 @@ const ThankYou = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Créer et ajouter les confettis
+    // Créer et ajouter les confettis en forme de cœur
     const createConfetti = () => {
       const confetti = document.createElement("div");
       confetti.className = "confetti";
@@ -18,7 +18,15 @@ const ThankYou = () => {
       
       // Couleurs aléatoires festives
       const colors = ["#FFD700", "#FF69B4", "#00CED1", "#FF6347", "#98FB98", "#DDA0DD"];
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      // Créer le cœur avec un emoji
+      confetti.innerHTML = "❤";
+      confetti.style.color = color;
+      
+      // Taille aléatoire pour plus de variété
+      const size = Math.random() * 20 + 10; // entre 10px et 30px
+      confetti.style.fontSize = `${size}px`;
       
       // Rotation et délai aléatoires
       confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
