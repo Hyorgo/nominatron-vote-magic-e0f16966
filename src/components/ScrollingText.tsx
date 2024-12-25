@@ -24,7 +24,7 @@ export const ScrollingText = () => {
   const content = texts.join(' • ');
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 backdrop-blur-md bg-white/5 border-t border-b border-white/10 z-50">
+    <footer className="fixed bottom-0 left-0 right-0 w-full backdrop-blur-md bg-white/5 border-t border-white/10 z-[100]">
       <div className="relative flex overflow-hidden py-4">
         <div className="animate-[scroll_30s_linear_infinite] whitespace-nowrap flex items-center">
           <span className="mx-48 text-primary/90">{content}</span>
@@ -35,6 +35,6 @@ export const ScrollingText = () => {
           <span className="mx-48 text-primary/90">{content}</span>
         </div>
       </div>
-    </div>
+    </footer>
   );
 };
