@@ -13,8 +13,8 @@ const Index = () => {
             alt="Lyon d'Or" 
             className="mx-auto w-[400px] mb-8 animate-fade-in"
           />
-          <h1 className="text-5xl font-bold text-primary animate-fade-in">
-            Cérémonie des Awards
+          <h1 className="text-8xl font-bold text-primary animate-fade-in">
+            2025
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
             Participez à la plus prestigieuse cérémonie de récompenses et votez pour
