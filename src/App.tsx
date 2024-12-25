@@ -14,7 +14,6 @@ const App = () => {
     <Router>
       <div className="flex min-h-screen flex-col">
         <Navigation />
-        <ScrollingText />
         <main className="flex-1 container mx-auto px-4">
           <Routes>
             <Route path="/" element={<Index />} />
@@ -25,6 +24,7 @@ const App = () => {
             <Route path="/admin/*" element={<AdminDashboard />} />
           </Routes>
         </main>
+        <ScrollingText />
         <Footer />
       </div>
     </Router>
