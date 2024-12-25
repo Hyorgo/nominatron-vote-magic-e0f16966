@@ -23,14 +23,14 @@ export const useHomeContent = (onUpdate: () => void) => {
 
     const { error } = await supabase
       .from('home_content')
-      .insert({
+      .insert([{
         section_name: 'Nouvelle section',
         title: 'Nouveau titre',
         subtitle: 'Nouveau sous-titre',
         content: 'Nouveau contenu',
         display_order: maxOrder + 1,
         is_active: true
-      });
+      }]);
 
     if (error) {
       toast({
