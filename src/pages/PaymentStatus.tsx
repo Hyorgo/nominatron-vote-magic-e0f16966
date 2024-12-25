@@ -18,6 +18,9 @@ const PaymentStatus = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      // Déclencher le téléchargement automatique
+      handleDownloadTicket();
+
       let confettiInterval: NodeJS.Timeout;
       const confettiTimeout = setTimeout(() => {
         // Nettoyer tous les confettis après 10 secondes
@@ -144,10 +147,10 @@ const PaymentStatus = () => {
               <p className="text-lg">
                 <span className="block mb-2 text-primary text-2xl">🎉 Merci pour votre confiance ! 🎉</span>
                 <span className="golden-reflection block mb-2">
-                  Vous pouvez télécharger votre billet ci-dessous
+                  Le téléchargement de votre billet devrait démarrer automatiquement
                 </span>
                 <span className="text-muted-foreground">
-                  Conservez-le précieusement, il vous sera demandé à l'entrée.
+                  Si ce n'est pas le cas, vous pouvez le télécharger en cliquant sur le bouton ci-dessous.
                 </span>
               </p>
             </div>
