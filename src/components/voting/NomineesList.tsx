@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Vote, Star } from "lucide-react";
 import { Nominee } from "@/types/nominees";
+import { SocialShare } from "./SocialShare";
 
 interface NomineesListProps {
   nominees: Nominee[];
@@ -17,7 +18,7 @@ export const NomineesList = ({ nominees, categoryId, selectedNomineeId, onVote }
         .map((nominee) => (
           <div
             key={nominee.id}
-            className="nominee-card group hover:scale-105 transition-all duration-300"
+            className="nominee-card group hover:scale-105 transition-all duration-300 bg-card rounded-lg border p-4"
           >
             {nominee.image_url && (
               <div className="relative h-36 sm:h-48 mb-4 overflow-hidden rounded-md">
@@ -39,14 +40,28 @@ export const NomineesList = ({ nominees, categoryId, selectedNomineeId, onVote }
             <p className="text-sm sm:text-base text-muted-foreground mb-4 line-clamp-2">
               {nominee.description}
             </p>
-            <Button 
-              onClick={() => onVote(nominee.id, categoryId)}
-              variant={selectedNomineeId === nominee.id ? "secondary" : "default"}
-              className="w-full text-sm sm:text-base"
-            >
-              <Vote className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              {selectedNomineeId === nominee.id ? "Sélectionné" : "Voter"}
-            </Button>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => onVote(nominee.id, categoryId)}
+                variant={selectedNomineeId === nominee.id ? "secondary" : "default"}
+                className="w-full text-sm sm:text-base"
+              >
+                <Vote className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                {selectedNomineeId === nominee.id ? "Sélectionné" : "Voter"}
+              </Button>
+
+              {selectedNomineeId === nominee.id && (
+                <div className="pt-2 border-t">
+                  <div className="text-sm text-muted-foreground mb-2">
+                    Partagez votre vote !
+                  </div>
+                  <SocialShare 
+                    nomineeId={nominee.id}
+                    nomineeName={nominee.name}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         ))}
     </div>
