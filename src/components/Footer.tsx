@@ -13,7 +13,7 @@ const Footer = () => {
   return (
     <footer className="w-full py-4 px-4 mt-auto border-t border-gold/10 bg-background/30 backdrop-blur-md supports-[backdrop-filter]:bg-background/30">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo section */}
           <div className="flex justify-start items-center">
             <img 
@@ -21,6 +21,16 @@ const Footer = () => {
               alt="ideAI Logo" 
               className="h-20 w-20 object-contain"
             />
+          </div>
+
+          {/* Message impactant */}
+          <div className="flex flex-col justify-center">
+            <h3 className="text-xl font-bold text-white mb-2">
+              Dirigeants, propulsez votre entreprise
+            </h3>
+            <p className="text-white/90">
+              Transformez votre présence digitale en machine à croissance avec notre expertise en IA et marketing digital.
+            </p>
           </div>
 
           {/* Contact section */}
