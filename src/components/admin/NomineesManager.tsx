@@ -6,6 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -17,6 +23,7 @@ import { Loader2, Plus, Trash } from "lucide-react";
 interface Category {
   id: string;
   name: string;
+  nominees: Nominee[];
 }
 
 interface Nominee {
@@ -28,7 +35,6 @@ interface Nominee {
 }
 
 export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
-  const [nominees, setNominees] = useState<Nominee[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -52,8 +58,15 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
       if (categoriesResponse.error) throw categoriesResponse.error;
       if (nomineesResponse.error) throw nomineesResponse.error;
 
-      setCategories(categoriesResponse.data || []);
-      setNominees(nomineesResponse.data || []);
+      // Organiser les nominés par catégorie
+      const categoriesWithNominees = categoriesResponse.data.map((category) => ({
+        ...category,
+        nominees: nomineesResponse.data.filter(
+          (nominee) => nominee.category_id === category.id
+        ),
+      }));
+
+      setCategories(categoriesWithNominees);
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error);
       toast({
@@ -169,29 +182,44 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
         </Button>
       </div>
 
-      <div className="space-y-4">
-        {nominees.map((nominee) => {
-          const category = categories.find(c => c.id === nominee.category_id);
-          return (
-            <div
-              key={nominee.id}
-              className="flex items-center justify-between p-3 bg-background rounded-lg"
-            >
-              <div>
-                <h4 className="font-medium">{nominee.name}</h4>
-                <p className="text-sm text-muted-foreground">{category?.name}</p>
+      <Accordion type="single" collapsible className="space-y-4">
+        {categories.map((category) => (
+          <AccordionItem key={category.id} value={category.id}>
+            <AccordionTrigger className="text-lg font-medium">
+              {category.name} ({category.nominees.length} nominés)
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4 mt-2">
+                {category.nominees.map((nominee) => (
+                  <div
+                    key={nominee.id}
+                    className="flex items-center justify-between p-3 bg-background rounded-lg"
+                  >
+                    <div>
+                      <h4 className="font-medium">{nominee.name}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {nominee.description}
+                      </p>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => deleteNominee(nominee.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                {category.nominees.length === 0 && (
+                  <p className="text-muted-foreground text-sm">
+                    Aucun nominé dans cette catégorie
+                  </p>
+                )}
               </div>
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => deleteNominee(nominee.id)}
-              >
-                <Trash className="h-4 w-4" />
-              </Button>
-            </div>
-          );
-        })}
-      </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </Card>
   );
 };
