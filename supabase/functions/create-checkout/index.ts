@@ -19,23 +19,25 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     })
 
-    console.log('Creating payment session with price ID: price_1QZGfwAU4Uv1i5TAJHGKvvKx')
-    const sessionConfig = {
+    console.log('Creating payment session...')
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
       line_items: [
         {
-          price: 'price_1QZGfwAU4Uv1i5TAJHGKvvKx',
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: 'Billet pour l\'événement',
+              description: `Réservation pour ${numberOfTickets} personne${numberOfTickets > 1 ? 's' : ''}`,
+            },
+            unit_amount: 19200, // 192€ TTC par billet
+          },
           quantity: numberOfTickets,
         },
       ],
       mode: 'payment',
       success_url: `${req.headers.get('origin')}/thank-you`,
       cancel_url: `${req.headers.get('origin')}/reserver`,
-      metadata: {
-        firstName,
-        lastName,
-        email,
-        numberOfTickets,
-      },
       customer_email: email,
       locale: 'fr',
       allow_promotion_codes: true,
@@ -43,10 +45,14 @@ serve(async (req) => {
       phone_number_collection: {
         enabled: true,
       },
-    }
+      metadata: {
+        firstName,
+        lastName,
+        email,
+        numberOfTickets,
+      },
+    })
     
-    console.log('Session configuration:', sessionConfig)
-    const session = await stripe.checkout.sessions.create(sessionConfig)
     console.log('Payment session created successfully:', session.id)
 
     return new Response(
