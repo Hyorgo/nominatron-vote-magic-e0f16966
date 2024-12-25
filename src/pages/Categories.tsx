@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Star } from "lucide-react";
+import { Loader2, Vote } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Category {
   id: string;
@@ -55,12 +56,16 @@ const Categories = () => {
 
       if (error) throw error;
 
-      // Extraire les IDs uniques des nominés votés
       const selectedIds = [...new Set(votesData.map(vote => vote.nominee_id))];
       setSelectedNominees(selectedIds);
     } catch (error) {
       console.error("Erreur lors du chargement des votes:", error);
     }
+  };
+
+  const handleVote = async (nomineeId: string) => {
+    // La logique de vote sera implémentée plus tard
+    console.log("Vote pour le nominé:", nomineeId);
   };
 
   if (loading) {
@@ -71,7 +76,6 @@ const Categories = () => {
     );
   }
 
-  // Diviser les catégories en deux groupes
   const midPoint = Math.ceil(categories.length / 2);
   const firstRow = categories.slice(0, midPoint);
   const secondRow = categories.slice(midPoint);
@@ -84,7 +88,6 @@ const Categories = () => {
 
       <Tabs defaultValue={categories[0]?.id} className="w-full">
         <div className="space-y-2 mb-8">
-          {/* Première ligne de catégories */}
           <TabsList className="w-full justify-start bg-background/50 backdrop-blur-sm">
             {firstRow.map((category) => (
               <TabsTrigger
@@ -97,7 +100,6 @@ const Categories = () => {
             ))}
           </TabsList>
           
-          {/* Deuxième ligne de catégories */}
           <TabsList className="w-full justify-start bg-background/50 backdrop-blur-sm">
             {secondRow.map((category) => (
               <TabsTrigger
@@ -138,9 +140,17 @@ const Categories = () => {
                         <Star className="h-5 w-5 text-gold fill-gold animate-scale-in" />
                       )}
                     </div>
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground mb-4">
                       {nominee.description}
                     </p>
+                    <Button 
+                      onClick={() => handleVote(nominee.id)}
+                      variant={selectedNominees.includes(nominee.id) ? "secondary" : "default"}
+                      className="w-full"
+                    >
+                      <Vote className="mr-2 h-4 w-4" />
+                      {selectedNominees.includes(nominee.id) ? "Sélectionné" : "Voter"}
+                    </Button>
                   </div>
                 ))}
             </div>
