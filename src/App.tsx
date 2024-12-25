@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
+import { ScrollingText } from "@/components/ScrollingText";
 import Footer from "@/components/Footer";
 import Index from "@/pages/Index";
 import Contact from "@/pages/Contact";
@@ -15,6 +16,7 @@ function App() {
     <Router>
       <div className="min-h-screen flex flex-col">
         <Navigation />
+        <ScrollingText />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Index />} />
