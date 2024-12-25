@@ -10,7 +10,7 @@ const Index = () => {
       <div className="gold-halo" />
       <div className="container py-6 space-y-16">
         <HomeHero />
-        <div className="mt-32">
+        <div className="mt-48">
           <ActionCards />
         </div>
       </div>
