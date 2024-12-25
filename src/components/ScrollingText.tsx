@@ -35,20 +35,20 @@ export const ScrollingText = () => {
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="flex overflow-hidden whitespace-nowrap">
+      <div className="relative flex overflow-hidden whitespace-nowrap">
         <div className="animate-[scroll_30s_linear_infinite] flex items-center">
           {scrollingTexts.map((text, index) => (
-            <span key={text.id} className="mx-12 text-gold/90 text-lg">
+            <span key={text.id} className="mx-16 text-gold/90 text-lg">
               {text.content}
-              <span className="mx-4 text-gold/30">•</span>
+              <span className="mx-6 text-gold/30">•</span>
             </span>
           ))}
         </div>
-        <div className="animate-[scroll_30s_linear_infinite] flex items-center">
+        <div className="animate-[scroll_30s_linear_infinite] flex items-center absolute left-[100%] top-0">
           {scrollingTexts.map((text, index) => (
-            <span key={`${text.id}-duplicate`} className="mx-12 text-gold/90 text-lg">
+            <span key={`${text.id}-duplicate`} className="mx-16 text-gold/90 text-lg">
               {text.content}
-              <span className="mx-4 text-gold/30">•</span>
+              <span className="mx-6 text-gold/30">•</span>
             </span>
           ))}
         </div>
