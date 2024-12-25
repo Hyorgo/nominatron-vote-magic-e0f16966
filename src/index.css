@@ -87,7 +87,7 @@
   pointer-events: none;
 }
 
-/* Effet de reflet doré */
+/* Effet de dégradé doré */
 .golden-reflection {
   background: linear-gradient(
     to bottom,
