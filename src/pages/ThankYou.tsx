@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
-import { Home } from "lucide-react";
+import { Heart, Home, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
 import { useEffect } from "react";
 
 const ThankYou = () => {
@@ -60,6 +59,38 @@ const ThankYou = () => {
     };
   }, []);
 
+  const shareMessage = "Je viens de voter pour mes établissements préférés ! Venez voter vous aussi et soutenez vos favoris ! 🏆";
+  const shareUrl = window.location.origin;
+
+  const handleShare = (platform: string) => {
+    let shareUrl = "";
+    
+    switch (platform) {
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}&quote=${encodeURIComponent(shareMessage)}`;
+        break;
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}&url=${encodeURIComponent(window.location.origin)}`;
+        break;
+      case "linkedin":
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin)}&summary=${encodeURIComponent(shareMessage)}`;
+        break;
+      default:
+        if (navigator.share) {
+          navigator.share({
+            title: "Votez pour vos établissements préférés",
+            text: shareMessage,
+            url: window.location.origin,
+          });
+          return;
+        }
+    }
+
+    if (shareUrl) {
+      window.open(shareUrl, "_blank", "width=600,height=400");
+    }
+  };
+
   return (
     <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in">
       <div className="animate-[bounce_2s_ease-in-out_infinite]">
@@ -74,6 +105,50 @@ const ThankYou = () => {
       <p className="mb-8 text-xl text-muted-foreground">
         Vos votes ont été enregistrés avec succès.
       </p>
+
+      <div className="mb-12 max-w-2xl">
+        <p className="mb-6 text-lg text-muted-foreground">
+          Aidez vos établissements favoris à gagner en partageant et en invitant vos amis à voter ! 🌟
+        </p>
+        
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button
+            variant="outline"
+            className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white border-none"
+            onClick={() => handleShare("facebook")}
+          >
+            <Facebook className="mr-2" />
+            Facebook
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white border-none"
+            onClick={() => handleShare("twitter")}
+          >
+            <Twitter className="mr-2" />
+            Twitter
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="bg-[#0A66C2] hover:bg-[#0A66C2]/90 text-white border-none"
+            onClick={() => handleShare("linkedin")}
+          >
+            <Linkedin className="mr-2" />
+            LinkedIn
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={() => handleShare("native")}
+          >
+            <Share2 className="mr-2" />
+            Partager
+          </Button>
+        </div>
+      </div>
+
       <Button 
         onClick={() => navigate("/")}
         variant="outline"
