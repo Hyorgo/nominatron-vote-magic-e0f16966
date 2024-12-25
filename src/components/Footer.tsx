@@ -24,8 +24,8 @@ const Footer = () => {
           </div>
 
           {/* Contact section */}
-          <div className="flex flex-col items-center justify-center text-gold/90 space-y-2">
-            <h3 className="text-gold mb-2 font-semibold">Nos coordonnées</h3>
+          <div className="flex flex-col items-center justify-start text-gold/90 space-y-2">
+            <h3 className="text-gold font-semibold self-center mb-4">Nos coordonnées</h3>
             <a 
               href="https://www.ideai.fr" 
               target="_blank" 
@@ -44,7 +44,7 @@ const Footer = () => {
 
           {/* Services section */}
           <div className="flex flex-col items-end">
-            <h3 className="text-gold mb-2 font-semibold">Nos services</h3>
+            <h3 className="text-gold font-semibold mb-4">Nos services</h3>
             <ul className="text-right text-gold/90">
               {services.map((service, index) => (
                 <li key={index} className="mb-1">{service}</li>
