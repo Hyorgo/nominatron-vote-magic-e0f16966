@@ -38,3 +38,56 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Animations pour la page de vote */
+.nominee-card {
+  @apply relative p-6 rounded-lg border border-border bg-card text-card-foreground shadow-sm;
+  transition: all 0.3s ease;
+}
+
+.nominee-card.selected {
+  @apply ring-2 ring-primary ring-offset-2;
+  transform: translateY(-2px);
+}
+
+.nominee-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.category-nav {
+  @apply flex items-center justify-between p-4 rounded-lg bg-background/50 backdrop-blur-sm;
+  border: 1px solid var(--border);
+}
+
+/* Animation pour les transitions de catégories */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation pour la sélection des nominés */
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

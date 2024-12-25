@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { VotingRegistrationForm } from "./voting/VotingRegistrationForm";
 import { Category, Nominee } from "@/types/nominees";
+import { useToast } from "@/hooks/use-toast";
 
 export const VotingInterface = () => {
   const [currentCategory, setCurrentCategory] = useState(0);
@@ -21,6 +22,7 @@ export const VotingInterface = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchData();
@@ -51,6 +53,18 @@ export const VotingInterface = () => {
     }
   };
 
+  const handleVote = async (categoryId: string, nomineeId: string) => {
+    await handleNomineeSelect(categoryId, nomineeId);
+    toast({
+      title: "Vote enregistré !",
+      description: "Votre choix a été sauvegardé avec succès.",
+    });
+  };
+
+  const getVotedCategoriesCount = () => {
+    return Object.keys(selectedNominees).length;
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -70,7 +84,7 @@ export const VotingInterface = () => {
   }
 
   return (
-    <div className="container py-8 animate-fade-in">
+    <div className="container max-w-7xl py-8 animate-fade-in">
       <div className="text-center mb-8">
         {isVotingOpen ? (
           <>
@@ -111,17 +125,18 @@ export const VotingInterface = () => {
             categoryName={category.name}
             currentIndex={currentCategory}
             totalCategories={categories.length}
+            votedCategories={getVotedCategoriesCount()}
             onPrevious={() => setCurrentCategory((prev) => Math.max(0, prev - 1))}
             onNext={() => setCurrentCategory((prev) => Math.min(categories.length - 1, prev + 1))}
           />
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {category.nominees.map((nominee) => (
               <NomineeCard
                 key={nominee.id}
                 nominee={nominee}
                 isSelected={selectedNominees[category.id] === nominee.id}
-                onClick={() => handleNomineeSelect(category.id, nominee.id)}
+                onClick={() => handleVote(category.id, nominee.id)}
               />
             ))}
           </div>

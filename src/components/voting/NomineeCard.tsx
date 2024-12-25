@@ -1,5 +1,13 @@
 import { Check, Vote } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface NomineeCardProps {
   nominee: {
@@ -13,26 +21,35 @@ interface NomineeCardProps {
 
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   return (
-    <div
-      className={`nominee-card animate-scale-in ${
-        isSelected ? "selected" : ""
-      }`}
+    <Card 
+      className={cn(
+        "relative overflow-hidden transition-all duration-300 hover:scale-105",
+        isSelected && "ring-2 ring-primary ring-offset-2"
+      )}
     >
       {isSelected && (
-        <div className="absolute top-4 right-4">
-          <Check className="h-5 w-5 text-primary" />
+        <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-1">
+          <Check className="h-4 w-4" />
         </div>
       )}
-      <h3 className="text-lg font-bold mb-2">{nominee.name}</h3>
-      <p className="text-muted-foreground mb-4">{nominee.description}</p>
-      <Button 
-        onClick={onClick}
-        variant={isSelected ? "secondary" : "default"}
-        className="w-full"
-      >
-        <Vote className="mr-2 h-4 w-4" />
-        {isSelected ? "Sélectionné" : "Voter"}
-      </Button>
-    </div>
+      
+      <CardHeader>
+        <CardTitle className="text-lg">{nominee.name}</CardTitle>
+        <CardDescription className="line-clamp-2">
+          {nominee.description}
+        </CardDescription>
+      </CardHeader>
+      
+      <CardContent>
+        <Button 
+          onClick={onClick}
+          variant={isSelected ? "secondary" : "default"}
+          className="w-full transition-all duration-300"
+        >
+          <Vote className="mr-2 h-4 w-4" />
+          {isSelected ? "Sélectionné" : "Voter"}
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
