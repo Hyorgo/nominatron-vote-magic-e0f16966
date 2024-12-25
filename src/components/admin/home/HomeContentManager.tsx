@@ -58,7 +58,8 @@ export const HomeContentManager = ({
         title: content.title,
         subtitle: content.subtitle,
         content: content.content,
-        display_order: content.display_order
+        display_order: content.display_order,
+        is_active: content.is_active
       })
       .eq('id', content.id);
 
@@ -127,10 +128,12 @@ export const HomeContentManager = ({
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
+    // Update display_order for all affected items
     const updates = items.map((item, index) => ({
       id: item.id,
       section_name: item.section_name,
-      display_order: index
+      display_order: index,
+      is_active: item.is_active
     }));
 
     const { error } = await supabase
