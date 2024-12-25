@@ -1,39 +1,56 @@
-import { useState } from "react";
-import { AdminDashboard } from "@/components/AdminDashboard";
-import { VotingInterface } from "@/components/VotingInterface";
 import { Button } from "@/components/ui/button";
-import { UserCog, Vote } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Trophy, Calendar, Mail } from "lucide-react";
 
 const Index = () => {
-  const [view, setView] = useState<"admin" | "voting">("voting");
-
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="container flex items-center justify-between h-16">
-          <h1 className="text-xl font-bold">Système de Vote</h1>
-          <Button
-            variant="ghost"
-            onClick={() => setView(view === "admin" ? "voting" : "admin")}
-          >
-            {view === "admin" ? (
-              <>
-                <Vote className="h-4 w-4 mr-2" />
-                Mode Vote
-              </>
-            ) : (
-              <>
-                <UserCog className="h-4 w-4 mr-2" />
-                Mode Admin
-              </>
-            )}
-          </Button>
+      <div className="container py-16 space-y-16">
+        <div className="text-center space-y-4">
+          <h1 className="text-5xl font-bold text-primary animate-fade-in">
+            Cérémonie des Awards
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in">
+            Participez à la plus prestigieuse cérémonie de récompenses et votez pour
+            vos nominés favoris dans chaque catégorie.
+          </p>
         </div>
-      </header>
 
-      <main>
-        {view === "admin" ? <AdminDashboard /> : <VotingInterface />}
-      </main>
+        <div className="grid gap-8 md:grid-cols-3 animate-fade-in">
+          <div className="bg-card rounded-lg p-6 text-center space-y-4">
+            <Trophy className="w-12 h-12 mx-auto text-primary" />
+            <h2 className="text-xl font-semibold">Votez</h2>
+            <p className="text-muted-foreground">
+              Découvrez les nominés et votez pour vos favoris dans chaque catégorie.
+            </p>
+            <Button asChild>
+              <Link to="/categories">Voir les catégories</Link>
+            </Button>
+          </div>
+
+          <div className="bg-card rounded-lg p-6 text-center space-y-4">
+            <Calendar className="w-12 h-12 mx-auto text-primary" />
+            <h2 className="text-xl font-semibold">Réservez</h2>
+            <p className="text-muted-foreground">
+              Assistez à la cérémonie en réservant vos places dès maintenant.
+            </p>
+            <Button asChild>
+              <Link to="/reserver">Réserver sa place</Link>
+            </Button>
+          </div>
+
+          <div className="bg-card rounded-lg p-6 text-center space-y-4">
+            <Mail className="w-12 h-12 mx-auto text-primary" />
+            <h2 className="text-xl font-semibold">Contact</h2>
+            <p className="text-muted-foreground">
+              Une question ? Contactez-nous pour plus d'informations.
+            </p>
+            <Button asChild>
+              <Link to="/contact">Nous contacter</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
