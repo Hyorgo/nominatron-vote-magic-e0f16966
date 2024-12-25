@@ -3,6 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import Index from "@/pages/Index";
 import Categories from "@/pages/Categories";
 import ThankYou from "@/pages/ThankYou";
+import Reserver from "@/pages/Reserver";
 import { ScrollingText } from "@/components/ScrollingText";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/reserver" element={<Reserver />} />
       </Routes>
       <ScrollingText />
     </Router>
