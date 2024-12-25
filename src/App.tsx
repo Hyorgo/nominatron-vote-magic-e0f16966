@@ -4,6 +4,7 @@ import Index from "@/pages/Index";
 import Categories from "@/pages/Categories";
 import ThankYou from "@/pages/ThankYou";
 import Reserver from "@/pages/Reserver";
+import { ScrollingText } from "@/components/ScrollingText";
 
 function App() {
   return (
@@ -14,10 +15,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/categories" element={<Categories />} />
-            <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/merci" element={<ThankYou />} />
             <Route path="/reserver" element={<Reserver />} />
           </Routes>
         </main>
+        <ScrollingText />
       </div>
     </Router>
   );
