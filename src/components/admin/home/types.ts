@@ -13,4 +13,6 @@ export interface HomeContentFormData {
   title: string | null;
   subtitle: string | null;
   content: string | null;
+  display_order?: number;
+  is_active?: boolean;
 }

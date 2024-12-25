@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { HomeContent, HomeContentFormData } from "./types";
 import { useToast } from "@/hooks/use-toast";
+import { DragEndEvent } from "@hello-pangea/dnd";
 
 export const useHomeContent = (onUpdate: () => void) => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -128,10 +129,10 @@ export const useHomeContent = (onUpdate: () => void) => {
     onUpdate();
   };
 
-  const handleDragEnd = async (result: any) => {
+  const handleDragEnd = async (result: DragEndEvent) => {
     if (!result.destination) return;
 
-    const items = Array.from(result.items);
+    const items = Array.from(result.source.droppableId === 'home-content' ? result.source.index : []) as HomeContent[];
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
