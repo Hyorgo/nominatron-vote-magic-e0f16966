@@ -3,10 +3,11 @@ import { Loader2 } from "lucide-react";
 import { TopNominee } from "./components/TopNominee";
 import { VotesChart } from "./components/VotesChart";
 import { VotesTable } from "./components/VotesTable";
+import { VotesSummary } from "./components/VotesSummary";
 import { useVoteStatistics } from "./hooks/useVoteStatistics";
 
 export const VoteStatistics = () => {
-  const { loading, statistics, topNominee } = useVoteStatistics();
+  const { loading, statistics, topNominee, summaryData } = useVoteStatistics();
 
   if (loading) {
     return (
@@ -18,6 +19,13 @@ export const VoteStatistics = () => {
 
   return (
     <div className="space-y-8">
+      <VotesSummary
+        totalVotes={summaryData.totalVotes}
+        participationRate={summaryData.participationRate}
+        votingTrend={summaryData.votingTrend}
+        isLoading={loading}
+      />
+
       {topNominee && (
         <TopNominee
           name={topNominee.name}

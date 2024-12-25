@@ -25,17 +25,51 @@ interface TopNominee {
   category: string;
 }
 
+interface VotesSummaryData {
+  totalVotes: number;
+  participationRate: number;
+  votingTrend: number;
+}
+
 export const useVoteStatistics = () => {
   const [loading, setLoading] = useState(true);
   const [statistics, setStatistics] = useState<CategoryStats[]>([]);
   const [topNominee, setTopNominee] = useState<TopNominee | null>(null);
+  const [summaryData, setSummaryData] = useState<VotesSummaryData>({
+    totalVotes: 0,
+    participationRate: 0,
+    votingTrend: 0,
+  });
 
   useEffect(() => {
     fetchStatistics();
   }, []);
 
+  const calculateVotingTrend = async () => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const { data: todayVotes } = await supabase
+      .from('votes')
+      .select('id', { count: 'exact' })
+      .gte('created_at', new Date().toISOString().split('T')[0]);
+
+    const { data: yesterdayVotes } = await supabase
+      .from('votes')
+      .select('id', { count: 'exact' })
+      .gte('created_at', yesterday.toISOString().split('T')[0])
+      .lt('created_at', new Date().toISOString().split('T')[0]);
+
+    const todayCount = todayVotes?.length || 0;
+    const yesterdayCount = yesterdayVotes?.length || 0;
+
+    if (yesterdayCount === 0) return 0;
+    return ((todayCount - yesterdayCount) / yesterdayCount) * 100;
+  };
+
   const fetchStatistics = async () => {
     try {
+      // Fetch vote statistics
       const { data, error } = await supabase
         .from("vote_statistics")
         .select("*")
@@ -43,9 +77,11 @@ export const useVoteStatistics = () => {
 
       if (error) throw error;
 
+      // Process statistics
       const statsMap = new Map<string, CategoryStats>();
       let maxVotes = 0;
       let topNomineeData = null;
+      let totalVotesCount = 0;
 
       data?.forEach((stat: VoteStatistic) => {
         if (!statsMap.has(stat.category_id)) {
@@ -57,13 +93,15 @@ export const useVoteStatistics = () => {
         }
 
         const categoryStats = statsMap.get(stat.category_id)!;
-        categoryStats.totalVotes += stat.vote_count || 0;
+        const voteCount = stat.vote_count || 0;
+        categoryStats.totalVotes += voteCount;
+        totalVotesCount += voteCount;
 
-        if ((stat.vote_count || 0) > maxVotes) {
-          maxVotes = stat.vote_count || 0;
+        if (voteCount > maxVotes) {
+          maxVotes = voteCount;
           topNomineeData = {
             name: stat.nominee_name || "Inconnu",
-            votes: stat.vote_count || 0,
+            votes: voteCount,
             category: stat.category_name || "Inconnu",
           };
         }
@@ -81,8 +119,22 @@ export const useVoteStatistics = () => {
         });
       });
 
+      // Calculate voting trend
+      const trend = await calculateVotingTrend();
+
+      // Fetch total expected voters (from validated_emails table)
+      const { count: totalExpectedVoters } = await supabase
+        .from('validated_emails')
+        .select('*', { count: 'exact' });
+
+      // Update state
       setStatistics(Array.from(statsMap.values()));
       setTopNominee(topNomineeData);
+      setSummaryData({
+        totalVotes: totalVotesCount,
+        participationRate: totalExpectedVoters ? (totalVotesCount / totalExpectedVoters) * 100 : 0,
+        votingTrend: trend,
+      });
     } catch (error) {
       console.error("Erreur lors du chargement des statistiques:", error);
     } finally {
@@ -94,5 +146,6 @@ export const useVoteStatistics = () => {
     loading,
     statistics,
     topNominee,
+    summaryData,
   };
 };
