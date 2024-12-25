@@ -91,9 +91,9 @@
 .golden-reflection {
   background: linear-gradient(
     to bottom,
-    #c9a55c 0%,
-    #f4e5bc 50%,
-    #c9a55c 100%
+    #ffd700 0%,
+    #b8860b 50%,
+    #daa520 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
