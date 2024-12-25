@@ -87,20 +87,17 @@
   pointer-events: none;
 }
 
-/* Effet de dégradé doré intensifié */
+/* Effet de dégradé doré */
 .golden-reflection {
   background: linear-gradient(
-    45deg,
-    #ffd700 0%,    /* Or pur */
-    #daa520 25%,   /* Goldenrod */
-    #ffd700 50%,   /* Or pur */
-    #b8860b 75%,   /* Brun doré foncé */
-    #ffd700 100%   /* Or pur */
+    to bottom,
+    #c9a55c 0%,
+    #f4e5bc 50%,
+    #c9a55c 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
 .nominee-card {
