@@ -80,7 +80,7 @@ export const EventConfigManager = () => {
       toast({
         title: "Attention",
         description: "L'événement devrait avoir lieu après la fin des votes",
-        variant: "destructive",
+        variant: "destructive", // Changed from "warning" to "destructive"
       });
     }
 
