@@ -47,7 +47,7 @@ serve(async (req) => {
       metadata: {
         firstName,
         lastName,
-        numberOfTickets,
+        numberOfTickets: numberOfTickets.toString(),
       },
       expires_at: Math.floor(Date.now() / 1000) + (30 * 60), // 30 minutes expiration
     })
