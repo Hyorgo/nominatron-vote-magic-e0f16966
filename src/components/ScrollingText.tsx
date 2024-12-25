@@ -36,19 +36,27 @@ export const ScrollingText = () => {
       }`}
     >
       <div className="relative flex overflow-hidden whitespace-nowrap">
-        <div className="animate-[scroll_30s_linear_infinite] flex items-center">
+        <div className="animate-[scroll_60s_linear_infinite] flex items-center">
           {scrollingTexts.map((text, index) => (
-            <span key={text.id} className="mx-16 text-gold/90 text-lg">
+            <span key={text.id} className="mx-24 text-gold/90 text-lg">
               {text.content}
-              <span className="mx-6 text-gold/30">•</span>
+              <span className="mx-8 text-gold/30">•</span>
             </span>
           ))}
         </div>
-        <div className="animate-[scroll_30s_linear_infinite] flex items-center absolute left-[100%] top-0">
+        <div className="animate-[scroll_60s_linear_infinite] flex items-center absolute left-[100%] top-0">
           {scrollingTexts.map((text, index) => (
-            <span key={`${text.id}-duplicate`} className="mx-16 text-gold/90 text-lg">
+            <span key={`${text.id}-duplicate`} className="mx-24 text-gold/90 text-lg">
               {text.content}
-              <span className="mx-6 text-gold/30">•</span>
+              <span className="mx-8 text-gold/30">•</span>
+            </span>
+          ))}
+        </div>
+        <div className="animate-[scroll_60s_linear_infinite] flex items-center absolute left-[200%] top-0">
+          {scrollingTexts.map((text, index) => (
+            <span key={`${text.id}-triplicate`} className="mx-24 text-gold/90 text-lg">
+              {text.content}
+              <span className="mx-8 text-gold/30">•</span>
             </span>
           ))}
         </div>
