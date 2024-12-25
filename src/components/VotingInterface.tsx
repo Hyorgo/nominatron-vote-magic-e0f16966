@@ -57,7 +57,7 @@ export const VotingInterface = () => {
     await handleNomineeSelect(categoryId, nomineeId);
     toast({
       title: "Vote enregistré !",
-      description: "Votre choix a été sauvegardé avec succès.",
+      description: `Votre choix a été sauvegardé avec succès${currentCategory < categories.length - 1 ? ". Passage à la catégorie suivante..." : " !"}`,
     });
 
     if (currentCategory < categories.length - 1) {
