@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 import Stripe from 'https://esm.sh/stripe@14.21.0'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,8 +21,6 @@ serve(async (req) => {
 
     console.log('Creating payment session with price ID: price_1QZGfwAU4Uv1i5TAJHGKvvKx')
     const sessionConfig = {
-      payment_method_types: ['card'],
-      customer_email: email,
       line_items: [
         {
           price: 'price_1QZGfwAU4Uv1i5TAJHGKvvKx',
@@ -39,6 +36,7 @@ serve(async (req) => {
         email,
         numberOfTickets,
       },
+      customer_email: email,
       locale: 'fr',
       allow_promotion_codes: true,
       billing_address_collection: 'required',
