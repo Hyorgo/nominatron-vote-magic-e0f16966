@@ -9,6 +9,7 @@ interface ScrollingText {
 
 export const ScrollingText = () => {
   const [scrollingTexts, setScrollingTexts] = useState<ScrollingText[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     loadScrollingTexts();
@@ -22,25 +23,32 @@ export const ScrollingText = () => {
     
     if (data) {
       setScrollingTexts(data);
+      setIsVisible(true);
     }
   };
 
   if (scrollingTexts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-navy/90 backdrop-blur-md border-t border-gold/30 py-3 z-50">
+    <div 
+      className={`fixed bottom-0 left-0 right-0 bg-navy/80 backdrop-blur-sm border-t border-gold/20 py-4 z-50 transition-opacity duration-700 ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
       <div className="flex overflow-hidden whitespace-nowrap">
-        <div className="animate-[scroll_20s_linear_infinite] flex">
+        <div className="animate-[scroll_30s_linear_infinite] flex items-center">
           {scrollingTexts.map((text, index) => (
-            <span key={text.id} className="mx-8 text-gold">
+            <span key={text.id} className="mx-12 text-gold/90 text-lg">
               {text.content}
+              <span className="mx-4 text-gold/30">•</span>
             </span>
           ))}
         </div>
-        <div className="animate-[scroll_20s_linear_infinite] flex">
+        <div className="animate-[scroll_30s_linear_infinite] flex items-center">
           {scrollingTexts.map((text, index) => (
-            <span key={`${text.id}-duplicate`} className="mx-8 text-gold">
+            <span key={`${text.id}-duplicate`} className="mx-12 text-gold/90 text-lg">
               {text.content}
+              <span className="mx-4 text-gold/30">•</span>
             </span>
           ))}
         </div>
