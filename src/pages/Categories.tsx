@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Vote } from "lucide-react";
+import { Loader2, Vote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Category {
