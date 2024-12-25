@@ -16,8 +16,8 @@ export const Navigation = () => {
       <div className="container flex h-16 items-center">
         <Link to="/" className="mr-6">
           <img 
-            src="/lovable-uploads/1017081c-8fa6-42cf-966b-318e893a0f68.png" 
-            alt="Lyon d'Or" 
+            src="/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png" 
+            alt="Sortir Lyon x Sixtynine Event" 
             className="h-12"
           />
         </Link>
