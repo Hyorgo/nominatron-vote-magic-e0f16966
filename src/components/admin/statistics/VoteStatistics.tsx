@@ -170,25 +170,34 @@ export const VoteStatistics = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {statistics.map((category, categoryIndex) =>
-                category.nominees.map((nominee, index) => (
-                  <TableRow 
-                    key={`${category.categoryName}-${nominee.name}`}
-                    className={categoryIndex % 2 === 0 ? "bg-navy/20" : "bg-navy/10"}
-                  >
-                    {index === 0 && (
-                      <TableCell rowSpan={category.nominees.length}>
-                        {category.categoryName}
+              {statistics.map((category, categoryIndex) => (
+                <React.Fragment key={category.categoryName}>
+                  {categoryIndex > 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="p-0">
+                        <div className="h-2 bg-navy/5" />
                       </TableCell>
-                    )}
-                    <TableCell>{nominee.name}</TableCell>
-                    <TableCell className="text-right">{nominee.votes}</TableCell>
-                    <TableCell className="text-right">
-                      {nominee.percentage.toFixed(1)}%
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
+                    </TableRow>
+                  )}
+                  {category.nominees.map((nominee, index) => (
+                    <TableRow 
+                      key={`${category.categoryName}-${nominee.name}`}
+                      className={categoryIndex % 2 === 0 ? "bg-navy/20" : "bg-navy/10"}
+                    >
+                      {index === 0 && (
+                        <TableCell rowSpan={category.nominees.length} className="font-medium">
+                          {category.categoryName}
+                        </TableCell>
+                      )}
+                      <TableCell>{nominee.name}</TableCell>
+                      <TableCell className="text-right">{nominee.votes}</TableCell>
+                      <TableCell className="text-right">
+                        {nominee.percentage.toFixed(1)}%
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </React.Fragment>
+              ))}
             </TableBody>
           </Table>
         </div>
