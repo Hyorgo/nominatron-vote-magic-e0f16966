@@ -124,12 +124,12 @@ export const ScrollingTextManager = ({
                 />
                 <Button
                   variant="destructive"
-                  size="sm"
+                  size="default"
                   onClick={() => handleDeleteScrollingText(text.id)}
-                  className="px-3"
+                  className="flex items-center gap-2 px-4 py-2 font-medium"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Supprimer
+                  <Trash2 className="h-5 w-5" />
+                  <span>Supprimer</span>
                 </Button>
               </div>
             </div>
