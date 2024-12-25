@@ -1,34 +1,28 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Navigation } from "./components/Navigation";
-import Footer from "./components/Footer";
-import Index from "./pages/Index";
-import Contact from "./pages/Contact";
-import Categories from "./pages/Categories";
-import Reserver from "./pages/Reserver";
-import ThankYou from "./pages/ThankYou";
-import AdminDashboard from "./pages/AdminDashboard";
-import { ScrollingText } from "./components/ScrollingText";
+import Index from "@/pages/Index";
+import Contact from "@/pages/Contact";
+import Categories from "@/pages/Categories";
+import Admin from "@/pages/Admin";
+import AdminDashboard from "@/pages/AdminDashboard";
+import ThankYou from "@/pages/ThankYou";
+import Reserver from "@/pages/Reserver";
+import PaymentStatus from "@/pages/PaymentStatus";
 
-const App = () => {
+function App() {
   return (
     <Router>
-      <div className="flex min-h-screen flex-col">
-        <Navigation />
-        <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8">
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/reserver" element={<Reserver />} />
-            <Route path="/thank-you" element={<ThankYou />} />
-            <Route path="/admin/*" element={<AdminDashboard />} />
-          </Routes>
-        </main>
-        <ScrollingText />
-        <Footer />
-      </div>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/reserver" element={<Reserver />} />
+        <Route path="/payment-status" element={<PaymentStatus />} />
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;
