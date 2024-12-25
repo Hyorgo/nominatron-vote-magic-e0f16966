@@ -1,16 +1,22 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Home } from "lucide-react";
-import { useEffect } from "react";
+import { Heart, Home, Download } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const PaymentStatus = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const status = searchParams.get('status');
   const isSuccess = status === 'success';
+  const { toast } = useToast();
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  // Récupérer les informations de réservation depuis sessionStorage
+  const bookingInfo = JSON.parse(sessionStorage.getItem('bookingInfo') || '{}');
 
   useEffect(() => {
-    // Créer et ajouter les confettis en forme de cœur si paiement réussi
     if (isSuccess) {
       const createConfetti = () => {
         const confetti = document.createElement("div");
@@ -31,12 +37,10 @@ const PaymentStatus = () => {
         }, 5000);
       };
 
-      // Créer plusieurs confettis
       for (let i = 0; i < 50; i++) {
         createConfetti();
       }
 
-      // Créer de nouveaux confettis toutes les 3 secondes
       const interval = setInterval(() => {
         for (let i = 0; i < 10; i++) {
           createConfetti();
@@ -50,6 +54,53 @@ const PaymentStatus = () => {
       };
     }
   }, [isSuccess]);
+
+  const handleDownloadTicket = async () => {
+    if (!bookingInfo) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de récupérer les informations de réservation",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsDownloading(true);
+      const { data, error } = await supabase.functions.invoke('generate-ticket-pdf', {
+        body: bookingInfo
+      });
+
+      if (error) throw error;
+
+      // Créer un blob à partir des données
+      const blob = new Blob([data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Créer un lien temporaire pour télécharger le PDF
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'billet.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Succès",
+        description: "Votre billet a été téléchargé",
+      });
+    } catch (error) {
+      console.error('Erreur lors du téléchargement du billet:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de télécharger votre billet. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in">
@@ -69,13 +120,21 @@ const PaymentStatus = () => {
               <p className="text-lg">
                 <span className="block mb-2 text-primary text-2xl">🎉 Merci pour votre confiance ! 🎉</span>
                 <span className="golden-reflection block mb-2">
-                  Un email de confirmation vous sera envoyé prochainement
+                  Vous pouvez télécharger votre billet ci-dessous
                 </span>
                 <span className="text-muted-foreground">
-                  avec tous les détails de votre réservation.
+                  Conservez-le précieusement, il vous sera demandé à l'entrée.
                 </span>
               </p>
             </div>
+            <Button
+              onClick={handleDownloadTicket}
+              className="w-full mb-6"
+              disabled={isDownloading}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              {isDownloading ? "Téléchargement..." : "Télécharger mon billet"}
+            </Button>
           </div>
         </>
       ) : (

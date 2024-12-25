@@ -41,6 +41,9 @@ const Reserver = () => {
         return;
       }
 
+      // Sauvegarder les informations de réservation pour le PDF
+      sessionStorage.setItem('bookingInfo', JSON.stringify(reservationData));
+
       // Créer la session de paiement Stripe
       console.log('Création de la session de paiement...');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
