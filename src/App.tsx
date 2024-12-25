@@ -37,18 +37,21 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/reserver" element={<Reserver />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
+      <div className="min-h-screen relative">
+        <div className="gold-halo" aria-hidden="true" />
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/reserver" element={<Reserver />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </div>
     </TooltipProvider>
   </QueryClientProvider>
 );
