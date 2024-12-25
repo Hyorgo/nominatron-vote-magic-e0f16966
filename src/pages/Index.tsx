@@ -8,7 +8,7 @@ const Index = () => {
     <div className="min-h-screen relative">
       <BokehEffect />
       <div className="gold-halo" />
-      <div className="container py-6 space-y-8">
+      <div className="container py-16 space-y-16">
         <HomeHero />
         <ActionCards />
       </div>
