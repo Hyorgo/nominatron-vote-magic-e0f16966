@@ -16,7 +16,6 @@ function App() {
     <Router>
       <div className="min-h-screen flex flex-col">
         <Navigation />
-        <ScrollingText />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Index />} />
@@ -29,6 +28,7 @@ function App() {
             <Route path="/payment-status" element={<PaymentStatus />} />
           </Routes>
         </main>
+        <ScrollingText />
         <Footer />
       </div>
     </Router>
