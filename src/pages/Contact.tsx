@@ -2,21 +2,46 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: "Message envoyé",
-      description: "Nous vous répondrons dans les plus brefs délais.",
-    });
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const name = formData.get('name') as string;
+    const message = formData.get('message') as string;
+
+    try {
+      const { error } = await supabase
+        .from('contact_attempts')
+        .insert([{ email, success: true }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Message envoyé",
+        description: "Nous vous répondrons dans les plus brefs délais.",
+      });
+
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi du message.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="container max-w-2xl py-12 animate-fade-in relative z-10">
+      {/* Gold halo effect */}
+      <div className="gold-halo" />
+      
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-3 golden-reflection">Contact</h1>
         <p className="text-gold/80">Une question ? N'hésitez pas à nous contacter</p>
@@ -34,6 +59,7 @@ const Contact = () => {
                 <Label htmlFor="name" className="text-gold/90">Nom</Label>
                 <Input 
                   id="name" 
+                  name="name"
                   placeholder="Votre nom" 
                   required 
                   className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
@@ -43,6 +69,7 @@ const Contact = () => {
                 <Label htmlFor="email" className="text-gold/90">Email</Label>
                 <Input 
                   id="email" 
+                  name="email"
                   type="email" 
                   placeholder="votre@email.com" 
                   required 
@@ -54,6 +81,7 @@ const Contact = () => {
               <Label htmlFor="message" className="text-gold/90">Message</Label>
               <Textarea
                 id="message"
+                name="message"
                 placeholder="Votre message"
                 className="min-h-[150px] bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
                 required
