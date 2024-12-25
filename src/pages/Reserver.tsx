@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { EventInfoCard } from "@/components/event/EventInfoCard";
 
 const Reserver = () => {
   const { toast } = useToast();
@@ -21,11 +22,13 @@ const Reserver = () => {
         <p className="text-gold/80">Rejoignez-nous pour une soirée exceptionnelle</p>
       </div>
 
+      <div className="mb-8">
+        <EventInfoCard />
+      </div>
+
       <div className="relative">
-        {/* Effet de halo derrière le formulaire */}
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg blur-xl" />
         
-        {/* Formulaire avec effet glassmorphism */}
         <div className="relative bg-white/5 backdrop-blur-lg rounded-lg p-8 shadow-2xl border border-white/10">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
