@@ -26,13 +26,13 @@ export const ScrollingText = () => {
       <div className="overflow-hidden py-4 whitespace-nowrap">
         <div className="animate-[scroll_20s_linear_infinite] inline-block">
           {texts.map((text, index) => (
-            <span key={index} className="mx-8 text-primary/90">
+            <span key={index} className="mx-16 text-primary/90">
               {text}
             </span>
           ))}
           {/* Duplicate for seamless loop */}
           {texts.map((text, index) => (
-            <span key={`duplicate-${index}`} className="mx-8 text-primary/90">
+            <span key={`duplicate-${index}`} className="mx-16 text-primary/90">
               {text}
             </span>
           ))}
