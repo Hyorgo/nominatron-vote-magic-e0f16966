@@ -10,7 +10,7 @@ interface VotingConfig {
 export const useVoting = () => {
   const [votingConfig, setVotingConfig] = useState<VotingConfig | null>(null);
   const [isVotingOpen, setIsVotingOpen] = useState(false);
-  const [selectedNominees, setSelectedNominees] = useState<Record<number, number>>({});
+  const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -46,18 +46,17 @@ export const useVoting = () => {
     }
   };
 
-  const handleNomineeSelect = async (categoryId: number, nomineeId: number) => {
+  const handleNomineeSelect = async (categoryId: string, nomineeId: string) => {
     if (!isVotingOpen) return;
 
     try {
-      // Tenter d'insérer le vote
       const { error } = await supabase
         .from('votes')
-        .upsert({
+        .upsert([{
           category_id: categoryId,
           nominee_id: nomineeId,
           email: 'user@example.com' // À remplacer par l'email de l'utilisateur connecté
-        });
+        }]);
 
       if (error) {
         if (error.code === '23505') { // Code d'erreur pour violation de contrainte unique
