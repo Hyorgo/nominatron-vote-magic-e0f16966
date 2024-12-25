@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Home, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
+import { Heart, Home, Share2, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useEffect } from "react";
 
 const ThankYou = () => {
@@ -69,9 +69,16 @@ const ThankYou = () => {
       case "facebook":
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}&quote=${encodeURIComponent(shareMessage)}`;
         break;
-      case "twitter":
-        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}&url=${encodeURIComponent(window.location.origin)}`;
-        break;
+      case "instagram":
+        // Instagram n'a pas d'API de partage directe, on utilise le partage natif
+        if (navigator.share) {
+          navigator.share({
+            title: "Votez pour vos établissements préférés",
+            text: shareMessage,
+            url: window.location.origin,
+          });
+        }
+        return;
       case "linkedin":
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin)}&summary=${encodeURIComponent(shareMessage)}`;
         break;
@@ -123,11 +130,11 @@ const ThankYou = () => {
           
           <Button
             variant="outline"
-            className="bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white border-none"
-            onClick={() => handleShare("twitter")}
+            className="bg-[#E4405F] hover:bg-[#E4405F]/90 text-white border-none"
+            onClick={() => handleShare("instagram")}
           >
-            <Twitter className="mr-2" />
-            Twitter
+            <Instagram className="mr-2" />
+            Instagram
           </Button>
           
           <Button
