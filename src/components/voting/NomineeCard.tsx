@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 
 interface NomineeCardProps {
   nominee: {
-    id: number;
+    id: string;
     name: string;
     description: string;
   };
