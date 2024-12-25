@@ -145,9 +145,10 @@
 
 /* Footer glassmorphism */
 .footer-glass {
-  @apply fixed bottom-0 left-0 right-0 w-full z-[9999];
-  background: rgba(255, 255, 255, 0.03);
+  @apply fixed bottom-0 left-0 right-0 w-full;
+  background: rgba(26, 31, 60, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(201, 165, 92, 0.3);
+  z-index: 9999;
 }
