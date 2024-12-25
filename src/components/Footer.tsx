@@ -9,7 +9,7 @@ const Footer = () => {
             <img 
               src="/lovable-uploads/780999f0-d95d-41a7-bc28-00565fb1cc46.png" 
               alt="ideAI Logo" 
-              className="h-16 w-16 object-contain" // Augmentation de la taille de 12 à 16
+              className="h-20 w-20 object-contain" // Augmentation de la taille de 16 à 20
             />
             <div className="text-sm text-gold/90">
               © {currentYear} Nominatron. Tous droits réservés.
