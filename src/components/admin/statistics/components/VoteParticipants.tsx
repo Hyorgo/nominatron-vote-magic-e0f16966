@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import {
@@ -39,7 +39,7 @@ export const VoteParticipants = () => {
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     loadParticipants();
   }, []);
 
