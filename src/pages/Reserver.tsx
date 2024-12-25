@@ -19,7 +19,7 @@ const Reserver = () => {
     <div className="container max-w-2xl py-12 animate-fade-in relative z-10">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-3 golden-reflection">Réserver ma place</h1>
-        <p className="text-gold/80">Retrouvez ci-dessous toutes les informations pratiques concernant l'événement : date, lieu et adresse</p>
+        <p className="text-gold/80">Toutes les informations de l'événement en un coup d'œil</p>
       </div>
 
       <div className="mb-8">
