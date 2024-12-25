@@ -8,6 +8,8 @@ import { BackgroundManager } from "./admin/BackgroundManager";
 import { HomeContentManager } from "./admin/HomeContentManager";
 import { LogoManager } from "./admin/LogoManager";
 import { HomeSettingsManager } from "./admin/HomeSettingsManager";
+import { CategoriesManager } from "./admin/CategoriesManager";
+import { NomineesManager } from "./admin/NomineesManager";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -111,6 +113,7 @@ export const AdminDashboard = () => {
       <Tabs defaultValue="home" className="space-y-4">
         <TabsList>
           <TabsTrigger value="home">Page d'accueil</TabsTrigger>
+          <TabsTrigger value="competition">Compétition</TabsTrigger>
           <TabsTrigger value="settings">Paramètres</TabsTrigger>
         </TabsList>
 
@@ -132,6 +135,11 @@ export const AdminDashboard = () => {
             backgrounds={backgrounds}
             onUpdate={loadHomePageData}
           />
+        </TabsContent>
+
+        <TabsContent value="competition" className="space-y-4">
+          <CategoriesManager onUpdate={loadHomePageData} />
+          <NomineesManager onUpdate={loadHomePageData} />
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">
