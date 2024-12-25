@@ -11,7 +11,7 @@ interface NomineesListProps {
 
 export const NomineesList = ({ nominees, categoryId, selectedNomineeId, onVote }: NomineesListProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
       {nominees
         .filter((nominee) => nominee.category_id === categoryId)
         .map((nominee) => (
@@ -20,7 +20,7 @@ export const NomineesList = ({ nominees, categoryId, selectedNomineeId, onVote }
             className="nominee-card group hover:scale-105 transition-all duration-300"
           >
             {nominee.image_url && (
-              <div className="relative h-48 mb-4 overflow-hidden rounded-md">
+              <div className="relative h-36 sm:h-48 mb-4 overflow-hidden rounded-md">
                 <img
                   src={nominee.image_url}
                   alt={nominee.name}
@@ -29,22 +29,22 @@ export const NomineesList = ({ nominees, categoryId, selectedNomineeId, onVote }
               </div>
             )}
             <div className="flex items-center gap-2">
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+              <h3 className="text-base sm:text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
                 {nominee.name}
               </h3>
               {selectedNomineeId === nominee.id && (
-                <Star className="h-5 w-5 text-gold fill-gold animate-scale-in" />
+                <Star className="h-4 w-4 sm:h-5 sm:w-5 text-gold fill-gold animate-scale-in flex-shrink-0" />
               )}
             </div>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 line-clamp-2">
               {nominee.description}
             </p>
             <Button 
               onClick={() => onVote(nominee.id, categoryId)}
               variant={selectedNomineeId === nominee.id ? "secondary" : "default"}
-              className="w-full"
+              className="w-full text-sm sm:text-base"
             >
-              <Vote className="mr-2 h-4 w-4" />
+              <Vote className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               {selectedNomineeId === nominee.id ? "Sélectionné" : "Voter"}
             </Button>
           </div>
