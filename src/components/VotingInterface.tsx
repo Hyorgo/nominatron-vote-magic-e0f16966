@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CategoryNavigation } from "./voting/CategoryNavigation";
 import { NomineeCard } from "./voting/NomineeCard";
@@ -54,6 +54,39 @@ export const VotingInterface = () => {
 
   const category = mockCategories[currentCategory];
 
+  // Charger les votes précédents de l'utilisateur
+  useEffect(() => {
+    const loadPreviousVotes = async () => {
+      if (formData.email) {
+        try {
+          const { data: previousVotes, error } = await supabase
+            .from("votes")
+            .select("category_id, nominee_id")
+            .eq("email", formData.email);
+
+          if (error) throw error;
+
+          if (previousVotes) {
+            // Mettre à jour selectedNominees avec les votes précédents
+            const votesMap = previousVotes.reduce((acc, vote) => ({
+              ...acc,
+              [vote.category_id]: vote.nominee_id,
+            }), {});
+            
+            toast({
+              title: "Votes précédents chargés",
+              description: "Vos votes précédents ont été restaurés.",
+            });
+          }
+        } catch (error) {
+          console.error("Erreur lors du chargement des votes:", error);
+        }
+      }
+    };
+
+    loadPreviousVotes();
+  }, [formData.email]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -68,6 +101,10 @@ export const VotingInterface = () => {
       if (existingEmail) {
         // Email déjà validé, fermer le dialogue
         setDialogOpen(false);
+        toast({
+          title: "Email déjà enregistré",
+          description: "Vos votes précédents ont été restaurés.",
+        });
       } else {
         // Ajouter le nouvel email validé
         const { error } = await supabase
@@ -91,9 +128,9 @@ export const VotingInterface = () => {
     } catch (error) {
       console.error("Erreur lors de la validation:", error);
       toast({
+        variant: "destructive",
         title: "Erreur",
         description: "Une erreur est survenue lors de la validation.",
-        variant: "destructive",
       });
     }
   };
