@@ -4,6 +4,7 @@ export interface Nominee {
   description: string;
   category_id: string;
   image_url: string | null;
+  created_at: string;
 }
 
 export interface Category {

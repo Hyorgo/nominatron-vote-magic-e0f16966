@@ -62,6 +62,7 @@ export const NomineesList = ({ categories: initialCategories, onDelete }: Nomine
     try {
       const updates = items.map((category, index) => ({
         id: category.id,
+        name: category.name, // Ajout du champ name requis
         display_order: index + 1,
       }));
 
