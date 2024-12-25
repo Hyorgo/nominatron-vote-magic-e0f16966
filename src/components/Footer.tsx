@@ -23,7 +23,7 @@ const Footer = () => {
             />
             <div className="flex flex-col justify-center">
               <h3 className="text-xl font-bold text-white mb-2">
-                Dirigeants, propulsez votre entreprise
+                Dirigeants, propulsez votre entreprise en ligne
               </h3>
               <p className="text-white/90">
                 Transformez votre présence digitale en machine à croissance avec notre expertise en IA et marketing digital.
