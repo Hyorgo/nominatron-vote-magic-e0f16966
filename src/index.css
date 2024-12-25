@@ -106,3 +106,9 @@
 .category-button.active {
   @apply bg-primary text-primary-foreground;
 }
+
+/* Footer glassmorphism */
+.footer-glass {
+  @apply fixed bottom-0 left-0 right-0 backdrop-blur-md bg-white/5 border-t border-white/10;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
+}
