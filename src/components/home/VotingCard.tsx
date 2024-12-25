@@ -9,6 +9,12 @@ interface VotingCardProps {
 export const VotingCard = ({ votingStatus }: VotingCardProps) => {
   const { isVotingOpen, votingNotStarted, votingEnded } = votingStatus;
 
+  console.log("État des votes (VotingCard):", {
+    isVotingOpen,
+    votingNotStarted,
+    votingEnded
+  });
+
   const getVotingCardContent = () => {
     if (votingEnded) {
       return {
