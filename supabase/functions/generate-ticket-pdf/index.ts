@@ -18,19 +18,29 @@ serve(async (req) => {
     const { firstName, lastName, email, numberOfTickets } = await req.json()
     console.log('Generating PDF for:', { firstName, lastName, email, numberOfTickets })
 
-    // Create QR code data
+    // Create QR code data with a unique identifier
     const qrData = JSON.stringify({
+      ticketId: crypto.randomUUID(), // Add a unique identifier
       firstName,
       lastName,
       email,
       numberOfTickets,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      validationStatus: 'unused' // Add a validation status
     })
     
     console.log('Generating QR code with data:', qrData)
     
-    // Generate QR code
-    const qrCodeDataUrl = await QRCode.toDataURL(qrData)
+    // Generate QR code with higher error correction
+    const qrCodeDataUrl = await QRCode.toDataURL(qrData, {
+      errorCorrectionLevel: 'H', // Highest error correction level
+      margin: 2,
+      width: 300, // Larger size for better scanning
+      color: {
+        dark: '#000000',
+        light: '#ffffff'
+      }
+    })
     const qrCodeImage = qrCodeDataUrl.split(',')[1]
 
     console.log('QR code generated successfully')
@@ -88,18 +98,29 @@ serve(async (req) => {
       }
     }
 
-    // Add QR code
+    // Add QR code with better positioning and size
     try {
       const qrCodeImageBytes = Uint8Array.from(atob(qrCodeImage), c => c.charCodeAt(0))
       const qrCodePdfImage = await pdfDoc.embedPng(qrCodeImageBytes)
-      const qrCodeDims = qrCodePdfImage.scale(0.5)
+      const qrCodeSize = 200 // Larger size for better scanning
       page.drawImage(qrCodePdfImage, {
-        x: (width - qrCodeDims.width) / 2,
+        x: (width - qrCodeSize) / 2,
         y: height - 300,
-        width: qrCodeDims.width,
-        height: qrCodeDims.height,
+        width: qrCodeSize,
+        height: qrCodeSize,
       })
-      console.log('QR code embedded successfully')
+
+      // Add QR code instructions
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+      page.drawText('Scannez ce QR code pour valider votre billet', {
+        x: (width - 250) / 2,
+        y: height - 320,
+        size: 12,
+        font,
+        color: rgb(0, 0, 0),
+      })
+      
+      console.log('QR code embedded successfully with instructions')
     } catch (error) {
       console.error('Error embedding QR code:', error)
       throw new Error('Failed to embed QR code in PDF')
