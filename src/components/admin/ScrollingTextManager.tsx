@@ -115,7 +115,7 @@ export const ScrollingTextManager = ({
         </div>
         <div className="space-y-2">
           {scrollingTexts.map((text) => (
-            <div key={text.id} className="flex items-center justify-between p-4 border rounded bg-background hover:bg-accent/50 transition-colors">
+            <div key={text.id} className="flex items-center justify-between p-4 border border-border rounded-lg bg-card hover:bg-accent/10 transition-colors">
               <span className="flex-grow mr-4">{text.content}</span>
               <div className="flex items-center gap-4">
                 <Switch
@@ -124,11 +124,12 @@ export const ScrollingTextManager = ({
                 />
                 <Button
                   variant="destructive"
-                  size="icon"
+                  size="sm"
                   onClick={() => handleDeleteScrollingText(text.id)}
-                  className="h-8 w-8"
+                  className="px-3"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Supprimer
                 </Button>
               </div>
             </div>
