@@ -1,5 +1,6 @@
 import { CategoryNavigation } from "./CategoryNavigation";
 import { NomineeCard } from "./NomineeCard";
+import { FinishVotingButton } from "./FinishVotingButton";
 import { Category } from "@/types/nominees";
 import { useToast } from "@/hooks/use-toast";
 
@@ -58,6 +59,11 @@ export const VotingContent = ({
           />
         ))}
       </div>
+
+      <FinishVotingButton 
+        selectedNominees={selectedNominees}
+        categories={categories}
+      />
     </>
   );
 };
