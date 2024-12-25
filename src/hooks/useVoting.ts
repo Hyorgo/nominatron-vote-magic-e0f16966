@@ -46,18 +46,58 @@ export const useVoting = () => {
     }
   };
 
-  const handleNomineeSelect = (categoryId: number, nomineeId: number) => {
+  const handleNomineeSelect = async (categoryId: number, nomineeId: number) => {
     if (!isVotingOpen) return;
 
-    setSelectedNominees((prev) => ({
-      ...prev,
-      [categoryId]: nomineeId,
-    }));
-    
-    toast({
-      title: "Vote enregistré",
-      description: "Votre choix a été sauvegardé",
-    });
+    try {
+      // Tenter d'insérer le vote
+      const { error } = await supabase
+        .from('votes')
+        .upsert({
+          category_id: categoryId,
+          nominee_id: nomineeId,
+          email: 'user@example.com' // À remplacer par l'email de l'utilisateur connecté
+        });
+
+      if (error) {
+        if (error.code === '23505') { // Code d'erreur pour violation de contrainte unique
+          // Mettre à jour le vote existant
+          setSelectedNominees((prev) => ({
+            ...prev,
+            [categoryId]: nomineeId,
+          }));
+          
+          toast({
+            title: "Vote mis à jour",
+            description: "Votre choix a été modifié pour cette catégorie",
+          });
+        } else {
+          console.error('Erreur lors du vote:', error);
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "Une erreur est survenue lors de l'enregistrement de votre vote",
+          });
+        }
+      } else {
+        setSelectedNominees((prev) => ({
+          ...prev,
+          [categoryId]: nomineeId,
+        }));
+        
+        toast({
+          title: "Vote enregistré",
+          description: "Votre choix a été sauvegardé",
+        });
+      }
+    } catch (error) {
+      console.error('Erreur lors du vote:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'enregistrement de votre vote",
+      });
+    }
   };
 
   return {
