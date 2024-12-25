@@ -30,7 +30,7 @@ export const ScrollingText = () => {
           <span className="mx-48 text-primary/90">{content}</span>
           <span className="mx-48 text-primary/90">{content}</span>
         </div>
-        <div className="animate-[scroll_30s_linear_infinite] whitespace-nowrap flex items-center absolute left-[50%]">
+        <div className="absolute left-full animate-[scroll_30s_linear_infinite] whitespace-nowrap flex items-center">
           <span className="mx-48 text-primary/90">{content}</span>
           <span className="mx-48 text-primary/90">{content}</span>
         </div>
