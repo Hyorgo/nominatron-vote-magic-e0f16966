@@ -24,8 +24,7 @@ serve(async (req) => {
       customer_email: email,
       line_items: [
         {
-          // Utilisez le Price ID de test ici
-          price: 'price_test_votre_id',
+          price: 'price_1QZGfwAU4Uv1i5TAJHGKvvKx',
           quantity: numberOfTickets,
         },
       ],
