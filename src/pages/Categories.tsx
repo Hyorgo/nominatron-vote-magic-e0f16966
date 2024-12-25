@@ -1,23 +1,13 @@
 import { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Vote, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-
-interface Category {
-  id: string;
-  name: string;
-  display_order: number;
-}
-
-interface Nominee {
-  id: string;
-  name: string;
-  description: string;
-  image_url: string | null;
-  category_id: string | null;
-}
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { CategoryTabs } from "@/components/voting/CategoryTabs";
+import { NomineesList } from "@/components/voting/NomineesList";
+import { FinishVotingButton } from "@/components/voting/FinishVotingButton";
+import { Category } from "@/types/categories";
+import { Nominee } from "@/types/nominees";
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -77,7 +67,6 @@ const Categories = () => {
 
   const handleVote = async (nomineeId: string, categoryId: string) => {
     try {
-      // Si on clique sur le même nominé déjà sélectionné, on ne fait rien
       if (selectedNominees[categoryId] === nomineeId) {
         return;
       }
@@ -121,10 +110,6 @@ const Categories = () => {
     );
   }
 
-  const midPoint = Math.ceil(categories.length / 2);
-  const firstRow = categories.slice(0, midPoint);
-  const secondRow = categories.slice(midPoint);
-
   return (
     <div className="container py-8 animate-fade-in">
       <h1 className="text-4xl font-bold mb-8 golden-reflection">
@@ -132,76 +117,24 @@ const Categories = () => {
       </h1>
 
       <Tabs defaultValue={categories[0]?.id} className="w-full">
-        <div className="space-y-2 mb-8">
-          <TabsList className="w-full justify-start bg-background/50 backdrop-blur-sm">
-            {firstRow.map((category) => (
-              <TabsTrigger
-                key={category.id}
-                value={category.id}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {category.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          
-          <TabsList className="w-full justify-start bg-background/50 backdrop-blur-sm">
-            {secondRow.map((category) => (
-              <TabsTrigger
-                key={category.id}
-                value={category.id}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                {category.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
+        <CategoryTabs categories={categories} />
 
         {categories.map((category) => (
           <TabsContent key={category.id} value={category.id}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {nominees
-                .filter((nominee) => nominee.category_id === category.id)
-                .map((nominee) => (
-                  <div
-                    key={nominee.id}
-                    className="nominee-card group hover:scale-105 transition-all duration-300"
-                  >
-                    {nominee.image_url && (
-                      <div className="relative h-48 mb-4 overflow-hidden rounded-md">
-                        <img
-                          src={nominee.image_url}
-                          alt={nominee.name}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        {nominee.name}
-                      </h3>
-                      {selectedNominees[category.id] === nominee.id && (
-                        <Star className="h-5 w-5 text-gold fill-gold animate-scale-in" />
-                      )}
-                    </div>
-                    <p className="text-muted-foreground mb-4">
-                      {nominee.description}
-                    </p>
-                    <Button 
-                      onClick={() => handleVote(nominee.id, category.id)}
-                      variant={selectedNominees[category.id] === nominee.id ? "secondary" : "default"}
-                      className="w-full"
-                    >
-                      <Vote className="mr-2 h-4 w-4" />
-                      {selectedNominees[category.id] === nominee.id ? "Sélectionné" : "Voter"}
-                    </Button>
-                  </div>
-                ))}
-            </div>
+            <NomineesList
+              nominees={nominees}
+              categoryId={category.id}
+              selectedNomineeId={selectedNominees[category.id]}
+              onVote={handleVote}
+            />
           </TabsContent>
         ))}
       </Tabs>
+
+      <FinishVotingButton 
+        selectedNominees={selectedNominees}
+        categories={categories}
+      />
     </div>
   );
 };
