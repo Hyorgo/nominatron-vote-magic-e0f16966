@@ -18,11 +18,11 @@ export const EventConfigManager = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Configuration des votes</CardTitle>
-          <CardDescription>
+        <CardHeader className="space-y-2">
+          <CardTitle className="text-xl md:text-2xl">Configuration des votes</CardTitle>
+          <CardDescription className="text-sm md:text-base">
             Définissez la période pendant laquelle les votes seront ouverts
           </CardDescription>
         </CardHeader>

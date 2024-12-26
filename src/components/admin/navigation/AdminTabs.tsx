@@ -31,14 +31,16 @@ export const AdminTabs = ({
 }: AdminTabsProps) => {
   return (
     <Tabs defaultValue="home" className="space-y-4">
-      <TabsList>
-        <TabsTrigger value="home">Page d'accueil</TabsTrigger>
-        <TabsTrigger value="competition">Compétition</TabsTrigger>
-        <TabsTrigger value="event">Événement</TabsTrigger>
-        <TabsTrigger value="statistics">Statistiques</TabsTrigger>
-        <TabsTrigger value="participants">Participants</TabsTrigger>
-        <TabsTrigger value="settings">Paramètres</TabsTrigger>
-      </TabsList>
+      <div className="overflow-x-auto">
+        <TabsList className="w-full md:w-auto flex flex-nowrap md:inline-flex">
+          <TabsTrigger value="home" className="whitespace-nowrap">Page d'accueil</TabsTrigger>
+          <TabsTrigger value="competition" className="whitespace-nowrap">Compétition</TabsTrigger>
+          <TabsTrigger value="event" className="whitespace-nowrap">Événement</TabsTrigger>
+          <TabsTrigger value="statistics" className="whitespace-nowrap">Statistiques</TabsTrigger>
+          <TabsTrigger value="participants" className="whitespace-nowrap">Participants</TabsTrigger>
+          <TabsTrigger value="settings" className="whitespace-nowrap">Paramètres</TabsTrigger>
+        </TabsList>
+      </div>
 
       <TabsContent value="home" className="space-y-4">
         <HomeSettingsManager 

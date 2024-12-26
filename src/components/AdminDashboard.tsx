@@ -23,14 +23,14 @@ export const AdminDashboard = () => {
   };
 
   if (loading) {
-    return <div className="container mx-auto p-6">Chargement...</div>;
+    return <div className="container mx-auto p-4 md:p-6">Chargement...</div>;
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Tableau de bord administrateur</h1>
-        <Button onClick={handleLogout}>
+    <div className="container mx-auto p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold">Tableau de bord administrateur</h1>
+        <Button onClick={handleLogout} className="w-full sm:w-auto">
           Déconnexion
         </Button>
       </div>
