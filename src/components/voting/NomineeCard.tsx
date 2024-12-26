@@ -96,9 +96,9 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                     "text-base sm:text-lg font-semibold",
                     "group-hover:shadow-lg",
                     isSelected ? [
-                      "bg-emerald-600 hover:bg-emerald-700",
-                      "dark:bg-emerald-700 dark:hover:bg-emerald-800",
-                      "text-white border-2 border-emerald-500",
+                      "bg-primary/90 hover:bg-primary/80",
+                      "dark:bg-primary/80 dark:hover:bg-primary/70",
+                      "text-primary-foreground border-2 border-primary/50",
                       "transform scale-105"
                     ] : "bg-primary hover:bg-primary/90"
                   )}
