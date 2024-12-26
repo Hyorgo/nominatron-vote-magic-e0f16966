@@ -1,13 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-
 interface VotingHeaderProps {
   isVotingOpen: boolean;
   onOpenDialog: () => void;
   userEmail?: string;
 }
 
-export const VotingHeader = ({ isVotingOpen, onOpenDialog, userEmail }: VotingHeaderProps) => {
+export const VotingHeader = ({ isVotingOpen, userEmail }: VotingHeaderProps) => {
   return (
     <div className="flex flex-col items-center space-y-4 mb-8">
       <h1 className="text-3xl sm:text-4xl font-bold text-center">
@@ -22,13 +19,6 @@ export const VotingHeader = ({ isVotingOpen, onOpenDialog, userEmail }: VotingHe
         <div className="text-destructive text-center">
           Vous devez être connecté avec un email validé pour voter
         </div>
-      )}
-
-      {isVotingOpen && (
-        <Button onClick={onOpenDialog} variant="outline" className="gap-2">
-          <Plus className="h-4 w-4" />
-          Proposer un établissement
-        </Button>
       )}
     </div>
   );
