@@ -11,7 +11,7 @@ interface VotingContentProps {
   categories: Category[];
   selectedNominees: Record<string, string>;
   onCategoryChange: (index: number) => void;
-  onVote: (categoryId: string, nomineeId: string) => void;
+  onVote: (categoryId: string, nomineeId: string) => Promise<void>;
 }
 
 export const VotingContent = ({
@@ -26,9 +26,13 @@ export const VotingContent = ({
 
   const handleVote = async (categoryId: string, nomineeId: string) => {
     try {
-      console.log("Vote en cours...", { categoryId, nomineeId });
-      await onVote(categoryId, nomineeId);
+      console.log("Début du vote...", { categoryId, nomineeId });
       
+      // Attendre explicitement que le vote soit enregistré
+      await onVote(categoryId, nomineeId);
+      console.log("Vote enregistré avec succès");
+      
+      // Afficher la notification de succès
       toast({
         title: "Vote enregistré !",
         description: `Votre choix a été sauvegardé avec succès${
@@ -36,17 +40,18 @@ export const VotingContent = ({
         }`,
       });
 
+      // Passer à la catégorie suivante si ce n'est pas la dernière
       if (currentCategory < categories.length - 1) {
         setTimeout(() => {
           onCategoryChange(currentCategory + 1);
-        }, 500);
+        }, 1000); // Augmenté à 1000ms pour plus de stabilité
       }
     } catch (error) {
-      console.error("Erreur lors du vote:", error);
+      console.error("Erreur détaillée lors du vote:", error);
       toast({
         variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'enregistrement de votre vote",
+        title: "Erreur lors du vote",
+        description: "Impossible d'enregistrer votre vote pour le moment. Veuillez réessayer.",
       });
     }
   };
