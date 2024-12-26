@@ -20,7 +20,6 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
   useEffect(() => {
     const fetchUserInfo = async () => {
       if (userEmail) {
-        console.log("Fetching user info for email:", userEmail); // Debug log
         const { data, error } = await supabase
           .from("validated_emails")
           .select("first_name")
@@ -33,10 +32,8 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
         }
         
         if (data?.first_name) {
-          console.log("Prénom trouvé:", data.first_name); // Debug log
+          console.log("Prénom trouvé:", data.first_name);
           setFirstName(data.first_name);
-        } else {
-          console.error("Prénom non trouvé pour l'email:", userEmail);
         }
       }
     };
@@ -65,7 +62,7 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
     <Card className="p-4 bg-primary/5 border-primary/20">
       <div className="space-y-4">
         {firstName && (
-          <div className="flex items-center gap-2 text-primary animate-fade-in">
+          <div className="flex items-center gap-2 text-primary">
             <User className="h-4 w-4" />
             <p className="font-medium">
               Bienvenue {firstName} ! Nous sommes ravis de vous voir participer aux votes.
