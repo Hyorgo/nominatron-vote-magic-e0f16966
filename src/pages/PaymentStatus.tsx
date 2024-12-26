@@ -9,8 +9,22 @@ const PaymentStatus = () => {
   const status = searchParams.get('status');
   const isSuccess = status === 'success';
 
-  // Récupérer les informations de réservation depuis sessionStorage
-  const bookingInfo = JSON.parse(sessionStorage.getItem('bookingInfo') || '{}');
+  // Récupérer et parser les informations de réservation depuis sessionStorage
+  const bookingInfo = (() => {
+    try {
+      const storedData = sessionStorage.getItem('bookingInfo');
+      if (!storedData) {
+        console.error('Aucune information de réservation trouvée dans le sessionStorage');
+        return null;
+      }
+      const parsedData = JSON.parse(storedData);
+      console.log('Informations de réservation récupérées:', parsedData);
+      return parsedData;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des informations de réservation:', error);
+      return null;
+    }
+  })();
 
   useEffect(() => {
     if (!status) {
