@@ -35,13 +35,16 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           "group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl",
           "border border-border/50 hover:border-primary/50",
           "animate-fade-in w-full h-full flex flex-col",
-          "bg-white/[0.02] backdrop-blur-sm",
-          isSelected && "ring-2 ring-primary/50 ring-offset-2 bg-primary/5"
+          isSelected && [
+            "ring-2 ring-primary ring-offset-2",
+            "bg-primary/5 dark:bg-primary/10",
+            "border-primary"
+          ]
         )}
       >
         {isSelected && (
           <div className="absolute top-4 right-4 z-10">
-            <Star className="h-6 w-6 text-gold fill-gold animate-scale-in" />
+            <Star className="h-8 w-8 text-gold fill-gold animate-scale-in" />
           </div>
         )}
         
@@ -92,14 +95,19 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                   size="lg"
                   className={cn(
                     "w-full transition-all duration-300",
-                    "text-base sm:text-lg",
+                    "text-base sm:text-lg font-semibold",
                     "group-hover:shadow-lg",
-                    isSelected && "bg-primary/20 hover:bg-primary/30 border-2 border-primary"
+                    isSelected && [
+                      "bg-emerald-100 hover:bg-emerald-200",
+                      "dark:bg-emerald-900/30 dark:hover:bg-emerald-900/40",
+                      "border-2 border-emerald-500",
+                      "text-emerald-700 dark:text-emerald-300"
+                    ]
                   )}
                 >
                   {isSelected ? (
                     <>
-                      <Check className="mr-2 h-5 w-5 animate-scale-in" />
+                      <Check className="mr-2 h-6 w-6 animate-scale-in" />
                       Sélectionné
                     </>
                   ) : (
