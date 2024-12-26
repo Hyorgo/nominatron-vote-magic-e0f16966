@@ -35,62 +35,10 @@
     --radius: 0.5rem;
   }
 
-  /* Animation des confettis en forme de cœur */
-  .confetti {
-    position: fixed;
-    pointer-events: none;
-    animation: confetti-fall 5s linear forwards;
-    z-index: 1000;
-    user-select: none;
-  }
-
-  @keyframes confetti-fall {
-    0% {
-      transform: translateY(-100vh) rotate(0deg) scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: translateY(50vh) rotate(360deg) scale(1.2);
-      opacity: 0.8;
-    }
-    100% {
-      transform: translateY(100vh) rotate(720deg) scale(1);
-      opacity: 0;
-    }
-  }
-
-  @keyframes scale-in {
-    from {
-      transform: scale(0);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  .animate-scale-in {
-    animation: scale-in 0.3s ease-out forwards;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.5s ease-out forwards;
-  }
-
-  /* Styles existants */
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground relative;
     background: linear-gradient(to bottom, hsl(230, 33%, 8%), hsl(230, 33%, 12%));
@@ -115,7 +63,7 @@
     left: -35%;
     width: 100%;
     height: 200%;
-    background: radial-gradient(circle, rgba(217, 70, 239, 0.25) 0%, transparent 50%);
+    background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 50%);
     z-index: -3;
     pointer-events: none;
   }
@@ -128,23 +76,23 @@
     right: -35%;
     width: 100%;
     height: 200%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.25) 0%, transparent 50%);
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 50%);
     z-index: -3;
     pointer-events: none;
   }
-}
 
-/* Halo doré central */
-.gold-halo {
-  position: fixed;
-  top: 85%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 150%;
-  height: 150%;
-  background: radial-gradient(circle, rgba(201, 165, 92, 0.35) 0%, transparent 60%);
-  z-index: -3;
-  pointer-events: none;
+  /* Halo doré central */
+  .gold-halo {
+    position: fixed;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(201, 165, 92, 0.25) 0%, transparent 60%);
+    z-index: -3;
+    pointer-events: none;
+  }
 }
 
 /* Effet de dégradé doré */
@@ -160,32 +108,6 @@
   color: transparent;
 }
 
-/* Styles des cartes et boutons */
-.nominee-card {
-  @apply relative overflow-hidden rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:border-primary/50;
-}
-
-.nominee-card.selected {
-  @apply border-primary ring-2 ring-primary/20;
-}
-
-.category-nav {
-  @apply flex items-center space-x-2 rounded-lg border border-border bg-card p-2;
-}
-
-.category-button {
-  @apply rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary;
-}
-
-.category-button.active {
-  @apply bg-primary text-primary-foreground;
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-33.33%);
-  }
+@layer components {
+  /* Add your component styles here */
 }
