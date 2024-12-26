@@ -66,13 +66,13 @@ const Footer = () => {
       <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mt-6 text-xs sm:text-sm text-gold/90">
         <span>© {currentYear} ideAI. Tous droits réservés.</span>
         <span className="hidden sm:inline">•</span>
-        <a href="#" className="hover:text-gold transition-colors">
+        <Link to="/mentions-legales" className="hover:text-gold transition-colors">
           Mentions légales
-        </a>
+        </Link>
         <span className="hidden sm:inline">•</span>
-        <a href="#" className="hover:text-gold transition-colors">
+        <Link to="/politique-de-confidentialite" className="hover:text-gold transition-colors">
           Politique de confidentialité
-        </a>
+        </Link>
         <span className="hidden sm:inline">•</span>
         <Link to="/contact" className="hover:text-gold transition-colors">
           Contact

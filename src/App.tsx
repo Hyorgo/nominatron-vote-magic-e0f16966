@@ -10,6 +10,8 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import ThankYou from "@/pages/ThankYou";
 import Reserver from "@/pages/Reserver";
 import PaymentStatus from "@/pages/PaymentStatus";
+import LegalNotice from "@/pages/LegalNotice";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/reserver" element={<Reserver />} />
             <Route path="/payment-status" element={<PaymentStatus />} />
+            <Route path="/mentions-legales" element={<LegalNotice />} />
+            <Route path="/politique-de-confidentialite" element={<PrivacyPolicy />} />
           </Routes>
         </main>
         <ScrollingText />
