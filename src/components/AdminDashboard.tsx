@@ -25,7 +25,8 @@ export const AdminDashboard = () => {
         title: "Déconnexion réussie",
         description: "Vous avez été déconnecté avec succès",
       });
-      navigate('/admin');
+      // Redirection vers la page d'accueil après la déconnexion
+      navigate('/');
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
       toast({
