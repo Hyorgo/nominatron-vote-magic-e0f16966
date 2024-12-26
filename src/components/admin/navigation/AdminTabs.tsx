@@ -31,11 +31,14 @@ export const AdminTabs = ({
 }: AdminTabsProps) => {
   return (
     <Tabs defaultValue="home" className="space-y-4">
-      <div className="overflow-x-auto">
+      <div className="space-y-2">
         <TabsList className="w-full md:w-auto flex flex-nowrap md:inline-flex">
           <TabsTrigger value="home" className="whitespace-nowrap">Page d'accueil</TabsTrigger>
           <TabsTrigger value="competition" className="whitespace-nowrap">Compétition</TabsTrigger>
           <TabsTrigger value="event" className="whitespace-nowrap">Événement</TabsTrigger>
+        </TabsList>
+        
+        <TabsList className="w-full md:w-auto flex flex-nowrap md:inline-flex">
           <TabsTrigger value="statistics" className="whitespace-nowrap">Statistiques</TabsTrigger>
           <TabsTrigger value="participants" className="whitespace-nowrap">Participants</TabsTrigger>
           <TabsTrigger value="settings" className="whitespace-nowrap">Paramètres</TabsTrigger>
