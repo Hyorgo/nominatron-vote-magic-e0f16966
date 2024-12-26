@@ -6,7 +6,11 @@ const Categories = () => {
   return (
     <main className="min-h-screen bg-background relative overflow-hidden">
       {/* Halos */}
-      <div className="gold-halo" />
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-50%] left-[-35%] w-full h-[200%] bg-[radial-gradient(circle,rgba(217,70,239,0.15)_0%,transparent_50%)] z-[-3]" />
+        <div className="absolute top-[-50%] right-[-35%] w-full h-[200%] bg-[radial-gradient(circle,rgba(14,165,233,0.15)_0%,transparent_50%)] z-[-3]" />
+        <div className="gold-halo" />
+      </div>
 
       {/* Grain Effect */}
       <div className="fixed inset-0 opacity-20 z-[-2] pointer-events-none">
