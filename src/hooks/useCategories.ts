@@ -4,20 +4,35 @@ import { useToast } from "@/hooks/use-toast";
 import { Category } from "@/types/nominees";
 
 const fetchCategoriesData = async () => {
-  const [categoriesResponse, nomineesResponse] = await Promise.all([
-    supabase.from("categories").select("*").order("display_order"),
-    supabase.from("nominees").select("*"),
-  ]);
+  try {
+    console.log("Fetching categories data...");
+    const [categoriesResponse, nomineesResponse] = await Promise.all([
+      supabase.from("categories").select("*").order("display_order"),
+      supabase.from("nominees").select("*"),
+    ]);
 
-  if (categoriesResponse.error) throw categoriesResponse.error;
-  if (nomineesResponse.error) throw nomineesResponse.error;
+    if (categoriesResponse.error) {
+      console.error("Categories fetch error:", categoriesResponse.error);
+      throw categoriesResponse.error;
+    }
+    if (nomineesResponse.error) {
+      console.error("Nominees fetch error:", nomineesResponse.error);
+      throw nomineesResponse.error;
+    }
 
-  return categoriesResponse.data.map((category) => ({
-    ...category,
-    nominees: nomineesResponse.data.filter(
-      (nominee) => nominee.category_id === category.id
-    ),
-  }));
+    const categories = categoriesResponse.data.map((category) => ({
+      ...category,
+      nominees: nomineesResponse.data.filter(
+        (nominee) => nominee.category_id === category.id
+      ),
+    }));
+
+    console.log("Categories data fetched successfully:", categories);
+    return categories;
+  } catch (error) {
+    console.error("Error in fetchCategoriesData:", error);
+    throw error;
+  }
 };
 
 export const useCategories = () => {
@@ -33,16 +48,16 @@ export const useCategories = () => {
     queryFn: fetchCategoriesData,
     staleTime: 1000 * 60 * 5, // Cache valide pendant 5 minutes
     refetchOnWindowFocus: false,
+    retry: 3,
+    onError: (error: Error) => {
+      console.error("Error in useCategories:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de chargement",
+        description: "Impossible de charger les catégories et les nominés. Veuillez réessayer.",
+      });
+    },
   });
-
-  if (error instanceof Error) {
-    console.error("Erreur lors du chargement des données:", error);
-    toast({
-      variant: "destructive",
-      title: "Erreur",
-      description: "Impossible de charger les catégories et les nominés",
-    });
-  }
 
   return {
     categories,

@@ -15,19 +15,21 @@ export const VotingInterface = () => {
   const { categories, isLoading, fetchCategories } = useCategories();
 
   const currentCategoryData = useMemo(() => 
-    categories[currentCategory], 
+    categories && categories.length > 0 ? categories[currentCategory] : null, 
     [categories, currentCategory]
   );
 
   const handleCategoryChange = (index: number) => {
-    setCurrentCategory(index);
+    if (categories && categories.length > index) {
+      setCurrentCategory(index);
+    }
   };
 
   if (isLoading) {
     return <LoadingState />;
   }
 
-  if (!categories?.length) {
+  if (!categories || categories.length === 0) {
     return <EmptyState />;
   }
 
