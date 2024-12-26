@@ -21,7 +21,6 @@ export const supabase = createClient<Database>(
         'Content-Type': 'application/json',
       },
     },
-    // Add debug mode to log requests in development
     db: {
       schema: 'public'
     }
@@ -30,7 +29,21 @@ export const supabase = createClient<Database>(
 
 // Add debug logging for development
 if (import.meta.env.DEV) {
-  supabase.from('*').on('*', (payload) => {
-    console.log('Supabase Real-time:', payload);
+  const channel = supabase.channel('db-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+      },
+      (payload) => {
+        console.log('Database change:', payload);
+      }
+    )
+    .subscribe();
+
+  // Cleanup function (if needed)
+  window.addEventListener('beforeunload', () => {
+    supabase.removeChannel(channel);
   });
 }
