@@ -35,6 +35,14 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
         .single();
 
       if (existingEmail) {
+        // Store the email in localStorage for persistence
+        localStorage.setItem('userEmail', formData.email);
+        
+        // Emit a custom event to notify other components
+        window.dispatchEvent(new CustomEvent('emailValidated', { 
+          detail: { email: formData.email }
+        }));
+        
         onClose();
         toast({
           title: "Email déjà enregistré",
@@ -52,6 +60,14 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
           ]);
 
         if (error) throw error;
+        
+        // Store the email in localStorage for persistence
+        localStorage.setItem('userEmail', formData.email);
+        
+        // Emit a custom event to notify other components
+        window.dispatchEvent(new CustomEvent('emailValidated', { 
+          detail: { email: formData.email }
+        }));
         
         onClose();
         if (onSuccess) onSuccess();
