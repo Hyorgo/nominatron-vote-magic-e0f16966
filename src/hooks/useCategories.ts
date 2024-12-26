@@ -69,7 +69,8 @@ export const useCategories = () => {
 
   // Handle errors through the error property
   if (error) {
-    (error as QueryError).meta?.errorHandler?.(error);
+    const queryError = error as QueryError;
+    queryError.meta?.errorHandler?.(error);
   }
 
   return {
