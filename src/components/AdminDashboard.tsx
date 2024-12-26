@@ -21,7 +21,6 @@ interface Settings {
 export const AdminDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const queryConfig = useQueryConfig<ScrollingText[]>("adminDashboard");
 
   const { data: scrollingTexts, isLoading: loadingTexts } = useQuery<ScrollingText[]>({
     queryKey: ["scrollingTexts"],
@@ -33,7 +32,6 @@ export const AdminDashboard = () => {
       if (error) throw error;
       return data || [];
     },
-    ...queryConfig,
   });
 
   const { data: backgrounds, isLoading: loadingBackgrounds } = useQuery<PageBackground[]>({
@@ -47,7 +45,6 @@ export const AdminDashboard = () => {
       if (error) throw error;
       return data || [];
     },
-    ...queryConfig,
   });
 
   const { data: homeContent, isLoading: loadingContent } = useQuery<HomeContent[]>({
@@ -60,7 +57,6 @@ export const AdminDashboard = () => {
       if (error) throw error;
       return data || [];
     },
-    ...queryConfig,
   });
 
   const { data: settings, isLoading: loadingSettings } = useQuery<Settings>({
@@ -77,7 +73,6 @@ export const AdminDashboard = () => {
       
       return { headerLogo, homeLogo, homeYearText };
     },
-    ...queryConfig,
   });
 
   const handleLogout = async () => {

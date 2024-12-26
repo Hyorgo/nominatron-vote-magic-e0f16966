@@ -1,9 +1,8 @@
 import { QueryOptions } from "@tanstack/react-query";
 
-export const useQueryConfig = <T>(key: string) => {
-  const defaultConfig: Partial<QueryOptions<T>> = {
-    gcTime: 5 * 60 * 1000, // 5 minutes
+export const useQueryConfig = <T>(key: string): Partial<QueryOptions<T, Error, T>> => {
+  return {
+    retry: false,
+    refetchOnMount: false,
   };
-
-  return defaultConfig;
 };
