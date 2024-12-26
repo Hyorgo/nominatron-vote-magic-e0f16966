@@ -25,7 +25,7 @@ export const useStripeSettings = () => {
     setLoading(true);
     try {
       console.log("Chargement des paramètres Stripe...");
-      const { data, error } = await supabase
+      const { data: stripeSettings, error } = await supabase
         .from('stripe_settings')
         .select("*");
 
@@ -34,20 +34,23 @@ export const useStripeSettings = () => {
         throw error;
       }
 
-      if (data && data.length > 0) {
-        console.log("Données Stripe reçues:", data);
-        const settingsMap = data.reduce((acc: Record<string, string>, curr: StripeSetting) => {
-          acc[curr.setting_name] = curr.setting_value;
-          return acc;
-        }, {});
+      console.log("Données Stripe brutes reçues:", stripeSettings);
 
-        console.log("Paramètres transformés:", settingsMap);
+      if (stripeSettings && stripeSettings.length > 0) {
+        const settingsObject: StripeSettings = {
+          stripe_price_id: "",
+          stripe_success_url: "",
+          stripe_cancel_url: "",
+        };
 
-        setSettings({
-          stripe_price_id: settingsMap.stripe_price_id || "",
-          stripe_success_url: settingsMap.stripe_success_url || "",
-          stripe_cancel_url: settingsMap.stripe_cancel_url || "",
+        stripeSettings.forEach((setting: StripeSetting) => {
+          if (setting.setting_name in settingsObject) {
+            settingsObject[setting.setting_name as keyof StripeSettings] = setting.setting_value;
+          }
         });
+
+        console.log("Paramètres transformés:", settingsObject);
+        setSettings(settingsObject);
       }
     } catch (error) {
       console.error("Erreur lors du chargement des paramètres Stripe:", error);
