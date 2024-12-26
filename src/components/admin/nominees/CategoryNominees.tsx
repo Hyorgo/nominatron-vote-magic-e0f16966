@@ -9,6 +9,7 @@ import {
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Category } from "@/types/nominees";
@@ -35,22 +36,24 @@ export const CategoryNominees = ({
           >
             <GripVertical className="h-5 w-5 text-muted-foreground" />
           </div>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <AccordionTrigger className="flex-1 text-lg font-medium hover:no-underline">
-                <div className="flex items-center gap-3">
-                  <Trophy className="h-5 w-5 text-gold" />
-                  <span>{category.name}</span>
-                  <Badge variant="secondary" className="ml-2">
-                    {category.nominees.length} nominé{category.nominees.length > 1 ? 's' : ''}
-                  </Badge>
-                </div>
-              </AccordionTrigger>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Cliquez pour voir les nominés de cette catégorie</p>
-            </TooltipContent>
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <AccordionTrigger className="flex-1 text-lg font-medium hover:no-underline">
+                  <div className="flex items-center gap-3">
+                    <Trophy className="h-5 w-5 text-gold" />
+                    <span>{category.name}</span>
+                    <Badge variant="secondary" className="ml-2">
+                      {category.nominees.length} nominé{category.nominees.length > 1 ? 's' : ''}
+                    </Badge>
+                  </div>
+                </AccordionTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Cliquez pour voir les nominés de cette catégorie</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         <AccordionContent>
