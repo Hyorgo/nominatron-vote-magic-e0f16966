@@ -19,6 +19,7 @@ export const supabase = createClient<Database>(
     global: {
       headers: {
         'Content-Type': 'application/json',
+        'apikey': SUPABASE_PUBLISHABLE_KEY
       },
     },
     db: {
@@ -29,25 +30,25 @@ export const supabase = createClient<Database>(
 
 // Add debug logging for development
 if (import.meta.env.DEV) {
-  const channel = supabase.channel('db-changes')
+  console.log('Supabase client initialized with URL:', SUPABASE_URL);
+  
+  // Listen for vote changes
+  const channel = supabase.channel('votes-changes')
     .on(
       'postgres_changes',
       {
         event: '*',
         schema: 'public',
-        table: 'votes' // Specify the table we want to listen to
+        table: 'votes'
       },
       (payload) => {
-        console.log('Vote change:', payload);
+        console.log('Vote change detected:', payload);
       }
     )
     .subscribe();
 
-  // Log all Supabase queries in development
-  console.log('Supabase client initialized with URL:', SUPABASE_URL);
-
-  // Cleanup function
+  // Cleanup on window unload
   window.addEventListener('beforeunload', () => {
-    supabase.removeChannel(channel);
+    channel.unsubscribe();
   });
 }
