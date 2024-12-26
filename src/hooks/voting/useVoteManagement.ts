@@ -1,72 +1,15 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: boolean) => {
   const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
   const { toast } = useToast();
-
-  const loadPreviousVotes = async (email: string): Promise<Record<string, string>> => {
-    try {
-      console.log("Tentative de chargement des votes pour:", email);
-      
-      // First check if email is validated
-      const { data: validatedEmail, error: validationError } = await supabase
-        .from('validated_emails')
-        .select('email')
-        .eq('email', email)
-        .single();
-
-      if (validationError || !validatedEmail) {
-        console.error('Email non validé:', validationError);
-        toast({
-          variant: "destructive",
-          title: "Accès non autorisé",
-          description: "Votre email n'a pas été validé pour voter.",
-        });
-        return {};
-      }
-
-      const { data: previousVotes, error } = await supabase
-        .from('votes')
-        .select('category_id, nominee_id')
-        .eq('email', email);
-
-      if (error) {
-        console.error('Erreur Supabase:', error);
-        toast({
-          variant: "destructive",
-          title: "Erreur de chargement",
-          description: "Impossible de charger vos votes précédents. Veuillez réessayer.",
-        });
-        return {};
-      }
-
-      if (previousVotes && previousVotes.length > 0) {
-        const votesMap = previousVotes.reduce((acc, vote) => ({
-          ...acc,
-          [vote.category_id]: vote.nominee_id,
-        }), {});
-        
-        setSelectedNominees(votesMap);
-        console.log("Votes précédents chargés avec succès:", votesMap);
-        return votesMap;
-      }
-      
-      return {};
-    } catch (error) {
-      console.error('Erreur lors du chargement des votes précédents:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur de connexion",
-        description: "La connexion au serveur a échoué. Veuillez vérifier votre connexion internet.",
-      });
-      return {};
-    }
-  };
+  const queryClient = useQueryClient();
 
   const handleNomineeSelect = async (categoryId: string, nomineeId: string): Promise<void> => {
-    console.log("Début du vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
+    console.log("Tentative de vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
 
     if (!isVotingOpen) {
       toast({
@@ -87,21 +30,17 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
     }
 
     try {
-      // First check if email is validated
-      const { data: validatedEmail, error: validationError } = await supabase
-        .from('validated_emails')
-        .select('email')
-        .eq('email', userEmail)
-        .single();
+      // Mise à jour optimiste de l'état local
+      setSelectedNominees(prev => ({
+        ...prev,
+        [categoryId]: nomineeId,
+      }));
 
-      if (validationError || !validatedEmail) {
-        toast({
-          variant: "destructive",
-          title: "Accès non autorisé",
-          description: "Votre email n'a pas été validé pour voter.",
-        });
-        return;
-      }
+      // Mise à jour du cache avant la requête
+      queryClient.setQueryData(['previousVotes', userEmail], (oldData: any) => ({
+        ...oldData,
+        [categoryId]: nomineeId,
+      }));
 
       const { error } = await supabase
         .from('votes')
@@ -117,7 +56,20 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
         );
 
       if (error) {
+        // En cas d'erreur, on revient à l'état précédent
         console.error('Erreur Supabase lors du vote:', error);
+        setSelectedNominees(prev => {
+          const newState = { ...prev };
+          delete newState[categoryId];
+          return newState;
+        });
+        
+        // On invalide le cache pour forcer un rechargement
+        queryClient.invalidateQueries({ 
+          queryKey: ['previousVotes', userEmail],
+          exact: true 
+        });
+
         toast({
           variant: "destructive",
           title: "Erreur",
@@ -126,11 +78,6 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
         return;
       }
 
-      setSelectedNominees(prev => ({
-        ...prev,
-        [categoryId]: nomineeId,
-      }));
-      
       console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
       
       toast({
@@ -150,6 +97,5 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
   return {
     selectedNominees,
     handleNomineeSelect,
-    loadPreviousVotes,
   };
 };
