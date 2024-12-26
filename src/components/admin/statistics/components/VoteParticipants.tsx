@@ -46,7 +46,7 @@ export const VoteParticipants = () => {
       };
     },
     staleTime: 30000, // Cache for 30 seconds
-    keepPreviousData: true
+    placeholderData: (previousData) => previousData // Remplace keepPreviousData
   });
 
   const handleEdit = async (participant: Participant) => {
