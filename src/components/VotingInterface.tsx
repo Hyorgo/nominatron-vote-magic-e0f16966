@@ -1,4 +1,3 @@
-import { useState, useMemo } from "react";
 import { useVoting } from "@/hooks/useVoting";
 import { useCategories } from "@/hooks/useCategories";
 import { VotingHeader } from "./voting/VotingHeader";
@@ -7,6 +6,7 @@ import { VotingContent } from "./voting/VotingContent";
 import { VotingCountdown } from "./voting/VotingCountdown";
 import { LoadingState } from "./voting/LoadingState";
 import { EmptyState } from "./voting/EmptyState";
+import { useState, useMemo } from "react";
 
 export const VotingInterface = () => {
   const [currentCategory, setCurrentCategory] = useState(0);
@@ -27,7 +27,7 @@ export const VotingInterface = () => {
     return <LoadingState />;
   }
 
-  if (!categories.length) {
+  if (!categories?.length) {
     return <EmptyState />;
   }
 
