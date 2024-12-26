@@ -69,7 +69,6 @@ export const useVoting = () => {
           }), {});
           
           setSelectedNominees(votesMap);
-          
           console.log("Votes précédents chargés:", votesMap);
         }
       }
@@ -109,10 +108,7 @@ export const useVoting = () => {
           [categoryId]: nomineeId,
         }));
         
-        toast({
-          title: "Vote enregistré",
-          description: "Votre choix a été sauvegardé",
-        });
+        console.log("Vote enregistré:", { categoryId, nomineeId });
       }
     } catch (error) {
       console.error('Erreur lors du vote:', error);

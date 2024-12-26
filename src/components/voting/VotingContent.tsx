@@ -5,6 +5,8 @@ import { Category } from "@/types/nominees";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs } from "@/components/ui/tabs";
 import { CategoryTabs } from "./CategoryTabs";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VotingContentProps {
   currentCategory: number;
@@ -26,6 +28,7 @@ export const VotingContent = ({
 
   const handleVote = async (categoryId: string, nomineeId: string) => {
     await onVote(categoryId, nomineeId);
+    
     toast({
       title: "Vote enregistré !",
       description: `Votre choix a été sauvegardé avec succès${
