@@ -37,7 +37,7 @@ export const VotingContent = ({
   };
 
   return (
-    <>
+    <div className="space-y-8 px-4 sm:px-0">
       <CategoryNavigation
         categoryName={category.name}
         currentIndex={currentCategory}
@@ -64,6 +64,6 @@ export const VotingContent = ({
         selectedNominees={selectedNominees}
         categories={categories}
       />
-    </>
+    </div>
   );
 };
