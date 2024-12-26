@@ -11,6 +11,7 @@ export const useVoting = () => {
   const [votingConfig, setVotingConfig] = useState<VotingConfig | null>(null);
   const [isVotingOpen, setIsVotingOpen] = useState(false);
   const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
+  const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,23 +50,28 @@ export const useVoting = () => {
 
   const loadPreviousVotes = async () => {
     try {
-      const email = 'user@example.com'; // À remplacer par l'email de l'utilisateur connecté
-      const { data: previousVotes, error } = await supabase
-        .from('votes')
-        .select('category_id, nominee_id')
-        .eq('email', email);
+      const { data: { session } } = await supabase.auth.getSession();
+      const email = session?.user?.email;
+      setUserEmail(email);
 
-      if (error) throw error;
+      if (email) {
+        const { data: previousVotes, error } = await supabase
+          .from('votes')
+          .select('category_id, nominee_id')
+          .eq('email', email);
 
-      if (previousVotes && previousVotes.length > 0) {
-        const votesMap = previousVotes.reduce((acc, vote) => ({
-          ...acc,
-          [vote.category_id]: vote.nominee_id,
-        }), {});
-        
-        setSelectedNominees(votesMap);
-        
-        console.log("Votes précédents chargés:", votesMap);
+        if (error) throw error;
+
+        if (previousVotes && previousVotes.length > 0) {
+          const votesMap = previousVotes.reduce((acc, vote) => ({
+            ...acc,
+            [vote.category_id]: vote.nominee_id,
+          }), {});
+          
+          setSelectedNominees(votesMap);
+          
+          console.log("Votes précédents chargés:", votesMap);
+        }
       }
     } catch (error) {
       console.error('Erreur lors du chargement des votes précédents:', error);
@@ -73,17 +79,16 @@ export const useVoting = () => {
   };
 
   const handleNomineeSelect = async (categoryId: string, nomineeId: string) => {
-    if (!isVotingOpen) return;
+    if (!isVotingOpen || !userEmail) return;
 
     try {
-      const email = 'user@example.com'; // À remplacer par l'email de l'utilisateur connecté
       const { error } = await supabase
         .from('votes')
         .upsert(
           {
             category_id: categoryId,
             nominee_id: nomineeId,
-            email: email
+            email: userEmail
           },
           {
             onConflict: 'category_id,email',
@@ -124,5 +129,6 @@ export const useVoting = () => {
     isVotingOpen,
     selectedNominees,
     handleNomineeSelect,
+    userEmail,
   };
 };
