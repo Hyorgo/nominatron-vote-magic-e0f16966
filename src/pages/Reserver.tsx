@@ -60,6 +60,20 @@ const Reserver = () => {
         throw new Error('Pas d\'URL de paiement reçue');
       }
 
+      // Envoyer l'email de confirmation
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-booking-confirmation', {
+          body: reservationData
+        });
+
+        if (emailError) {
+          console.error('Erreur lors de l\'envoi de l\'email de confirmation:', emailError);
+          // Ne pas bloquer le processus si l'envoi de l'email échoue
+        }
+      } catch (emailError) {
+        console.error('Erreur lors de l\'envoi de l\'email:', emailError);
+      }
+
       console.log('Redirection vers:', data.url);
       
       // Ouvrir l'URL Stripe dans un nouvel onglet
