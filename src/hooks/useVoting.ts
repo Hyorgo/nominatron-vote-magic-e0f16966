@@ -3,7 +3,7 @@ import { useEmailSession } from "./voting/useEmailSession";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export const useVoting = () => {
   const { votingConfig, isVotingOpen } = useVotingConfig();
@@ -12,29 +12,12 @@ export const useVoting = () => {
   const { toast } = useToast();
   const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
 
-  // Vérifier si l'email est validé
-  const { data: isEmailValidated } = useQuery({
-    queryKey: ['emailValidation', userEmail],
-    queryFn: async () => {
-      if (!userEmail) return false;
-      const { data } = await supabase
-        .from('validated_emails')
-        .select('email')
-        .eq('email', userEmail)
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!userEmail,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-  });
-
   // Charger les votes précédents
   const { data: votes = {} } = useQuery({
     queryKey: ['previousVotes', userEmail],
     queryFn: async () => {
-      if (!userEmail || !isEmailValidated) {
-        console.log("Email non validé ou manquant");
+      if (!userEmail) {
+        console.log("Pas d'email utilisateur");
         return {};
       }
       
@@ -62,20 +45,20 @@ export const useVoting = () => {
       console.log("Votes trouvés:", votesMap);
       return votesMap;
     },
-    enabled: !!userEmail && !!isEmailValidated,
+    enabled: !!userEmail,
     staleTime: 30000,
     gcTime: 5 * 60 * 1000,
   });
 
-  // Mettre à jour les votes sélectionnés quand les votes sont chargés
+  // Synchroniser les votes avec l'état local
   useEffect(() => {
     if (votes && Object.keys(votes).length > 0) {
-      console.log("Mise à jour des votes sélectionnés avec:", votes);
-      setSelectedNominees(prev => ({ ...prev, ...votes }));
+      console.log("Synchronisation des votes avec l'état local:", votes);
+      setSelectedNominees(votes);
     }
   }, [votes]);
 
-  const handleNomineeSelect = async (categoryId: string, nomineeId: string): Promise<void> => {
+  const handleNomineeSelect = useCallback(async (categoryId: string, nomineeId: string): Promise<void> => {
     console.log("Début du vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
 
     if (!isVotingOpen) {
@@ -120,14 +103,17 @@ export const useVoting = () => {
         return;
       }
 
-      // Mettre à jour l'état local immédiatement
+      // Mettre à jour l'état local de manière synchrone
       setSelectedNominees(prev => ({
         ...prev,
         [categoryId]: nomineeId,
       }));
       
-      // Invalider le cache pour forcer un rechargement
-      await queryClient.invalidateQueries({ queryKey: ['previousVotes', userEmail] });
+      // Invalider le cache de manière asynchrone
+      await queryClient.invalidateQueries({ 
+        queryKey: ['previousVotes', userEmail],
+        exact: true 
+      });
       
       console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
       
@@ -143,7 +129,7 @@ export const useVoting = () => {
         description: "La connexion au serveur a échoué. Veuillez vérifier votre connexion internet.",
       });
     }
-  };
+  }, [isVotingOpen, userEmail, queryClient, toast]);
 
   return {
     votingConfig,
