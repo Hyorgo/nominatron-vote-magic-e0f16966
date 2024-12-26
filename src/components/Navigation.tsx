@@ -38,13 +38,13 @@ export const Navigation = () => {
           <img 
             src={logoUrl}
             alt="Sortir Lyon x Sixtynine Event" 
-            className="h-8 sm:h-12"
+            className="h-8 sm:h-12 w-auto"
           />
         </Link>
 
         {/* Mobile menu button */}
         <button 
-          className="md:hidden"
+          className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -62,10 +62,10 @@ export const Navigation = () => {
               key={link.href}
               to={link.href}
               className={cn(
-                "transition-colors hover:text-primary",
+                "transition-colors hover:text-primary px-3 py-2 rounded-lg",
                 location.pathname === link.href
-                  ? "text-primary font-medium"
-                  : "text-muted-foreground"
+                  ? "text-primary font-medium bg-white/10"
+                  : "text-muted-foreground hover:bg-white/5"
               )}
             >
               {link.label}
@@ -76,17 +76,17 @@ export const Navigation = () => {
         {/* Mobile navigation */}
         {isMenuOpen && (
           <div className="absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-lg md:hidden border-b border-white/10">
-            <div className="container py-4 flex flex-col space-y-4">
+            <div className="container py-4 flex flex-col space-y-1">
               {links.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
                   onClick={() => setIsMenuOpen(false)}
                   className={cn(
-                    "transition-colors hover:text-primary px-4 py-2",
+                    "transition-colors hover:text-primary px-4 py-3 rounded-lg",
                     location.pathname === link.href
-                      ? "text-primary font-medium"
-                      : "text-muted-foreground"
+                      ? "text-primary font-medium bg-white/10"
+                      : "text-muted-foreground hover:bg-white/5"
                   )}
                 >
                   {link.label}

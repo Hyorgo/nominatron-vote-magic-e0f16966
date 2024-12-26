@@ -13,9 +13,9 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full py-4 px-4 mt-auto border-t border-gold/10 bg-background/30 backdrop-blur-md supports-[backdrop-filter]:bg-background/30">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 md:gap-4">
+    <footer className="w-full py-8 px-4 mt-auto border-t border-gold/10 bg-background/30 backdrop-blur-md supports-[backdrop-filter]:bg-background/30">
+      <div className="container mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 md:gap-12">
           {/* Logo et message section */}
           <div className="col-span-1 md:col-span-2 flex flex-col sm:flex-row items-center gap-6">
             <img 
@@ -34,8 +34,8 @@ const Footer = () => {
           </div>
 
           {/* Contact section */}
-          <div className="flex flex-col items-center justify-start text-white space-y-2">
-            <h3 className="text-white font-semibold self-center mb-4">Nos coordonnées</h3>
+          <div className="flex flex-col items-center md:items-start text-white space-y-3">
+            <h3 className="text-white font-semibold mb-2">Nos coordonnées</h3>
             <a 
               href="https://www.ideai.fr" 
               target="_blank" 
@@ -55,28 +55,34 @@ const Footer = () => {
           {/* Services section */}
           <div className="flex flex-col items-center md:items-end">
             <h3 className="text-white font-semibold mb-4">Nos services</h3>
-            <ul className="text-center md:text-right text-white">
+            <ul className="text-center md:text-right text-white space-y-2">
               {services.map((service, index) => (
-                <li key={index} className="mb-1 hover:text-gold transition-colors text-sm sm:text-base">{service}</li>
+                <li key={index} className="hover:text-gold transition-colors text-sm sm:text-base">
+                  {service}
+                </li>
               ))}
             </ul>
           </div>
         </div>
-      </div>
-      <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mt-6 text-xs sm:text-sm text-gold/90">
-        <span>© {currentYear} ideAI. Tous droits réservés.</span>
-        <span className="hidden sm:inline">•</span>
-        <Link to="/mentions-legales" className="hover:text-gold transition-colors">
-          Mentions légales
-        </Link>
-        <span className="hidden sm:inline">•</span>
-        <Link to="/politique-de-confidentialite" className="hover:text-gold transition-colors">
-          Politique de confidentialité
-        </Link>
-        <span className="hidden sm:inline">•</span>
-        <Link to="/contact" className="hover:text-gold transition-colors">
-          Contact
-        </Link>
+
+        {/* Footer bottom */}
+        <div className="mt-8 pt-8 border-t border-white/10">
+          <div className="flex flex-wrap justify-center items-center gap-4 text-xs sm:text-sm text-gold/90">
+            <span>© {currentYear} ideAI. Tous droits réservés.</span>
+            <span className="hidden sm:inline">•</span>
+            <Link to="/mentions-legales" className="hover:text-gold transition-colors">
+              Mentions légales
+            </Link>
+            <span className="hidden sm:inline">•</span>
+            <Link to="/politique-de-confidentialite" className="hover:text-gold transition-colors">
+              Politique de confidentialité
+            </Link>
+            <span className="hidden sm:inline">•</span>
+            <Link to="/contact" className="hover:text-gold transition-colors">
+              Contact
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   );
