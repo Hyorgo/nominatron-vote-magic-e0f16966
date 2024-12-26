@@ -3,7 +3,7 @@ import { ActionCards } from "@/components/home/ActionCards";
 import BokehEffect from "@/components/effects/BokehEffect";
 import "@/styles/bokeh.css";
 
-const Index = () => {
+export const Index = () => {
   return (
     <div className="min-h-screen relative">
       <BokehEffect />
@@ -18,4 +18,5 @@ const Index = () => {
   );
 };
 
+// Assurons-nous que le composant est exporté par défaut
 export default Index;
