@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">1. Informations sur le Responsable de Traitement</h2>
           <p>
-            Le site www.sortir-lyon.com est édité par Sortir-Lyon, SAS au capital de 5 000 €, immatriculée au RCS de Lyon sous le numéro Lyon B 934 391 913, dont le siège social est situé au 10-12 Boulevard Vivier Merle, 69003 Lyon, France.
+            Le site www.lyon-dor.fr est édité par Sortir-Lyon, SAS au capital de 5 000 €, immatriculée au RCS de Lyon sous le numéro Lyon B 934 391 913, dont le siège social est situé au 10-12 Boulevard Vivier Merle, 69003 Lyon, France.
           </p>
           <p>
             Le Responsable de publication est Adrien Savoye, joignable par email à contact@sortir-lyon.com ou par téléphone au +33 4 51 22 02 25.
@@ -22,7 +22,7 @@ const PrivacyPolicy = () => {
 
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">2. Données Collectées</h2>
-          <p>Le site www.sortir-lyon.com collecte des données personnelles par divers moyens :</p>
+          <p>Le site www.lyon-dor.fr collecte des données personnelles par divers moyens :</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Formulaire de contact : nom, prénom, email, numéro de téléphone, et message.</li>
             <li>Formulaire de demande de devis : nom, prénom, email, numéro de téléphone, code postal, et détails de la demande.</li>
@@ -34,7 +34,7 @@ const PrivacyPolicy = () => {
 
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">3. Finalités des Données Collectées</h2>
-          <p>Les données recueillies sur le site www.sortir-lyon.com sont utilisées dans les objectifs suivants :</p>
+          <p>Les données recueillies sur le site www.lyon-dor.fr sont utilisées dans les objectifs suivants :</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Réponse aux demandes : les informations collectées via les formulaires de contact et de devis permettent de traiter vos requêtes et de vous recontacter selon vos préférences (téléphone ou email).</li>
             <li>Envoi de communications commerciales : sous réserve de votre consentement, nous pouvons vous envoyer des offres promotionnelles et actualités.</li>
@@ -84,7 +84,7 @@ const PrivacyPolicy = () => {
 
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">8. Utilisation des Cookies</h2>
-          <p>Le site www.sortir-lyon.com utilise des cookies pour optimiser votre expérience utilisateur et analyser la performance du site. Les cookies peuvent inclure les outils suivants :</p>
+          <p>Le site www.lyon-dor.fr utilise des cookies pour optimiser votre expérience utilisateur et analyser la performance du site. Les cookies peuvent inclure les outils suivants :</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Google Analytics : pour recueillir des statistiques de visites et analyser l'usage des pages.</li>
             <li>Cookies de session : pour simplifier la navigation et conserver vos préférences.</li>
