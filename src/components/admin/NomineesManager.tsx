@@ -3,10 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { NomineeForm } from "./nominees/NomineeForm";
+import { AddNomineeForm } from "./nominees/AddNomineeForm";
 import { NomineesList } from "./nominees/NomineesList";
-import { Category } from "../../types/nominees";
 import { PaginationControls } from "../ui/pagination-controls";
+import { Category } from "@/types/nominees";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -123,7 +123,7 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
   return (
     <Card className="p-4">
       <h3 className="text-lg font-semibold mb-4">Gestion des nominés</h3>
-      <NomineeForm categories={categories} onSubmit={addNominee} />
+      <AddNomineeForm categories={categories} onSubmit={addNominee} />
       <NomineesList categories={categories} onDelete={deleteNominee} />
       <PaginationControls
         currentPage={currentPage}
