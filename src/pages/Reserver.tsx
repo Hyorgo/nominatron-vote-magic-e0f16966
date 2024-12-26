@@ -61,8 +61,8 @@ const Reserver = () => {
       }
 
       console.log('Redirection vers:', data.url);
-      // Redirection dans le même onglet
-      window.location.assign(data.url);
+      // Redirection dans le même onglet avec window.location.href
+      window.location.href = data.url;
 
     } catch (error) {
       console.error('Erreur complète:', error);
