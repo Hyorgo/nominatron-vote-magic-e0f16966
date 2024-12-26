@@ -77,34 +77,42 @@ export const HomeContentCard = ({
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h3 className="text-lg font-semibold">{content.section_name}</h3>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <Switch
                 checked={content.is_active}
                 onCheckedChange={() => onToggle(content.id, content.is_active)}
               />
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setShowPreview(!showPreview)}
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setIsEditing(true)}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => onDelete(content.id)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={() => setShowPreview(!showPreview)}
+                  className="flex items-center gap-2"
+                >
+                  <Eye className="h-4 w-4" />
+                  <span className="hidden sm:inline">Aperçu</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Edit className="h-4 w-4" />
+                  <span className="hidden sm:inline">Éditer</span>
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="default"
+                  onClick={() => onDelete(content.id)}
+                  className="flex items-center gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="hidden sm:inline">Supprimer</span>
+                </Button>
+              </div>
             </div>
           </div>
           {showPreview ? (
