@@ -24,7 +24,7 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
           .from("validated_emails")
           .select("first_name")
           .eq("email", userEmail)
-          .single();
+          .maybeSingle();
         
         if (data?.first_name) {
           setFirstName(data.first_name);
