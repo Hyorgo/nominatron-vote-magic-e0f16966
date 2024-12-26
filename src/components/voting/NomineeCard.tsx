@@ -32,7 +32,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
     <TooltipProvider>
       <Card 
         className={cn(
-          "group relative overflow-hidden transition-all duration-300",
+          "group relative overflow-hidden transition-all duration-300 h-full flex flex-col",
           "border hover:scale-[1.02] hover:shadow-xl",
           isSelected ? [
             "border-primary/80 bg-primary/5",
@@ -65,7 +65,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </div>
         )}
         
-        <CardHeader className="space-y-2 p-5 sm:p-6">
+        <CardHeader className="space-y-2 p-5 sm:p-6 flex-grow">
           <CardTitle 
             className={cn(
               "text-xl sm:text-2xl transition-colors duration-300 line-clamp-2",
@@ -84,7 +84,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </CardDescription>
         </CardHeader>
         
-        <CardContent className="p-5 sm:p-6 pt-0">
+        <CardContent className="p-5 sm:p-6 pt-0 mt-auto">
           <div className="space-y-4">
             <Tooltip>
               <TooltipTrigger asChild>
