@@ -28,6 +28,8 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
         
         if (data?.first_name) {
           setFirstName(data.first_name);
+        } else {
+          console.error("Prénom non trouvé pour l'email:", userEmail);
         }
       }
     };
@@ -54,34 +56,35 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
 
   return (
     <Card className="p-4 bg-primary/5 border-primary/20">
-      <div className="space-y-2">
-        <div className="flex items-center gap-3">
-          <Timer className="h-5 w-5 text-primary" />
-          <div className="font-medium text-primary">
-            Clôture des votes
-          </div>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Les votes seront définitivement clôturés dans :
-        </p>
-        <div className="text-2xl font-mono font-bold text-primary">
-          {String(timeLeft.hours).padStart(2, '0')}:
-          {String(timeLeft.minutes).padStart(2, '0')}:
-          {String(timeLeft.seconds).padStart(2, '0')}
-        </div>
-        <p className="text-sm text-muted-foreground">
-          N'attendez pas la dernière minute pour voter pour vos nominés préférés !
-        </p>
+      <div className="space-y-4">
         {firstName && (
-          <div className="mt-4 pt-4 border-t border-primary/10">
-            <div className="flex items-center gap-2 text-primary">
-              <User className="h-4 w-4" />
-              <p className="font-medium">
-                Bienvenue {firstName} ! Nous sommes ravis de vous voir participer aux votes.
-              </p>
-            </div>
+          <div className="flex items-center gap-2 text-primary animate-fade-in">
+            <User className="h-4 w-4" />
+            <p className="font-medium">
+              Bienvenue {firstName} ! Nous sommes ravis de vous voir participer aux votes.
+            </p>
           </div>
         )}
+        
+        <div className="pt-2">
+          <div className="flex items-center gap-3">
+            <Timer className="h-5 w-5 text-primary" />
+            <div className="font-medium text-primary">
+              Clôture des votes
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            Les votes seront définitivement clôturés dans :
+          </p>
+          <div className="text-2xl font-mono font-bold text-primary mt-2">
+            {String(timeLeft.hours).padStart(2, '0')}:
+            {String(timeLeft.minutes).padStart(2, '0')}:
+            {String(timeLeft.seconds).padStart(2, '0')}
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            N'attendez pas la dernière minute pour voter pour vos nominés préférés !
+          </p>
+        </div>
       </div>
     </Card>
   );
