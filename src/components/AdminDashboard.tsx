@@ -2,28 +2,84 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { AdminTabs } from "./admin/navigation/AdminTabs";
-import { useAdminDashboardData } from "@/hooks/useAdminDashboardData";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryConfig } from "@/hooks/useQueryConfig";
+import { Loader2 } from "lucide-react";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
-  const {
-    loading,
-    scrollingTexts,
-    backgrounds,
-    homeContent,
-    headerLogo,
-    homeLogo,
-    homeYearText,
-    loadHomePageData
-  } = useAdminDashboardData();
+  const queryConfig = useQueryConfig("adminDashboard");
+
+  const { data: scrollingTexts, isLoading: loadingTexts } = useQuery({
+    queryKey: ["scrollingTexts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("scrolling_text")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    ...queryConfig,
+  });
+
+  const { data: backgrounds, isLoading: loadingBackgrounds } = useQuery({
+    queryKey: ["backgrounds"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("page_backgrounds")
+        .select("*")
+        .eq("page_name", "home")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    ...queryConfig,
+  });
+
+  const { data: homeContent, isLoading: loadingContent } = useQuery({
+    queryKey: ["homeContent"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("home_content")
+        .select("*")
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+    ...queryConfig,
+  });
+
+  const { data: settings, isLoading: loadingSettings } = useQuery({
+    queryKey: ["siteSettings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*");
+      if (error) throw error;
+      
+      const headerLogo = data?.find(s => s.setting_name === "header_logo")?.setting_value || "";
+      const homeLogo = data?.find(s => s.setting_name === "home_logo")?.setting_value || "";
+      const homeYearText = data?.find(s => s.setting_name === "home_year_text")?.setting_value || "";
+      
+      return { headerLogo, homeLogo, homeYearText };
+    },
+    ...queryConfig,
+  });
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/admin');
   };
 
-  if (loading) {
-    return <div className="container mx-auto p-4 md:p-6">Chargement...</div>;
+  const isLoading = loadingTexts || loadingBackgrounds || loadingContent || loadingSettings;
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 flex items-center justify-center min-h-[200px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -36,13 +92,19 @@ export const AdminDashboard = () => {
       </div>
 
       <AdminTabs
-        homeContent={homeContent}
-        scrollingTexts={scrollingTexts}
-        backgrounds={backgrounds}
-        headerLogo={headerLogo}
-        homeLogo={homeLogo}
-        homeYearText={homeYearText}
-        onUpdate={loadHomePageData}
+        homeContent={homeContent || []}
+        scrollingTexts={scrollingTexts || []}
+        backgrounds={backgrounds || []}
+        headerLogo={settings?.headerLogo || ""}
+        homeLogo={settings?.homeLogo || ""}
+        homeYearText={settings?.homeYearText || ""}
+        onUpdate={() => {
+          // Invalider les requêtes pour forcer un rechargement
+          queryClient.invalidateQueries({ queryKey: ["scrollingTexts"] });
+          queryClient.invalidateQueries({ queryKey: ["backgrounds"] });
+          queryClient.invalidateQueries({ queryKey: ["homeContent"] });
+          queryClient.invalidateQueries({ queryKey: ["siteSettings"] });
+        }}
       />
     </div>
   );
