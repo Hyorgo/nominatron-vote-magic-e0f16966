@@ -51,12 +51,14 @@ const PaymentStatus = () => {
     retry: 1,
     staleTime: 5 * 60 * 1000, // Considérer les données comme fraîches pendant 5 minutes
     gcTime: 30 * 60 * 1000, // Garder les données en cache pendant 30 minutes (remplace cacheTime)
-    onError: (error) => {
-      toast({
-        title: "Erreur",
-        description: error instanceof Error ? error.message : "Une erreur est survenue",
-        variant: "destructive",
-      });
+    meta: {
+      onError: (error: Error) => {
+        toast({
+          title: "Erreur",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
     },
   });
 
