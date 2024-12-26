@@ -31,45 +31,45 @@ export const AdminTabs = ({
 }: AdminTabsProps) => {
   return (
     <Tabs defaultValue="home" className="space-y-4">
-      <div className="flex flex-col gap-2">
-        <TabsList className="h-auto flex-wrap justify-start gap-2 bg-transparent p-0">
-          <div className="flex w-full gap-2 sm:w-auto">
+      <div className="flex flex-col gap-4">
+        <TabsList className="h-auto flex-wrap justify-start gap-4 bg-transparent p-0">
+          <div className="grid w-full grid-cols-1 sm:grid-cols-3 gap-2">
             <TabsTrigger 
               value="home" 
-              className="flex-1 sm:flex-none bg-background data-[state=active]:bg-primary"
+              className="w-full h-12 text-base bg-background hover:bg-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm"
             >
               Page d'accueil
             </TabsTrigger>
             <TabsTrigger 
               value="competition" 
-              className="flex-1 sm:flex-none bg-background data-[state=active]:bg-primary"
+              className="w-full h-12 text-base bg-background hover:bg-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm"
             >
               Compétition
             </TabsTrigger>
             <TabsTrigger 
               value="event" 
-              className="flex-1 sm:flex-none bg-background data-[state=active]:bg-primary"
+              className="w-full h-12 text-base bg-background hover:bg-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm"
             >
               Événement
             </TabsTrigger>
           </div>
           
-          <div className="flex w-full gap-2 sm:w-auto">
+          <div className="grid w-full grid-cols-1 sm:grid-cols-3 gap-2">
             <TabsTrigger 
               value="statistics" 
-              className="flex-1 sm:flex-none bg-background data-[state=active]:bg-primary"
+              className="w-full h-12 text-base bg-background hover:bg-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm"
             >
               Statistiques
             </TabsTrigger>
             <TabsTrigger 
               value="participants" 
-              className="flex-1 sm:flex-none bg-background data-[state=active]:bg-primary"
+              className="w-full h-12 text-base bg-background hover:bg-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm"
             >
               Participants
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="flex-1 sm:flex-none bg-background data-[state=active]:bg-primary"
+              className="w-full h-12 text-base bg-background hover:bg-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm"
             >
               Paramètres
             </TabsTrigger>
