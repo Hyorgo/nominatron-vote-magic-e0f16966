@@ -4,6 +4,7 @@ import { SuccessContent } from "@/components/payment/SuccessContent";
 import { ErrorContent } from "@/components/payment/ErrorContent";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 
 const PaymentStatus = () => {
   const navigate = useNavigate();
@@ -11,59 +12,55 @@ const PaymentStatus = () => {
   const status = searchParams.get('status');
   const sessionId = searchParams.get('session_id');
   const isSuccess = status === 'success';
+  const { toast } = useToast();
 
-  const { data: bookingInfo, isLoading } = useQuery({
+  const { data: bookingInfo, isLoading, error } = useQuery({
     queryKey: ['booking', sessionId],
     queryFn: async () => {
       if (!sessionId) {
-        console.error('No session ID provided');
-        return null;
+        throw new Error('Aucun ID de session fourni');
       }
 
-      console.log('Fetching transaction with session ID:', sessionId);
-      
-      // Récupérer la transaction Stripe correspondant au session_id
-      const { data: transaction, error: transactionError } = await supabase
+      // Utiliser une jointure pour récupérer les données en une seule requête
+      const { data, error } = await supabase
         .from('stripe_transactions')
-        .select('email, status')
+        .select(`
+          email,
+          status,
+          bookings!inner (
+            id,
+            first_name,
+            last_name,
+            email,
+            number_of_tickets,
+            created_at
+          )
+        `)
         .eq('id', sessionId)
-        .single();
+        .eq('status', 'succeeded')
+        .maybeSingle();
 
-      if (transactionError) {
-        console.error('Error fetching transaction:', transactionError);
-        return null;
+      if (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+        throw new Error('Erreur lors de la récupération des informations de réservation');
       }
 
-      if (!transaction) {
-        console.error('No transaction found');
-        return null;
+      if (!data) {
+        throw new Error('Aucune réservation trouvée pour cette transaction');
       }
 
-      console.log('Transaction found:', transaction);
-
-      if (transaction.status !== 'succeeded') {
-        console.error('Transaction status is not succeeded:', transaction.status);
-        return null;
-      }
-
-      // Utiliser l'email pour récupérer les informations de réservation
-      const { data: bookings, error: bookingError } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('email', transaction.email)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (bookingError) {
-        console.error('Error fetching booking:', bookingError);
-        return null;
-      }
-
-      console.log('Booking found:', bookings);
-      return bookings;
+      return data.bookings;
     },
-    enabled: isSuccess && !!sessionId,
+    retry: 1,
+    staleTime: 5 * 60 * 1000, // Considérer les données comme fraîches pendant 5 minutes
+    cacheTime: 30 * 60 * 1000, // Garder les données en cache pendant 30 minutes
+    onError: (error) => {
+      toast({
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Une erreur est survenue",
+        variant: "destructive",
+      });
+    },
   });
 
   useEffect(() => {
