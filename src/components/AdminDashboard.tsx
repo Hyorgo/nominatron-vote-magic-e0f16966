@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { AdminTabs } from "./admin/navigation/AdminTabs";
 import { Loader2 } from "lucide-react";
 import { useAdminData } from "@/hooks/useAdminData";
+import { useToast } from "@/hooks/use-toast";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { 
     scrollingTexts, 
     backgrounds, 
@@ -17,8 +19,21 @@ export const AdminDashboard = () => {
   } = useAdminData();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/admin');
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Déconnexion réussie",
+        description: "Vous avez été déconnecté avec succès",
+      });
+      navigate('/admin');
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de déconnexion",
+        description: "Une erreur est survenue lors de la déconnexion",
+      });
+    }
   };
 
   if (isLoading) {
