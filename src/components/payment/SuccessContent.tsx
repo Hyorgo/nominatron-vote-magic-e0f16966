@@ -8,6 +8,8 @@ interface SuccessContentProps {
 }
 
 export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentProps) => {
+  console.log('SuccessContent - bookingInfo reçu:', bookingInfo);
+
   const qrCodeData = bookingInfo ? JSON.stringify({
     firstName: bookingInfo.firstName,
     lastName: bookingInfo.lastName,
@@ -16,8 +18,29 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
     paymentStatus: "validé"
   }) : "";
 
+  if (!bookingInfo) {
+    return (
+      <div className="text-center">
+        <h1 className="mb-6 text-4xl font-bold golden-reflection">
+          Paiement confirmé !
+        </h1>
+        <p className="mb-8 text-xl text-muted-foreground">
+          Votre réservation a été enregistrée avec succès.
+        </p>
+        <Button 
+          onClick={onNavigateHome}
+          variant="default"
+          size="lg"
+        >
+          <Home className="mr-2" />
+          Retour à l'accueil
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="text-center">
       <div className="animate-[bounce_2s_ease-in-out_infinite]">
         <Heart size={64} className="mb-6 text-[#D946EF] fill-[#D946EF]" />
       </div>
@@ -27,7 +50,7 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
       <p className="mb-8 text-xl text-muted-foreground">
         Votre réservation a été enregistrée avec succès.
       </p>
-      <div className="mb-12 max-w-2xl">
+      <div className="mb-12 max-w-2xl mx-auto">
         <div className="mb-6 p-6 rounded-lg bg-secondary/30 backdrop-blur-sm border border-primary/20">
           <p className="text-lg">
             <span className="block mb-2 text-primary text-2xl">🎉 Merci pour votre confiance ! 🎉</span>
@@ -36,25 +59,23 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
             </span>
           </p>
           
-          {bookingInfo && (
-            <div className="mt-6 flex flex-col items-center justify-center">
-              <div className="bg-white p-4 rounded-lg shadow-lg">
-                <QRCodeSVG
-                  value={qrCodeData}
-                  size={200}
-                  level="H"
-                  includeMargin={true}
-                />
-              </div>
-              <div className="mt-6 text-left space-y-2">
-                <p><strong>Nom :</strong> {bookingInfo.lastName}</p>
-                <p><strong>Prénom :</strong> {bookingInfo.firstName}</p>
-                <p><strong>Email :</strong> {bookingInfo.email}</p>
-                <p><strong>Nombre de places :</strong> {bookingInfo.numberOfTickets}</p>
-                <p><strong>Statut du paiement :</strong> Validé</p>
-              </div>
+          <div className="mt-6 flex flex-col items-center justify-center">
+            <div className="bg-white p-4 rounded-lg shadow-lg">
+              <QRCodeSVG
+                value={qrCodeData}
+                size={200}
+                level="H"
+                includeMargin={true}
+              />
             </div>
-          )}
+            <div className="mt-6 text-left space-y-2">
+              <p><strong>Nom :</strong> {bookingInfo.lastName}</p>
+              <p><strong>Prénom :</strong> {bookingInfo.firstName}</p>
+              <p><strong>Email :</strong> {bookingInfo.email}</p>
+              <p><strong>Nombre de places :</strong> {bookingInfo.numberOfTickets}</p>
+              <p><strong>Statut du paiement :</strong> Validé</p>
+            </div>
+          </div>
         </div>
       </div>
       <Button 
@@ -65,6 +86,6 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
         <Home className="mr-2" />
         Retour à l'accueil
       </Button>
-    </>
+    </div>
   );
 };

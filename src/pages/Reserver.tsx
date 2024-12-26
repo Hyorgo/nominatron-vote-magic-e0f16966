@@ -39,8 +39,9 @@ const Reserver = () => {
       }
 
       // Stocker les informations de réservation dans le sessionStorage
-      sessionStorage.setItem('bookingInfo', JSON.stringify(reservationData));
-      console.log('Informations stockées dans sessionStorage:', reservationData);
+      const bookingInfoString = JSON.stringify(reservationData);
+      sessionStorage.setItem('bookingInfo', bookingInfoString);
+      console.log('Informations stockées dans sessionStorage:', bookingInfoString);
 
       console.log('Création de la session de paiement...');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
@@ -60,7 +61,7 @@ const Reserver = () => {
       }
 
       console.log('Redirection vers:', data.url);
-      window.open(data.url, '_blank');
+      window.location.href = data.url;
 
     } catch (error) {
       console.error('Erreur complète:', error);
