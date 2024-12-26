@@ -3,24 +3,26 @@ import { Nominee } from "@/types/nominees";
 import { SearchSortBar } from "./SearchSortBar";
 import { NomineeCard } from "./NomineeCard";
 import { useNominees } from "@/hooks/useNominees";
+import { Category } from "@/types/nominees";
 
 interface NomineesListProps {
-  nominees: Nominee[];
-  onUpdate: () => void;
-  onEdit: (nominee: Nominee) => void;
+  categories: Category[];
+  onDelete: (id: string) => void;
+  onEdit?: (nominee: Nominee) => void;
 }
 
-export const NomineesList = ({ nominees, onUpdate, onEdit }: NomineesListProps) => {
+export const NomineesList = ({ categories, onDelete, onEdit }: NomineesListProps) => {
   const {
     searchTerm,
     setSearchTerm,
     sortOrder,
     setSortOrder,
-    handleDelete,
     filterAndSortNominees,
-  } = useNominees(onUpdate);
+  } = useNominees(() => {});
 
-  const filteredNominees = filterAndSortNominees(nominees);
+  // Extraire tous les nominés de toutes les catégories
+  const allNominees = categories.flatMap(category => category.nominees);
+  const filteredNominees = filterAndSortNominees(allNominees);
 
   return (
     <Card className="p-4 space-y-4">
@@ -35,8 +37,8 @@ export const NomineesList = ({ nominees, onUpdate, onEdit }: NomineesListProps) 
           <NomineeCard
             key={nominee.id}
             nominee={nominee}
-            onDelete={handleDelete}
-            onEdit={onEdit}
+            onDelete={onDelete}
+            onEdit={onEdit || (() => {})}
           />
         ))}
       </div>
