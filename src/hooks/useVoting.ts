@@ -54,19 +54,23 @@ export const useVoting = () => {
         return {};
       }
 
-      console.log("Votes trouvés:", votes);
-      return votes.reduce((acc, vote) => ({
+      const votesMap = votes.reduce((acc, vote) => ({
         ...acc,
         [vote.category_id]: vote.nominee_id,
       }), {});
+
+      console.log("Votes trouvés:", votesMap);
+      return votesMap;
     },
     enabled: !!userEmail && !!isEmailValidated,
     staleTime: 30000,
     gcTime: 5 * 60 * 1000,
-    onSuccess: (data) => {
-      console.log("Mise à jour des votes sélectionnés avec:", data);
-      setSelectedNominees(data);
-    },
+    meta: {
+      onSuccess: (data: Record<string, string>) => {
+        console.log("Mise à jour des votes sélectionnés avec:", data);
+        setSelectedNominees(data);
+      }
+    }
   });
 
   const handleNomineeSelect = async (categoryId: string, nomineeId: string): Promise<void> => {
