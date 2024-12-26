@@ -38,6 +38,7 @@ export const VotingInterface = () => {
       <VotingHeader 
         isVotingOpen={isVotingOpen}
         onOpenDialog={() => setDialogOpen(true)}
+        userEmail={userEmail}
       />
 
       {votingConfig?.end_date && (
