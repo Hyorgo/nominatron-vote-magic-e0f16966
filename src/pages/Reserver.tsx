@@ -38,7 +38,9 @@ const Reserver = () => {
         return;
       }
 
+      // Stocker les informations de réservation dans le sessionStorage
       sessionStorage.setItem('bookingInfo', JSON.stringify(reservationData));
+      console.log('Informations stockées dans sessionStorage:', reservationData);
 
       console.log('Création de la session de paiement...');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
@@ -58,15 +60,7 @@ const Reserver = () => {
       }
 
       console.log('Redirection vers:', data.url);
-      const stripeWindow = window.open(data.url, '_blank');
-      
-      if (!stripeWindow) {
-        toast({
-          title: "Erreur",
-          description: "Veuillez autoriser les popups pour accéder à la page de paiement.",
-          variant: "destructive",
-        });
-      }
+      window.location.href = data.url;
 
     } catch (error) {
       console.error('Erreur complète:', error);

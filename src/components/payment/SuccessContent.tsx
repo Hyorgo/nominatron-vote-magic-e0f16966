@@ -16,6 +16,9 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
     paymentStatus: "validé"
   }) : "";
 
+  console.log('Données du QR code:', qrCodeData);
+  console.log('Informations de réservation dans SuccessContent:', bookingInfo);
+
   return (
     <>
       <div className="animate-[bounce_2s_ease-in-out_infinite]">

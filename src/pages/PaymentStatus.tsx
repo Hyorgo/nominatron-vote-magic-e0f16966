@@ -9,16 +9,19 @@ const PaymentStatus = () => {
   const status = searchParams.get('status');
   const isSuccess = status === 'success';
 
-  // Récupérer et parser les informations de réservation depuis sessionStorage
+  // Récupérer les informations de réservation depuis sessionStorage
   const bookingInfo = (() => {
     try {
       const storedData = sessionStorage.getItem('bookingInfo');
+      console.log('Données brutes du sessionStorage:', storedData);
+      
       if (!storedData) {
         console.error('Aucune information de réservation trouvée dans le sessionStorage');
         return null;
       }
+
       const parsedData = JSON.parse(storedData);
-      console.log('Informations de réservation récupérées:', parsedData);
+      console.log('Informations de réservation parsées:', parsedData);
       return parsedData;
     } catch (error) {
       console.error('Erreur lors de la récupération des informations de réservation:', error);
