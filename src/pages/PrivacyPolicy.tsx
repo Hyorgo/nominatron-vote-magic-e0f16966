@@ -8,29 +8,95 @@ const PrivacyPolicy = () => {
         <h1 className="text-3xl font-bold text-white mb-8">Politique de Confidentialité</h1>
         
         <section className="space-y-4 text-white/90">
-          <h2 className="text-xl font-semibold text-white">Collecte des informations</h2>
-          <p>Nous collectons des informations lorsque vous :</p>
+          <h2 className="text-xl font-semibold text-white">1. Informations sur le Responsable de Traitement</h2>
+          <p>
+            Le site www.sortir-lyon.com est édité par Sortir-Lyon, SAS au capital de 5 000 €, immatriculée au RCS de Lyon sous le numéro Lyon B 934 391 913, dont le siège social est situé au 10-12 Boulevard Vivier Merle, 69003 Lyon, France.
+          </p>
+          <p>
+            Le Responsable de publication est Adrien Savoye, joignable par email à contact@sortir-lyon.com ou par téléphone au +33 4 51 22 02 25.
+          </p>
+          <p>
+            Le site est conçu par la société ideAI, création de sites internet et référencement naturel, et hébergé par o2switch, Chemin des Pardiaux, 63000 Clermont-Ferrand, France.
+          </p>
+        </section>
+
+        <section className="space-y-4 text-white/90">
+          <h2 className="text-xl font-semibold text-white">2. Données Collectées</h2>
+          <p>Le site www.sortir-lyon.com collecte des données personnelles par divers moyens :</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Réservez des billets pour nos événements</li>
-            <li>Participez aux votes</li>
-            <li>Nous contactez via le formulaire de contact</li>
+            <li>Formulaire de contact : nom, prénom, email, numéro de téléphone, et message.</li>
+            <li>Formulaire de demande de devis : nom, prénom, email, numéro de téléphone, code postal, et détails de la demande.</li>
+            <li>Inscription à la newsletter : adresse email.</li>
+            <li>Formulaire de rappel : numéro de téléphone.</li>
+          </ul>
+          <p>Ces données sont collectées exclusivement dans le cadre de votre interaction avec Sortir-Lyon pour vous fournir des informations sur nos services et vous proposer des offres adaptées à vos besoins.</p>
+        </section>
+
+        <section className="space-y-4 text-white/90">
+          <h2 className="text-xl font-semibold text-white">3. Finalités des Données Collectées</h2>
+          <p>Les données recueillies sur le site www.sortir-lyon.com sont utilisées dans les objectifs suivants :</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Réponse aux demandes : les informations collectées via les formulaires de contact et de devis permettent de traiter vos requêtes et de vous recontacter selon vos préférences (téléphone ou email).</li>
+            <li>Envoi de communications commerciales : sous réserve de votre consentement, nous pouvons vous envoyer des offres promotionnelles et actualités.</li>
+            <li>Inscription à la Newsletter : pour vous transmettre des informations régulières sur les services proposés par Sortir-Lyon.</li>
+          </ul>
+          <p>Les données sont traitées par nos équipes internes et ne sont accessibles qu'aux collaborateurs habilités.</p>
+        </section>
+
+        <section className="space-y-4 text-white/90">
+          <h2 className="text-xl font-semibold text-white">4. Durée de Conservation des Données</h2>
+          <p>Sortir-Lyon conserve vos données personnelles uniquement pour la durée nécessaire à leur traitement :</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Données de contact et de devis : conservées pendant une durée maximale de 3 ans après la dernière interaction.</li>
+            <li>Données de la newsletter : conservées jusqu'à désinscription.</li>
+            <li>Données spécifiques : conservées en fonction des obligations légales applicables ou de l'activité pour laquelle elles ont été collectées.</li>
           </ul>
         </section>
 
         <section className="space-y-4 text-white/90">
-          <h2 className="text-xl font-semibold text-white">Utilisation des informations</h2>
-          <p>Les informations que nous collectons sont utilisées pour :</p>
+          <h2 className="text-xl font-semibold text-white">5. Vos Droits Concernant Vos Données</h2>
+          <p>Conformément à la législation en vigueur et notamment au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Gérer vos réservations et vous envoyer les confirmations</li>
-            <li>Vous permettre de participer aux votes</li>
-            <li>Vous contacter en cas de besoin concernant nos services</li>
-            <li>Améliorer votre expérience utilisateur</li>
+            <li>Droit d'accès : pour obtenir une copie de vos données personnelles traitées par Sortir-Lyon.</li>
+            <li>Droit de rectification : pour corriger vos informations personnelles.</li>
+            <li>Droit à l'effacement : pour demander la suppression de vos données, sauf si leur traitement est justifié par des obligations légales.</li>
+            <li>Droit à la limitation du traitement : pour restreindre temporairement l'utilisation de vos données.</li>
+            <li>Droit à la portabilité : pour recevoir vos données dans un format lisible, ou les transférer à un autre responsable de traitement.</li>
           </ul>
         </section>
 
         <section className="space-y-4 text-white/90">
-          <h2 className="text-xl font-semibold text-white">Protection des informations</h2>
-          <p>Nous mettons en œuvre une variété de mesures de sécurité pour préserver la sécurité de vos informations personnelles. Nous utilisons un cryptage à la pointe de la technologie pour protéger les informations sensibles transmises en ligne.</p>
+          <h2 className="text-xl font-semibold text-white">6. Sécurité des Données</h2>
+          <p>
+            Sortir-Lyon met en œuvre des mesures techniques et organisationnelles appropriées pour garantir la sécurité de vos données personnelles. Les données sont protégées contre tout accès non autorisé, perte, altération ou divulgation. Seuls les collaborateurs habilités peuvent y accéder dans le cadre de leurs missions.
+          </p>
+        </section>
+
+        <section className="space-y-4 text-white/90">
+          <h2 className="text-xl font-semibold text-white">7. Partage des Données avec des Tiers</h2>
+          <p>Les données personnelles collectées par Sortir-Lyon ne sont pas partagées avec des tiers, sauf dans les cas suivants :</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Prestataires de services : pour l'envoi des newsletters, des offres ou d'autres services spécifiques, sous réserve de la confidentialité.</li>
+            <li>Obligations légales : lorsque la loi exige la divulgation de vos informations.</li>
+          </ul>
+          <p>Sortir-Lyon s'engage à ne pas vendre, échanger ou transférer vos données personnelles sans votre consentement.</p>
+        </section>
+
+        <section className="space-y-4 text-white/90">
+          <h2 className="text-xl font-semibold text-white">8. Utilisation des Cookies</h2>
+          <p>Le site www.sortir-lyon.com utilise des cookies pour optimiser votre expérience utilisateur et analyser la performance du site. Les cookies peuvent inclure les outils suivants :</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Google Analytics : pour recueillir des statistiques de visites et analyser l'usage des pages.</li>
+            <li>Cookies de session : pour simplifier la navigation et conserver vos préférences.</li>
+          </ul>
+          <p>Vous pouvez configurer votre navigateur pour accepter ou refuser les cookies. Toutefois, notez que certains cookies sont essentiels au bon fonctionnement du site. En refusant les cookies, certaines fonctionnalités peuvent être limitées.</p>
+        </section>
+
+        <section className="space-y-4 text-white/90">
+          <h2 className="text-xl font-semibold text-white">9. Modifications de la Politique de Confidentialité</h2>
+          <p>
+            Sortir-Lyon se réserve le droit de modifier cette politique de confidentialité pour refléter les évolutions légales ou techniques. Nous vous invitons à consulter cette page régulièrement pour vous tenir informé de tout changement. La date de la dernière mise à jour est indiquée en haut de cette page.
+          </p>
         </section>
 
         <div className="pt-8">
