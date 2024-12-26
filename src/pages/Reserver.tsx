@@ -62,12 +62,17 @@ const Reserver = () => {
 
       console.log('Redirection vers:', data.url);
       
-      // Créer un élément form pour la redirection
-      const form = document.createElement('form');
-      form.method = 'GET';
-      form.action = data.url;
-      document.body.appendChild(form);
-      form.submit();
+      // Ouvrir l'URL Stripe dans un nouvel onglet
+      const stripeWindow = window.open(data.url, '_blank');
+      
+      // Vérifier si la fenêtre s'est bien ouverte
+      if (!stripeWindow) {
+        toast({
+          title: "Erreur",
+          description: "Le blocage des popups pourrait être activé. Veuillez autoriser les popups pour ce site.",
+          variant: "destructive",
+        });
+      }
 
     } catch (error) {
       console.error('Erreur complète:', error);
