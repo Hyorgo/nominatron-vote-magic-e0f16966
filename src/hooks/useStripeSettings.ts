@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useToast } from '@/components/ui/use-toast';
+import { useState, useEffect, useCallback } from 'react';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,22 +13,24 @@ interface StripeSettings {
   stripe_connection_status: string;
 }
 
+const defaultSettings: StripeSettings = {
+  stripe_price_id: '',
+  stripe_success_url: '',
+  stripe_cancel_url: '',
+  stripe_dashboard_url: '',
+  stripe_price_ht: '',
+  stripe_price_ttc: '',
+  stripe_connection_status: 'disconnected',
+};
+
 export const useStripeSettings = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [settings, setSettings] = useState<StripeSettings>({
-    stripe_price_id: '',
-    stripe_success_url: '',
-    stripe_cancel_url: '',
-    stripe_dashboard_url: '',
-    stripe_price_ht: '',
-    stripe_price_ttc: '',
-    stripe_connection_status: 'disconnected',
-  });
+  const [settings, setSettings] = useState<StripeSettings>(defaultSettings);
 
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       toast({
@@ -40,13 +42,15 @@ export const useStripeSettings = () => {
       return false;
     }
     return true;
-  };
+  }, [toast, navigate]);
 
-  const loadStripeSettings = async () => {
-    setLoading(true);
+  const loadStripeSettings = useCallback(async () => {
     try {
       const hasValidSession = await checkSession();
-      if (!hasValidSession) return;
+      if (!hasValidSession) {
+        setLoading(false);
+        return;
+      }
 
       const { data: stripeSettings, error } = await supabase
         .from('stripe_settings')
@@ -55,22 +59,12 @@ export const useStripeSettings = () => {
       if (error) throw error;
 
       if (stripeSettings && stripeSettings.length > 0) {
-        const settingsObject: StripeSettings = {
-          stripe_price_id: '',
-          stripe_success_url: '',
-          stripe_cancel_url: '',
-          stripe_dashboard_url: '',
-          stripe_price_ht: '',
-          stripe_price_ttc: '',
-          stripe_connection_status: 'disconnected',
-        };
-
+        const settingsObject = { ...defaultSettings };
         stripeSettings.forEach((setting) => {
           if (setting.setting_name in settingsObject) {
             settingsObject[setting.setting_name as keyof StripeSettings] = setting.setting_value;
           }
         });
-
         setSettings(settingsObject);
       }
     } catch (error) {
@@ -83,7 +77,7 @@ export const useStripeSettings = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [checkSession, toast]);
 
   const saveSettings = async () => {
     setSaving(true);
@@ -161,7 +155,7 @@ export const useStripeSettings = () => {
 
   useEffect(() => {
     loadStripeSettings();
-  }, []);
+  }, [loadStripeSettings]);
 
   return {
     loading,
