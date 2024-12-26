@@ -24,23 +24,36 @@ export const useVoting = () => {
       const { data: { session } } = await supabase.auth.getSession();
       const email = session?.user?.email;
       
-      if (email) {
-        const { data: validatedEmail } = await supabase
-          .from('validated_emails')
-          .select('email')
-          .eq('email', email)
-          .single();
+      console.log("Session email:", email);
+      
+      if (!email) {
+        console.log("Pas d'email fourni");
+        setUserEmail(undefined);
+        return;
+      }
 
-        if (validatedEmail) {
-          setUserEmail(email);
-          await loadPreviousVotes(email);
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Email non validé",
-            description: "Votre email n'a pas encore été validé pour voter.",
-          });
-        }
+      const { data: validatedEmail, error } = await supabase
+        .from('validated_emails')
+        .select('email')
+        .eq('email', email)
+        .single();
+
+      if (error) {
+        console.error("Erreur lors de la vérification de l'email:", error);
+        return;
+      }
+
+      if (validatedEmail) {
+        console.log("Email validé:", email);
+        setUserEmail(email);
+        await loadPreviousVotes(email);
+      } else {
+        console.log("Email non validé:", email);
+        toast({
+          variant: "destructive",
+          title: "Email non validé",
+          description: "Votre email n'a pas encore été validé pour voter.",
+        });
       }
     } catch (error) {
       console.error('Erreur lors de la vérification de l\'email:', error);
@@ -49,11 +62,16 @@ export const useVoting = () => {
 
   const loadVotingConfig = async () => {
     try {
-      const { data: configs } = await supabase
+      const { data: configs, error } = await supabase
         .from('voting_config')
         .select('start_date, end_date')
         .order('created_at', { ascending: false })
         .limit(1);
+
+      if (error) {
+        console.error('Erreur lors du chargement de la configuration:', error);
+        return;
+      }
 
       if (configs && configs.length > 0) {
         const config = configs[0];
@@ -112,25 +130,29 @@ export const useVoting = () => {
   };
 
   const handleNomineeSelect = async (categoryId: string, nomineeId: string): Promise<void> => {
+    console.log("Début du vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
+
     if (!isVotingOpen) {
+      const error = new Error("Les votes ne sont pas ouverts actuellement");
+      console.error(error);
       toast({
         variant: "destructive",
         title: "Votes fermés",
         description: "Les votes ne sont pas ouverts actuellement.",
       });
-      throw new Error("Les votes ne sont pas ouverts");
+      throw error;
     }
 
     if (!userEmail) {
+      const error = new Error("Vous devez être connecté avec un email validé pour voter");
+      console.error(error);
       toast({
         variant: "destructive",
         title: "Non connecté",
         description: "Vous devez être connecté avec un email validé pour voter.",
       });
-      throw new Error("Utilisateur non connecté ou email non validé");
+      throw error;
     }
-
-    console.log("Début du vote...", { categoryId, nomineeId, userEmail });
 
     try {
       const { error } = await supabase

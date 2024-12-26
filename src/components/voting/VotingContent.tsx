@@ -24,35 +24,25 @@ export const VotingContent = ({
   const { toast } = useToast();
   const category = categories[currentCategory];
 
-  const handleVote = async (categoryId: string, nomineeId: string) => {
+  const handleVote = async (nomineeId: string) => {
     try {
-      console.log("Début du vote...", { categoryId, nomineeId });
-      
-      // Attendre explicitement que le vote soit enregistré
-      await onVote(categoryId, nomineeId);
-      console.log("Vote enregistré avec succès");
-      
-      // Afficher la notification de succès
-      toast({
-        title: "Vote enregistré !",
-        description: `Votre choix a été sauvegardé avec succès${
-          currentCategory < categories.length - 1 ? ". Passage à la catégorie suivante..." : " !"
-        }`,
+      console.log("Tentative de vote pour:", { 
+        categoryId: category.id, 
+        nomineeId,
+        currentCategory 
       });
-
+      
+      await onVote(category.id, nomineeId);
+      
       // Passer à la catégorie suivante si ce n'est pas la dernière
       if (currentCategory < categories.length - 1) {
         setTimeout(() => {
           onCategoryChange(currentCategory + 1);
-        }, 1000); // Augmenté à 1000ms pour plus de stabilité
+        }, 1500); // Augmenté à 1.5s pour plus de stabilité
       }
     } catch (error) {
-      console.error("Erreur détaillée lors du vote:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur lors du vote",
-        description: "Impossible d'enregistrer votre vote pour le moment. Veuillez réessayer.",
-      });
+      console.error("Erreur lors du vote:", error);
+      // L'erreur est déjà gérée dans useVoting
     }
   };
 
@@ -89,7 +79,7 @@ export const VotingContent = ({
             key={nominee.id}
             nominee={nominee}
             isSelected={selectedNominees[category.id] === nominee.id}
-            onClick={() => handleVote(category.id, nominee.id)}
+            onClick={() => handleVote(nominee.id)}
           />
         ))}
       </div>
