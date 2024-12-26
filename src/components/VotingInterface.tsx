@@ -6,11 +6,12 @@ import { Category } from "@/types/nominees";
 import { VotingHeader } from "./voting/VotingHeader";
 import { VotingDialog } from "./voting/VotingDialog";
 import { VotingContent } from "./voting/VotingContent";
+import { VotingCountdown } from "./voting/VotingCountdown";
 import { useToast } from "./ui/use-toast";
 
 export const VotingInterface = () => {
   const [currentCategory, setCurrentCategory] = useState(0);
-  const { isVotingOpen, selectedNominees, handleNomineeSelect } = useVoting();
+  const { isVotingOpen, selectedNominees, handleNomineeSelect, votingConfig } = useVoting();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -81,6 +82,12 @@ export const VotingInterface = () => {
         isVotingOpen={isVotingOpen}
         onOpenDialog={() => setDialogOpen(true)}
       />
+
+      {votingConfig?.end_date && (
+        <div className="mb-6">
+          <VotingCountdown endDate={new Date(votingConfig.end_date)} />
+        </div>
+      )}
 
       <VotingDialog 
         open={dialogOpen}
