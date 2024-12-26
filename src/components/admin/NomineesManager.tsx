@@ -6,25 +6,41 @@ import { Loader2 } from "lucide-react";
 import { NomineeForm } from "./nominees/NomineeForm";
 import { NomineesList } from "./nominees/NomineesList";
 import { Category } from "../../types/nominees";
+import { PaginationControls } from "../ui/pagination-controls";
+
+const ITEMS_PER_PAGE = 10;
 
 export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   const fetchData = async () => {
     try {
-      const [categoriesResponse, nomineesResponse] = await Promise.all([
+      const start = (currentPage - 1) * ITEMS_PER_PAGE;
+      const end = start + ITEMS_PER_PAGE - 1;
+
+      const [categoriesResponse, nomineesResponse, totalCount] = await Promise.all([
         supabase.from("categories").select("*").order("display_order"),
-        supabase.from("nominees").select("*"),
+        supabase
+          .from("nominees")
+          .select("*")
+          .range(start, end)
+          .order("created_at", { ascending: false }),
+        supabase.from("nominees").select("*", { count: "exact", head: true }),
       ]);
 
       if (categoriesResponse.error) throw categoriesResponse.error;
       if (nomineesResponse.error) throw nomineesResponse.error;
+
+      const total = totalCount.count || 0;
+      setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
 
       const categoriesWithNominees = categoriesResponse.data.map((category) => ({
         ...category,
@@ -46,7 +62,11 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     }
   };
 
-  const addNominee = async (nominee: { name: string; description: string; category_id: string }) => {
+  const addNominee = async (nominee: {
+    name: string;
+    description: string;
+    category_id: string;
+  }) => {
     try {
       const { error } = await supabase.from("nominees").insert([nominee]);
 
@@ -105,6 +125,11 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
       <h3 className="text-lg font-semibold mb-4">Gestion des nominés</h3>
       <NomineeForm categories={categories} onSubmit={addNominee} />
       <NomineesList categories={categories} onDelete={deleteNominee} />
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </Card>
   );
 };
