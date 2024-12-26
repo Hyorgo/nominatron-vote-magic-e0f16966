@@ -62,8 +62,12 @@ const Reserver = () => {
 
       console.log('Redirection vers:', data.url);
       
-      // Redirection directe vers l'URL Stripe
-      window.location.assign(data.url);
+      // Créer un élément form pour la redirection
+      const form = document.createElement('form');
+      form.method = 'GET';
+      form.action = data.url;
+      document.body.appendChild(form);
+      form.submit();
 
     } catch (error) {
       console.error('Erreur complète:', error);
