@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { calculateTimeLeft } from "@/lib/utils";
 import { WelcomeMessage } from "./welcome/WelcomeMessage";
 import { TimeDisplay } from "./countdown/TimeDisplay";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VotingCountdownProps {
   endDate: Date;
