@@ -25,15 +25,15 @@ export const CategoryTabs = ({ categories, currentCategory, selectedNominees = {
               "transition-all duration-200 hover:scale-105",
               "border border-border/50 shadow-sm",
               currentCategory === category.id && "ring-2 ring-primary ring-offset-2",
-              hasVoted && "bg-emerald-50 dark:bg-emerald-950/20"
+              hasVoted && "bg-emerald-100 dark:bg-emerald-900/30"
             )}
           >
             <span className="text-sm font-medium">{category.name}</span>
             {hasVoted && (
               <Check 
                 className={cn(
-                  "h-4 w-4",
-                  "text-emerald-500",
+                  "h-5 w-5",
+                  "text-emerald-600 dark:text-emerald-400",
                   "animate-in fade-in duration-300"
                 )} 
               />
