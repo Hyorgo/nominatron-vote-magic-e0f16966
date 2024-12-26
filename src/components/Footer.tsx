@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -72,9 +74,9 @@ const Footer = () => {
           Politique de confidentialité
         </a>
         <span className="hidden sm:inline">•</span>
-        <a href="#" className="hover:text-gold transition-colors">
+        <Link to="/contact" className="hover:text-gold transition-colors">
           Contact
-        </a>
+        </Link>
       </div>
     </footer>
   );
