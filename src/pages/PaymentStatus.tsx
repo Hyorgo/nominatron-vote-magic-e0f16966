@@ -17,29 +17,31 @@ const PaymentStatus = () => {
     queryFn: async () => {
       if (!sessionId) return null;
 
-      // Récupérer d'abord la transaction Stripe pour avoir l'email
+      // Récupérer la transaction Stripe correspondant au session_id
       const { data: transactions, error: transactionError } = await supabase
         .from('stripe_transactions')
         .select('email')
+        .eq('id', sessionId)
         .eq('status', 'succeeded')
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .single();
 
       if (transactionError) {
         console.error('Erreur lors de la récupération de la transaction:', transactionError);
         return null;
       }
 
-      if (!transactions || transactions.length === 0) {
+      if (!transactions) {
         console.error('Aucune transaction trouvée');
         return null;
       }
+
+      console.log('Transaction trouvée:', transactions);
 
       // Utiliser l'email pour récupérer les informations de réservation
       const { data: bookings, error: bookingError } = await supabase
         .from('bookings')
         .select('*')
-        .eq('email', transactions[0].email)
+        .eq('email', transactions.email)
         .order('created_at', { ascending: false })
         .limit(1);
 
@@ -53,6 +55,7 @@ const PaymentStatus = () => {
         return null;
       }
 
+      console.log('Réservation trouvée:', bookings[0]);
       return bookings[0];
     },
     enabled: isSuccess && !!sessionId,
