@@ -41,20 +41,21 @@ export const useVoting = () => {
       return votesMap;
     },
     enabled: !!userEmail && isVotingOpen,
-    staleTime: 5 * 60 * 1000, // Les données restent fraîches pendant 5 minutes
-    gcTime: 30 * 60 * 1000, // Garde en cache pendant 30 minutes
+    staleTime: Infinity, // Les données restent fraîches jusqu'à invalidation manuelle
+    gcTime: Infinity, // Garde en cache jusqu'à invalidation manuelle
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
+    retry: false, // Désactive les tentatives de nouvelle requête en cas d'erreur
   });
 
-  // Synchronisation des votes avec l'état local
+  // Synchronisation des votes avec l'état local une seule fois au chargement
   useEffect(() => {
     if (votes && Object.keys(votes).length > 0) {
-      console.log("Mise à jour de l'état local avec les votes:", votes);
+      console.log("Initialisation de l'état local avec les votes:", votes);
       setSelectedNominees(votes);
     }
-  }, [votes]);
+  }, []);
 
   const handleNomineeSelect = useCallback(async (categoryId: string, nomineeId: string) => {
     console.log("Tentative de vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
@@ -78,6 +79,18 @@ export const useVoting = () => {
     }
 
     try {
+      // Mise à jour optimiste de l'état local
+      setSelectedNominees(prev => ({
+        ...prev,
+        [categoryId]: nomineeId,
+      }));
+
+      // Mise à jour du cache avant la requête
+      queryClient.setQueryData(['previousVotes', userEmail], (oldData: any) => ({
+        ...oldData,
+        [categoryId]: nomineeId,
+      }));
+
       const { error } = await supabase
         .from('votes')
         .upsert(
@@ -92,7 +105,20 @@ export const useVoting = () => {
         );
 
       if (error) {
+        // En cas d'erreur, on revient à l'état précédent
         console.error('Erreur Supabase lors du vote:', error);
+        setSelectedNominees(prev => {
+          const newState = { ...prev };
+          delete newState[categoryId];
+          return newState;
+        });
+        
+        // On invalide le cache pour forcer un rechargement
+        queryClient.invalidateQueries({ 
+          queryKey: ['previousVotes', userEmail],
+          exact: true 
+        });
+
         toast({
           variant: "destructive",
           title: "Erreur",
@@ -100,18 +126,6 @@ export const useVoting = () => {
         });
         return;
       }
-
-      // Mise à jour optimiste de l'état local
-      setSelectedNominees(prev => ({
-        ...prev,
-        [categoryId]: nomineeId,
-      }));
-
-      // Invalider uniquement la requête spécifique
-      queryClient.setQueryData(['previousVotes', userEmail], (oldData: any) => ({
-        ...oldData,
-        [categoryId]: nomineeId,
-      }));
 
       console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
       
