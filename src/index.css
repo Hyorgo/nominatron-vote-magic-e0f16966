@@ -70,6 +70,15 @@
     overflow-x: hidden;
   }
 
+  /* Halos masqués sur mobile */
+  @media (max-width: 768px) {
+    body::before,
+    body::after,
+    .gold-halo {
+      display: none;
+    }
+  }
+
   /* Halo fuchsia à gauche */
   body::before {
     content: '';
