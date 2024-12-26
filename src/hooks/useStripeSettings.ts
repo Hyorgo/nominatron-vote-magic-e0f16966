@@ -100,19 +100,31 @@ export const useStripeSettings = () => {
 
   const testConnection = async () => {
     try {
-      const response = await fetch('/api/test-stripe-connection');
-      const data = await response.json();
+      const response = await supabase.functions.invoke('test-stripe-connection');
+      const { success, message } = response.data;
       
       setSettings(prev => ({
         ...prev,
-        stripe_connection_status: data.success ? 'connected' : 'disconnected'
+        stripe_connection_status: success ? 'connected' : 'disconnected'
       }));
 
       toast({
-        title: data.success ? 'Succès' : 'Erreur',
-        description: data.message,
-        variant: data.success ? 'default' : 'destructive',
+        title: success ? 'Succès' : 'Erreur',
+        description: message,
+        variant: success ? 'default' : 'destructive',
       });
+
+      // Save the new connection status
+      if (success) {
+        const { error } = await supabase
+          .from('stripe_settings')
+          .upsert({ 
+            setting_name: 'stripe_connection_status', 
+            setting_value: 'connected' 
+          }, { onConflict: 'setting_name' });
+
+        if (error) throw error;
+      }
     } catch (error) {
       console.error('Erreur lors du test de connexion:', error);
       toast({
