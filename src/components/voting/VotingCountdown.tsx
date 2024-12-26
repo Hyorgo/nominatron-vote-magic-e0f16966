@@ -19,7 +19,7 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      console.log("Email de l'utilisateur:", userEmail); // Log l'email reçu
+      console.log("Email de l'utilisateur:", userEmail);
 
       if (userEmail) {
         const { data, error } = await supabase
@@ -33,7 +33,7 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
           return;
         }
         
-        console.log("Données reçues de la base:", data); // Log les données reçues
+        console.log("Données reçues de la base:", data);
         
         if (data?.first_name) {
           console.log("Prénom trouvé:", data.first_name);
@@ -71,9 +71,9 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
       <div className="space-y-4">
         {firstName && (
           <div className="flex items-center gap-2 text-primary">
-            <User className="h-4 w-4" />
-            <p className="font-medium">
-              Bienvenue {firstName} ! Nous sommes ravis de vous voir participer aux votes.
+            <User className="h-5 w-5" />
+            <p className="text-xl font-semibold">
+              Bienvenue {firstName} 👋 Nous sommes ravis de vous voir participer aux votes.
             </p>
           </div>
         )}
