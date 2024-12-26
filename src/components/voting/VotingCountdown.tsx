@@ -1,18 +1,39 @@
 import { useState, useEffect } from "react";
 import { differenceInSeconds } from "date-fns";
 import { Card } from "@/components/ui/card";
-import { Timer } from "lucide-react";
+import { Timer, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VotingCountdownProps {
   endDate: Date;
+  userEmail?: string;
 }
 
-export const VotingCountdown = ({ endDate }: VotingCountdownProps) => {
+export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) => {
   const [timeLeft, setTimeLeft] = useState<{
     hours: number;
     minutes: number;
     seconds: number;
   }>({ hours: 0, minutes: 0, seconds: 0 });
+  const [firstName, setFirstName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (userEmail) {
+        const { data } = await supabase
+          .from("validated_emails")
+          .select("first_name")
+          .eq("email", userEmail)
+          .single();
+        
+        if (data?.first_name) {
+          setFirstName(data.first_name);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [userEmail]);
 
   useEffect(() => {
     const updateCountdown = () => {
@@ -51,6 +72,16 @@ export const VotingCountdown = ({ endDate }: VotingCountdownProps) => {
         <p className="text-sm text-muted-foreground">
           N'attendez pas la dernière minute pour voter pour vos nominés préférés !
         </p>
+        {firstName && (
+          <div className="mt-4 pt-4 border-t border-primary/10">
+            <div className="flex items-center gap-2 text-primary">
+              <User className="h-4 w-4" />
+              <p className="font-medium">
+                Bienvenue {firstName} ! Nous sommes ravis de vous voir participer aux votes.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </Card>
   );

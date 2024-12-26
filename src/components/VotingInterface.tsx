@@ -11,7 +11,7 @@ import { useToast } from "./ui/use-toast";
 
 export const VotingInterface = () => {
   const [currentCategory, setCurrentCategory] = useState(0);
-  const { isVotingOpen, selectedNominees, handleNomineeSelect, votingConfig } = useVoting();
+  const { isVotingOpen, selectedNominees, handleNomineeSelect, votingConfig, userEmail } = useVoting();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,7 +85,10 @@ export const VotingInterface = () => {
 
       {votingConfig?.end_date && (
         <div className="mb-6">
-          <VotingCountdown endDate={new Date(votingConfig.end_date)} />
+          <VotingCountdown 
+            endDate={new Date(votingConfig.end_date)}
+            userEmail={userEmail}
+          />
         </div>
       )}
 
