@@ -43,10 +43,12 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, {
       apiVersion: '2023-10-16',
+      httpClient: Stripe.createFetchHttpClient(),
     })
 
     console.log('Creating payment session...')
     const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
@@ -70,6 +72,11 @@ serve(async (req) => {
         numberOfTickets: numberOfTickets.toString(),
       },
       locale: 'fr',
+      allow_promotion_codes: true,
+      billing_address_collection: 'required',
+      phone_number_collection: {
+        enabled: true,
+      },
     })
     
     console.log('Session created successfully:', session.id)
@@ -78,7 +85,7 @@ serve(async (req) => {
     const { error: transactionError } = await supabase
       .from('stripe_transactions')
       .insert({
-        id: session.id, // Utiliser l'ID de session Stripe comme ID de transaction
+        id: session.id,
         email: email,
         amount: 19200 * numberOfTickets,
         status: 'pending',
@@ -96,6 +103,7 @@ serve(async (req) => {
         last_name: lastName,
         email: email,
         number_of_tickets: numberOfTickets,
+        stripe_session_id: session.id,
       })
 
     if (bookingError) {
