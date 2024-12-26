@@ -34,14 +34,14 @@ export const VotingInterface = () => {
   }
 
   return (
-    <div className="container max-w-7xl py-8 animate-fade-in">
+    <div className="container max-w-7xl py-12 sm:py-16 animate-fade-in">
       <VotingHeader 
         isVotingOpen={isVotingOpen}
         onOpenDialog={() => setDialogOpen(true)}
       />
 
       {votingConfig?.end_date && (
-        <div className="mb-6">
+        <div className="mb-8 sm:mb-12">
           <VotingCountdown 
             endDate={new Date(votingConfig.end_date)}
             userEmail={userEmail}

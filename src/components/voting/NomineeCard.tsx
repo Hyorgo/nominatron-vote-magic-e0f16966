@@ -32,16 +32,17 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
     <TooltipProvider>
       <Card 
         className={cn(
-          "group relative overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg",
+          "group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl",
           "border border-border/50 hover:border-primary/50",
           "animate-fade-in w-full h-full flex flex-col",
+          "bg-white/[0.02] backdrop-blur-sm",
           isSelected && "ring-2 ring-primary ring-offset-2 bg-primary/5"
         )}
       >
         {isSelected && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="absolute top-3 right-3 bg-primary text-primary-foreground rounded-full p-1.5 shadow-lg animate-scale-in z-10 cursor-help">
+              <div className="absolute top-4 right-4 bg-primary text-primary-foreground rounded-full p-2 shadow-lg animate-scale-in z-10 cursor-help">
                 <Check className="h-4 w-4" />
               </div>
             </TooltipTrigger>
@@ -52,13 +53,13 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
         )}
         
         {nominee.image_url && (
-          <div className="relative h-48 sm:h-56 overflow-hidden rounded-t-lg">
+          <div className="relative h-48 sm:h-64 overflow-hidden rounded-t-lg">
             <img
               src={nominee.image_url}
               alt={nominee.name}
               className={cn(
-                "object-cover w-full h-full transition-transform duration-300",
-                "group-hover:scale-105",
+                "object-cover w-full h-full transition-transform duration-500",
+                "group-hover:scale-110",
                 isSelected && "brightness-110"
               )}
             />
@@ -68,10 +69,10 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </div>
         )}
         
-        <CardHeader className="space-y-1 p-4 sm:p-6 flex-grow">
+        <CardHeader className="space-y-2 p-5 sm:p-6 flex-grow">
           <CardTitle 
             className={cn(
-              "text-lg sm:text-xl transition-colors duration-300 line-clamp-2",
+              "text-xl sm:text-2xl transition-colors duration-300 line-clamp-2",
               "group-hover:text-primary",
               isSelected && "text-primary"
             )}
@@ -80,7 +81,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </CardTitle>
           <CardDescription 
             className={cn(
-              "text-sm sm:text-base line-clamp-2 mt-2",
+              "text-base sm:text-lg line-clamp-3 mt-2",
               isSelected && "text-foreground/80"
             )}
           >
@@ -88,22 +89,23 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </CardDescription>
         </CardHeader>
         
-        <CardContent className="p-4 sm:p-6 pt-0 mt-auto">
+        <CardContent className="p-5 sm:p-6 pt-0 mt-auto">
           <div className="space-y-4">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 
                   onClick={onClick}
                   variant={isSelected ? "secondary" : "default"}
+                  size="lg"
                   className={cn(
                     "w-full transition-all duration-300",
-                    "text-sm sm:text-base",
-                    "group-hover:shadow-md",
+                    "text-base sm:text-lg",
+                    "group-hover:shadow-lg",
                     isSelected && "bg-primary/20 hover:bg-primary/30"
                   )}
                 >
                   <Vote className={cn(
-                    "mr-2 h-4 w-4 transition-transform duration-300",
+                    "mr-2 h-5 w-5 transition-transform duration-300",
                     isSelected && "rotate-12"
                   )} />
                   {isSelected ? "Sélectionné" : "Voter"}
@@ -117,8 +119,8 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
             </Tooltip>
 
             {isSelected && (
-              <div className="pt-2 border-t space-y-2">
-                <div className="text-sm text-muted-foreground text-center">
+              <div className="pt-4 border-t space-y-3">
+                <div className="text-base text-muted-foreground text-center">
                   Partagez votre vote !
                 </div>
                 <SocialShare 
