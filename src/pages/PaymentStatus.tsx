@@ -45,6 +45,30 @@ const PaymentStatus = () => {
       }
 
       console.log('Données de transaction:', data);
+
+      // Si la transaction est réussie, envoyer l'email de confirmation
+      if (data?.status === 'succeeded' && bookingInfo) {
+        try {
+          console.log('Envoi de l\'email de confirmation...');
+          const { error: emailError } = await supabase.functions.invoke('send-booking-confirmation', {
+            body: bookingInfo
+          });
+
+          if (emailError) {
+            console.error('Erreur lors de l\'envoi de l\'email de confirmation:', emailError);
+            toast({
+              title: "Attention",
+              description: "La réservation est confirmée mais l'email de confirmation n'a pas pu être envoyé.",
+              variant: "destructive",
+            });
+          } else {
+            console.log('Email de confirmation envoyé avec succès');
+          }
+        } catch (emailError) {
+          console.error('Erreur lors de l\'envoi de l\'email:', emailError);
+        }
+      }
+
       return data;
     },
     enabled: isSuccess && !!sessionId,

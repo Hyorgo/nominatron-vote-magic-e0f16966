@@ -60,27 +60,6 @@ const Reserver = () => {
         throw new Error('Pas d\'URL de paiement reçue');
       }
 
-      // Envoyer l'email de confirmation
-      try {
-        console.log('Envoi de l\'email de confirmation...');
-        const { error: emailError } = await supabase.functions.invoke('send-booking-confirmation', {
-          body: reservationData
-        });
-
-        if (emailError) {
-          console.error('Erreur lors de l\'envoi de l\'email de confirmation:', emailError);
-          toast({
-            title: "Attention",
-            description: "La réservation est enregistrée mais l'email de confirmation n'a pas pu être envoyé.",
-            variant: "destructive",
-          });
-        } else {
-          console.log('Email de confirmation envoyé avec succès');
-        }
-      } catch (emailError) {
-        console.error('Erreur lors de l\'envoi de l\'email:', emailError);
-      }
-
       console.log('Redirection vers:', data.url);
       
       // Ouvrir l'URL Stripe dans un nouvel onglet
