@@ -1,4 +1,4 @@
-import { Heart, Home, Download } from "lucide-react";
+import { Heart, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTicketDownload } from "@/hooks/useTicketDownload";
 import { useEffect } from "react";
@@ -14,9 +14,8 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
   useEffect(() => {
     console.log('SuccessContent monté, bookingInfo:', bookingInfo);
     
-    // Vérifier que bookingInfo contient toutes les données nécessaires
     if (bookingInfo && bookingInfo.firstName && bookingInfo.lastName && bookingInfo.email && bookingInfo.numberOfTickets) {
-      console.log('Démarrage du téléchargement automatique avec les données:', bookingInfo);
+      console.log('Traitement de la réservation avec les données:', bookingInfo);
       downloadTicket(bookingInfo);
     } else {
       console.error('Informations de réservation manquantes ou invalides:', bookingInfo);
@@ -38,25 +37,11 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
         <div className="mb-6 p-6 rounded-lg bg-secondary/30 backdrop-blur-sm border border-primary/20">
           <p className="text-lg">
             <span className="block mb-2 text-primary text-2xl">🎉 Merci pour votre confiance ! 🎉</span>
-            <span className="golden-reflection block mb-2">
-              Le téléchargement de votre billet devrait démarrer automatiquement
-            </span>
             <span className="text-muted-foreground">
-              Si ce n'est pas le cas, vous pouvez le télécharger en cliquant sur le bouton ci-dessous.
+              Votre réservation a bien été prise en compte.
             </span>
           </p>
         </div>
-        <Button
-          onClick={() => {
-            console.log('Tentative de téléchargement manuel avec bookingInfo:', bookingInfo);
-            downloadTicket(bookingInfo);
-          }}
-          className="w-full mb-6"
-          disabled={isDownloading}
-        >
-          <Download className="mr-2 h-4 w-4" />
-          {isDownloading ? "Téléchargement..." : "Télécharger mon billet"}
-        </Button>
       </div>
       <Button 
         onClick={onNavigateHome}

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 export const useTicketDownload = () => {
@@ -7,7 +6,7 @@ export const useTicketDownload = () => {
   const { toast } = useToast();
 
   const downloadTicket = async (bookingInfo: any) => {
-    console.log('Début de la fonction downloadTicket avec bookingInfo:', bookingInfo);
+    console.log('Fonction downloadTicket appelée avec bookingInfo:', bookingInfo);
     
     if (!bookingInfo || !bookingInfo.firstName || !bookingInfo.lastName || !bookingInfo.email || !bookingInfo.numberOfTickets) {
       console.error('Informations de réservation invalides:', bookingInfo);
@@ -22,60 +21,19 @@ export const useTicketDownload = () => {
 
     try {
       setIsDownloading(true);
-      console.log('Envoi des données pour génération du PDF:', {
-        firstName: bookingInfo.firstName,
-        lastName: bookingInfo.lastName,
-        email: bookingInfo.email,
-        numberOfTickets: bookingInfo.numberOfTickets
-      });
       
-      const { data, error } = await supabase.functions.invoke('generate-ticket-pdf', {
-        body: {
-          firstName: bookingInfo.firstName,
-          lastName: bookingInfo.lastName,
-          email: bookingInfo.email,
-          numberOfTickets: bookingInfo.numberOfTickets
-        }
-      });
-
-      if (error) {
-        console.error('Erreur lors de la génération du PDF:', error);
-        throw error;
-      }
-
-      if (!data) {
-        console.error('Pas de données reçues du serveur');
-        throw new Error('Pas de données reçues du serveur');
-      }
-
-      console.log('Données PDF reçues, création du blob...');
-      
-      // Convertir le base64 en Uint8Array
-      const pdfBytes = Uint8Array.from(atob(data), c => c.charCodeAt(0));
-      
-      // Créer un blob à partir des données
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      
-      // Créer un lien temporaire pour télécharger le PDF
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `billet-${bookingInfo.firstName}-${bookingInfo.lastName}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
+      // Pour l'instant, on affiche juste un message de succès
       toast({
         title: "Succès",
-        description: "Votre billet a été téléchargé",
+        description: "Votre réservation a été enregistrée",
         duration: 5000,
       });
+
     } catch (error) {
-      console.error('Erreur détaillée lors du téléchargement du billet:', error);
+      console.error('Erreur lors de la réservation:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de télécharger votre billet. Veuillez réessayer.",
+        description: "Une erreur est survenue lors de la réservation",
         variant: "destructive",
         duration: 5000,
       });
