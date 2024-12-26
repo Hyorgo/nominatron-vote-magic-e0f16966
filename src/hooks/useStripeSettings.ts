@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 interface StripeSettings {
   stripe_price_id: string;
@@ -14,6 +15,7 @@ interface StripeSettings {
 
 export const useStripeSettings = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<StripeSettings>({
@@ -26,9 +28,26 @@ export const useStripeSettings = () => {
     stripe_connection_status: 'disconnected',
   });
 
+  const checkSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({
+        variant: 'destructive',
+        title: 'Session expirée',
+        description: 'Veuillez vous reconnecter',
+      });
+      navigate('/');
+      return false;
+    }
+    return true;
+  };
+
   const loadStripeSettings = async () => {
     setLoading(true);
     try {
+      const hasValidSession = await checkSession();
+      if (!hasValidSession) return;
+
       const { data: stripeSettings, error } = await supabase
         .from('stripe_settings')
         .select('*');
@@ -69,6 +88,9 @@ export const useStripeSettings = () => {
   const saveSettings = async () => {
     setSaving(true);
     try {
+      const hasValidSession = await checkSession();
+      if (!hasValidSession) return;
+
       const updates = Object.entries(settings).map(([key, value]) => ({
         setting_name: key,
         setting_value: value,
@@ -100,6 +122,9 @@ export const useStripeSettings = () => {
 
   const testConnection = async () => {
     try {
+      const hasValidSession = await checkSession();
+      if (!hasValidSession) return;
+
       const response = await supabase.functions.invoke('test-stripe-connection');
       const { success, message } = response.data;
       
@@ -114,7 +139,6 @@ export const useStripeSettings = () => {
         variant: success ? 'default' : 'destructive',
       });
 
-      // Save the new connection status
       if (success) {
         const { error } = await supabase
           .from('stripe_settings')
