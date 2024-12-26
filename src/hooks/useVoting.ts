@@ -16,8 +16,36 @@ export const useVoting = () => {
 
   useEffect(() => {
     loadVotingConfig();
-    loadPreviousVotes();
+    checkUserValidation();
   }, []);
+
+  const checkUserValidation = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const email = session?.user?.email;
+      
+      if (email) {
+        const { data: validatedEmail } = await supabase
+          .from('validated_emails')
+          .select('email')
+          .eq('email', email)
+          .single();
+
+        if (validatedEmail) {
+          setUserEmail(email);
+          await loadPreviousVotes(email);
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Email non validé",
+            description: "Votre email n'a pas encore été validé pour voter.",
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors de la vérification de l\'email:', error);
+    }
+  };
 
   const loadVotingConfig = async () => {
     try {
@@ -33,7 +61,7 @@ export const useVoting = () => {
         const startDate = new Date(config.start_date);
         const endDate = new Date(config.end_date);
         
-        console.log("Dates de vote:", {
+        console.log("Configuration des votes:", {
           maintenant: now.toLocaleString(),
           debut: startDate.toLocaleString(),
           fin: endDate.toLocaleString(),
@@ -42,35 +70,41 @@ export const useVoting = () => {
 
         setVotingConfig(config);
         setIsVotingOpen(now >= startDate && now <= endDate);
+
+        if (now < startDate) {
+          toast({
+            title: "Votes non commencés",
+            description: "Les votes n'ont pas encore commencé.",
+          });
+        } else if (now > endDate) {
+          toast({
+            title: "Votes terminés",
+            description: "La période de vote est terminée.",
+          });
+        }
       }
     } catch (error) {
       console.error('Erreur lors du chargement de la configuration:', error);
     }
   };
 
-  const loadPreviousVotes = async () => {
+  const loadPreviousVotes = async (email: string) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const email = session?.user?.email;
-      setUserEmail(email);
+      const { data: previousVotes, error } = await supabase
+        .from('votes')
+        .select('category_id, nominee_id')
+        .eq('email', email);
 
-      if (email) {
-        const { data: previousVotes, error } = await supabase
-          .from('votes')
-          .select('category_id, nominee_id')
-          .eq('email', email);
+      if (error) throw error;
 
-        if (error) throw error;
-
-        if (previousVotes && previousVotes.length > 0) {
-          const votesMap = previousVotes.reduce((acc, vote) => ({
-            ...acc,
-            [vote.category_id]: vote.nominee_id,
-          }), {});
-          
-          setSelectedNominees(votesMap);
-          console.log("Votes précédents chargés:", votesMap);
-        }
+      if (previousVotes && previousVotes.length > 0) {
+        const votesMap = previousVotes.reduce((acc, vote) => ({
+          ...acc,
+          [vote.category_id]: vote.nominee_id,
+        }), {});
+        
+        setSelectedNominees(votesMap);
+        console.log("Votes précédents chargés:", votesMap);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des votes précédents:', error);
@@ -78,11 +112,25 @@ export const useVoting = () => {
   };
 
   const handleNomineeSelect = async (categoryId: string, nomineeId: string): Promise<void> => {
-    if (!isVotingOpen || !userEmail) {
-      throw new Error("Les votes ne sont pas ouverts ou utilisateur non connecté");
+    if (!isVotingOpen) {
+      toast({
+        variant: "destructive",
+        title: "Votes fermés",
+        description: "Les votes ne sont pas ouverts actuellement.",
+      });
+      throw new Error("Les votes ne sont pas ouverts");
     }
 
-    console.log("Début de handleNomineeSelect", { categoryId, nomineeId, userEmail });
+    if (!userEmail) {
+      toast({
+        variant: "destructive",
+        title: "Non connecté",
+        description: "Vous devez être connecté avec un email validé pour voter.",
+      });
+      throw new Error("Utilisateur non connecté ou email non validé");
+    }
+
+    console.log("Début du vote...", { categoryId, nomineeId, userEmail });
 
     try {
       const { error } = await supabase
@@ -100,19 +148,28 @@ export const useVoting = () => {
 
       if (error) {
         console.error('Erreur lors du vote:', error);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'enregistrement de votre vote.",
+        });
         throw error;
       }
 
-      // Mettre à jour l'état local seulement après confirmation du serveur
       setSelectedNominees(prev => ({
         ...prev,
         [categoryId]: nomineeId,
       }));
       
       console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
+      
+      toast({
+        title: "Vote enregistré",
+        description: "Votre vote a été enregistré avec succès.",
+      });
     } catch (error) {
       console.error('Erreur détaillée lors du vote:', error);
-      throw error; // Propager l'erreur pour la gestion dans le composant
+      throw error;
     }
   };
 
