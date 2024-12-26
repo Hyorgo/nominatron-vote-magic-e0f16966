@@ -100,7 +100,12 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                       "dark:bg-primary/80 dark:hover:bg-primary/70",
                       "text-primary-foreground border-2 border-primary/50",
                       "transform scale-105"
-                    ] : "bg-primary hover:bg-primary/90"
+                    ] : [
+                      "bg-gold-light/30 hover:bg-gold/40",
+                      "text-gold-dark border border-gold/30",
+                      "dark:bg-gold-light/20 dark:hover:bg-gold/30",
+                      "dark:text-gold-light dark:border-gold/20"
+                    ]
                   )}
                 >
                   {isSelected ? (
