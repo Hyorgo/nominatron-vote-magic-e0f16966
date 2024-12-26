@@ -15,10 +15,14 @@ export const useVoting = () => {
   // Utiliser React Query pour mettre en cache les résultats et éviter les requêtes répétées
   const { data: previousVotes } = useQuery({
     queryKey: ['previousVotes', userEmail],
-    queryFn: () => loadPreviousVotes(userEmail),
+    queryFn: async () => {
+      if (!userEmail) return {};
+      const votes = await loadPreviousVotes(userEmail);
+      return votes || {};
+    },
     enabled: !!userEmail,
     staleTime: 30000, // Considérer les données comme fraîches pendant 30 secondes
-    cacheTime: 5 * 60 * 1000, // Garder en cache pendant 5 minutes
+    gcTime: 5 * 60 * 1000, // Garder en cache pendant 5 minutes (anciennement cacheTime)
   });
 
   return {

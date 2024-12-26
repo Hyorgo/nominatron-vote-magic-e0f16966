@@ -6,7 +6,7 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
   const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
-  const loadPreviousVotes = async (email: string) => {
+  const loadPreviousVotes = async (email: string): Promise<Record<string, string>> => {
     try {
       console.log("Tentative de chargement des votes pour:", email);
       
@@ -24,7 +24,7 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
           title: "Accès non autorisé",
           description: "Votre email n'a pas été validé pour voter.",
         });
-        return;
+        return {};
       }
 
       const { data: previousVotes, error } = await supabase
@@ -39,7 +39,7 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
           title: "Erreur de chargement",
           description: "Impossible de charger vos votes précédents. Veuillez réessayer.",
         });
-        return;
+        return {};
       }
 
       if (previousVotes && previousVotes.length > 0) {
@@ -50,7 +50,10 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
         
         setSelectedNominees(votesMap);
         console.log("Votes précédents chargés avec succès:", votesMap);
+        return votesMap;
       }
+      
+      return {};
     } catch (error) {
       console.error('Erreur lors du chargement des votes précédents:', error);
       toast({
@@ -58,6 +61,7 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
         title: "Erreur de connexion",
         description: "La connexion au serveur a échoué. Veuillez vérifier votre connexion internet.",
       });
+      return {};
     }
   };
 
