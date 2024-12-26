@@ -19,6 +19,8 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      console.log("Email de l'utilisateur:", userEmail); // Log l'email reçu
+
       if (userEmail) {
         const { data, error } = await supabase
           .from("validated_emails")
@@ -31,10 +33,16 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
           return;
         }
         
+        console.log("Données reçues de la base:", data); // Log les données reçues
+        
         if (data?.first_name) {
           console.log("Prénom trouvé:", data.first_name);
           setFirstName(data.first_name);
+        } else {
+          console.log("Aucun prénom trouvé pour cet email");
         }
+      } else {
+        console.log("Pas d'email fourni");
       }
     };
 
