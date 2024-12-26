@@ -21,21 +21,16 @@ export const supabase = createClient<Database>(
         'Content-Type': 'application/json',
       },
     },
+    // Add debug mode to log requests in development
+    db: {
+      schema: 'public'
+    }
   }
 );
 
-// Add a request interceptor to log requests
-supabase.rest.interceptors.request.use(
-  (config) => {
-    console.log('Supabase Request:', {
-      url: config.url,
-      method: config.method,
-      headers: config.headers,
-    });
-    return config;
-  },
-  (error) => {
-    console.error('Supabase Request Error:', error);
-    return Promise.reject(error);
-  }
-);
+// Add debug logging for development
+if (import.meta.env.DEV) {
+  supabase.from('*').on('*', (payload) => {
+    console.log('Supabase Real-time:', payload);
+  });
+}
