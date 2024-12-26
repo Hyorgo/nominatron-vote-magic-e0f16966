@@ -36,6 +36,7 @@ export type Database = {
           id: string
           last_name: string
           number_of_tickets: number
+          stripe_session_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -45,6 +46,7 @@ export type Database = {
           id?: string
           last_name: string
           number_of_tickets: number
+          stripe_session_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -54,6 +56,7 @@ export type Database = {
           id?: string
           last_name?: string
           number_of_tickets?: number
+          stripe_session_id?: string | null
         }
         Relationships: [
           {
@@ -61,6 +64,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "event_information"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_stripe_session_id_fkey"
+            columns: ["stripe_session_id"]
+            isOneToOne: false
+            referencedRelation: "stripe_transactions"
             referencedColumns: ["id"]
           },
         ]

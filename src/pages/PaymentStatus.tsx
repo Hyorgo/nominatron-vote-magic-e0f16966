@@ -21,23 +21,20 @@ const PaymentStatus = () => {
         throw new Error('Aucun ID de session fourni');
       }
 
-      // Utiliser une jointure pour récupérer les données en une seule requête
       const { data, error } = await supabase
-        .from('stripe_transactions')
+        .from('bookings')
         .select(`
+          id,
+          first_name,
+          last_name,
           email,
-          status,
-          bookings!inner (
-            id,
-            first_name,
-            last_name,
-            email,
-            number_of_tickets,
-            created_at
+          number_of_tickets,
+          created_at,
+          stripe_transactions!inner (
+            status
           )
         `)
-        .eq('id', sessionId)
-        .eq('status', 'succeeded')
+        .eq('stripe_session_id', sessionId)
         .maybeSingle();
 
       if (error) {
@@ -49,11 +46,11 @@ const PaymentStatus = () => {
         throw new Error('Aucune réservation trouvée pour cette transaction');
       }
 
-      return data.bookings;
+      return data;
     },
     retry: 1,
     staleTime: 5 * 60 * 1000, // Considérer les données comme fraîches pendant 5 minutes
-    cacheTime: 30 * 60 * 1000, // Garder les données en cache pendant 30 minutes
+    gcTime: 30 * 60 * 1000, // Garder les données en cache pendant 30 minutes (remplace cacheTime)
     onError: (error) => {
       toast({
         title: "Erreur",
