@@ -323,6 +323,30 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          email: string
+          id: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          email: string
+          id?: string
+          status: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          email?: string
+          id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       ticket_pricing: {
         Row: {
           created_at: string | null

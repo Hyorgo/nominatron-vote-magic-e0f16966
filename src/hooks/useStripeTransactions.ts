@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-interface Transaction {
+export interface Transaction {
   id: string;
   email: string;
   amount: number;
@@ -19,13 +19,13 @@ export const useStripeTransactions = () => {
         const { data, error } = await supabase
           .from('stripe_transactions')
           .select('*')
-          .order('created_at', { ascending: false })
-          .limit(10);
+          .order('created_at', { ascending: false });
 
         if (error) throw error;
-        setTransactions(data || []);
+        
+        setTransactions(data as Transaction[]);
       } catch (error) {
-        console.error('Erreur lors du chargement des transactions:', error);
+        console.error('Error fetching transactions:', error);
       } finally {
         setLoading(false);
       }
