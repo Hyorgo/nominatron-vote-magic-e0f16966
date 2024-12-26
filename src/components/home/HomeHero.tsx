@@ -39,16 +39,16 @@ export const HomeHero = () => {
   };
 
   return (
-    <div className="text-center space-y-4">
+    <div className="text-center space-y-4 md:space-y-8">
       <img 
         src={homeLogo}
         alt="Lyon d'Or" 
-        className="mx-auto w-[400px] mb-8 animate-fade-in"
+        className="mx-auto w-[200px] md:w-[400px] mb-4 md:mb-8 animate-fade-in"
       />
-      <h1 className="text-8xl font-bold animate-fade-in">
+      <h1 className="text-5xl md:text-8xl font-bold animate-fade-in">
         <span className="golden-reflection" data-text={yearText}>{yearText}</span>
       </h1>
-      <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in whitespace-nowrap">
+      <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in px-4 md:px-0">
         {introContent}
       </p>
     </div>
