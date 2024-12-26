@@ -1,4 +1,4 @@
-import { Check, Vote } from "lucide-react";
+import { Check, Vote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,20 +36,13 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           "border border-border/50 hover:border-primary/50",
           "animate-fade-in w-full h-full flex flex-col",
           "bg-white/[0.02] backdrop-blur-sm",
-          isSelected && "ring-2 ring-primary ring-offset-2 bg-primary/5"
+          isSelected && "ring-2 ring-primary/50 ring-offset-2 bg-primary/5"
         )}
       >
         {isSelected && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="absolute top-4 right-4 bg-primary text-primary-foreground rounded-full p-2 shadow-lg animate-scale-in z-10 cursor-help">
-                <Check className="h-4 w-4" />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              Votre choix actuel pour cette catégorie
-            </TooltipContent>
-          </Tooltip>
+          <div className="absolute top-4 right-4 z-10">
+            <Star className="h-6 w-6 text-gold fill-gold animate-scale-in" />
+          </div>
         )}
         
         {nominee.image_url && (
@@ -101,14 +94,20 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                     "w-full transition-all duration-300",
                     "text-base sm:text-lg",
                     "group-hover:shadow-lg",
-                    isSelected && "bg-primary/20 hover:bg-primary/30"
+                    isSelected && "bg-primary/20 hover:bg-primary/30 border-2 border-primary"
                   )}
                 >
-                  <Vote className={cn(
-                    "mr-2 h-5 w-5 transition-transform duration-300",
-                    isSelected && "rotate-12"
-                  )} />
-                  {isSelected ? "Sélectionné" : "Voter"}
+                  {isSelected ? (
+                    <>
+                      <Check className="mr-2 h-5 w-5 animate-scale-in" />
+                      Sélectionné
+                    </>
+                  ) : (
+                    <>
+                      <Vote className="mr-2 h-5 w-5" />
+                      Voter
+                    </>
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
