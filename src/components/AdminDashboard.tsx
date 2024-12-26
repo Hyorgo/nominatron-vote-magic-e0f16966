@@ -21,7 +21,7 @@ interface Settings {
 export const AdminDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const queryConfig = useQueryConfig("adminDashboard");
+  const queryConfig = useQueryConfig<ScrollingText[]>("adminDashboard");
 
   const { data: scrollingTexts, isLoading: loadingTexts } = useQuery<ScrollingText[]>({
     queryKey: ["scrollingTexts"],
