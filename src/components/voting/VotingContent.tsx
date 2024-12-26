@@ -62,6 +62,7 @@ export const VotingContent = ({
           <CategoryTabs 
             categories={categories} 
             currentCategory={category.id}
+            selectedNominees={selectedNominees}
           />
         </Tabs>
       </div>
