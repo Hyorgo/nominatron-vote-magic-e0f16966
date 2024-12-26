@@ -34,22 +34,36 @@ export const useVoting = () => {
   const { data: previousVotes } = useQuery({
     queryKey: ['previousVotes', userEmail],
     queryFn: async () => {
-      if (!userEmail || !isEmailValidated) return selectedNominees;
+      if (!userEmail || !isEmailValidated) {
+        console.log("Email non validé ou manquant, retour des votes sélectionnés:", selectedNominees);
+        return selectedNominees;
+      }
       
       console.log("Chargement des votes pour:", userEmail);
-      const { data: votes } = await supabase
+      const { data: votes, error } = await supabase
         .from('votes')
         .select('category_id, nominee_id')
         .eq('email', userEmail);
 
-      if (!votes?.length) return selectedNominees;
+      if (error) {
+        console.error("Erreur lors du chargement des votes:", error);
+        return selectedNominees;
+      }
 
+      if (!votes || votes.length === 0) {
+        console.log("Aucun vote trouvé, retour des votes sélectionnés:", selectedNominees);
+        return selectedNominees;
+      }
+
+      console.log("Votes trouvés:", votes);
       const votesMap = votes.reduce((acc, vote) => ({
         ...acc,
         [vote.category_id]: vote.nominee_id,
       }), {});
 
-      return { ...selectedNominees, ...votesMap };
+      const mergedVotes = { ...selectedNominees, ...votesMap };
+      console.log("Votes fusionnés:", mergedVotes);
+      return mergedVotes;
     },
     enabled: !!userEmail && !!isEmailValidated,
     staleTime: 30000,
