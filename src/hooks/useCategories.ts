@@ -11,20 +11,23 @@ interface QueryError extends Error {
 
 const fetchCategoriesData = async () => {
   try {
-    console.log("Fetching categories data...");
+    console.log("Début du chargement des catégories...");
     const [categoriesResponse, nomineesResponse] = await Promise.all([
       supabase.from("categories").select("*").order("display_order"),
       supabase.from("nominees").select("*"),
     ]);
 
     if (categoriesResponse.error) {
-      console.error("Categories fetch error:", categoriesResponse.error);
-      throw new Error(`Categories fetch error: ${categoriesResponse.error.message}`);
+      console.error("Erreur lors du chargement des catégories:", categoriesResponse.error);
+      throw new Error(`Erreur de chargement des catégories: ${categoriesResponse.error.message}`);
     }
     if (nomineesResponse.error) {
-      console.error("Nominees fetch error:", nomineesResponse.error);
-      throw new Error(`Nominees fetch error: ${nomineesResponse.error.message}`);
+      console.error("Erreur lors du chargement des nominés:", nomineesResponse.error);
+      throw new Error(`Erreur de chargement des nominés: ${nomineesResponse.error.message}`);
     }
+
+    console.log("Données des catégories reçues:", categoriesResponse.data);
+    console.log("Données des nominés reçues:", nomineesResponse.data);
 
     const categories = categoriesResponse.data.map((category) => ({
       ...category,
@@ -33,10 +36,10 @@ const fetchCategoriesData = async () => {
       ),
     }));
 
-    console.log("Categories data fetched successfully:", categories);
+    console.log("Catégories avec nominés:", categories);
     return categories;
   } catch (error) {
-    console.error("Error in fetchCategoriesData:", error);
+    console.error("Erreur dans fetchCategoriesData:", error);
     throw error;
   }
 };
@@ -58,7 +61,7 @@ export const useCategories = () => {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     meta: {
       errorHandler: (error: Error) => {
-        console.error("Error in useCategories:", error);
+        console.error("Erreur dans useCategories:", error);
         toast({
           variant: "destructive",
           title: "Erreur de chargement",
@@ -68,7 +71,7 @@ export const useCategories = () => {
     }
   });
 
-  // Handle errors through the error property
+  // Gestion des erreurs via la propriété error
   if (error) {
     const queryError = error as QueryError;
     if (queryError.meta?.errorHandler) {
