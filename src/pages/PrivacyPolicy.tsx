@@ -10,10 +10,10 @@ const PrivacyPolicy = () => {
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">1. Informations sur le Responsable de Traitement</h2>
           <p>
-            Le site www.lyon-dor.fr est édité par Sortir-Lyon, SAS au capital de 5 000 €, immatriculée au RCS de Lyon sous le numéro Lyon B 934 391 913, dont le siège social est situé au 10-12 Boulevard Vivier Merle, 69003 Lyon, France.
+            Le site www.lyon-dor.fr est édité par la société ideAI, SAS au capital de 1 000 €, immatriculée au RCS de Lyon sous le numéro Lyon 934 391 913, dont le siège social est situé au 332, rue de la république, 69124 Colombier Saugnieu, France.
           </p>
           <p>
-            Le Responsable de publication est Adrien Savoye, joignable par email à contact@sortir-lyon.com ou par téléphone au +33 4 51 22 02 25.
+            Le Responsable de publication est Georges SAUVAT, joignable par e-mail à contact@ideai.fr ou par téléphone au +33 4 51 22 02 25.
           </p>
           <p>
             Le site est conçu par la société ideAI, création de sites internet et référencement naturel, et hébergé par o2switch, Chemin des Pardiaux, 63000 Clermont-Ferrand, France.
