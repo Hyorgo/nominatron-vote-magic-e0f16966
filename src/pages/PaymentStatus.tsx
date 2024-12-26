@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SuccessContent } from "@/components/payment/SuccessContent";
 import { ErrorContent } from "@/components/payment/ErrorContent";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,8 +13,13 @@ const PaymentStatus = () => {
   const sessionId = searchParams.get('session_id');
   const isSuccess = status === 'success';
   const { toast } = useToast();
+  const [bookingInfo, setBookingInfo] = useState(() => {
+    const stored = sessionStorage.getItem('bookingInfo');
+    return stored ? JSON.parse(stored) : null;
+  });
 
-  const { data: bookingInfo, isLoading, error } = useQuery({
+  // Si nous avons un succès, vérifions la transaction dans Supabase
+  const { data: transactionData, isLoading } = useQuery({
     queryKey: ['booking', sessionId],
     queryFn: async () => {
       if (!sessionId) {
@@ -22,35 +27,22 @@ const PaymentStatus = () => {
       }
 
       const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          id,
-          first_name,
-          last_name,
-          email,
-          number_of_tickets,
-          created_at,
-          stripe_transactions!inner (
-            status
-          )
-        `)
-        .eq('stripe_session_id', sessionId)
+        .from('stripe_transactions')
+        .select('status')
+        .eq('id', sessionId)
         .maybeSingle();
 
       if (error) {
         console.error('Erreur lors de la récupération des données:', error);
-        throw new Error('Erreur lors de la récupération des informations de réservation');
-      }
-
-      if (!data) {
-        throw new Error('Aucune réservation trouvée pour cette transaction');
+        throw new Error('Erreur lors de la récupération des informations de transaction');
       }
 
       return data;
     },
+    enabled: isSuccess && !!sessionId,
     retry: 1,
-    staleTime: 5 * 60 * 1000, // Considérer les données comme fraîches pendant 5 minutes
-    gcTime: 30 * 60 * 1000, // Garder les données en cache pendant 30 minutes (remplace cacheTime)
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
     meta: {
       onError: (error: Error) => {
         toast({
