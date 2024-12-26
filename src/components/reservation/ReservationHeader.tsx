@@ -5,9 +5,9 @@ interface ReservationHeaderProps {
 
 export const ReservationHeader = ({ title, subtitle }: ReservationHeaderProps) => {
   return (
-    <div className="text-center mb-8">
-      <h1 className="text-4xl font-bold mb-3 golden-reflection">{title}</h1>
-      <p className="text-gold/80">{subtitle}</p>
+    <div className="text-center mb-12">
+      <h1 className="text-4xl sm:text-5xl font-bold mb-4 golden-reflection animate-fade-in">{title}</h1>
+      <p className="text-xl sm:text-2xl text-gold/80 animate-fade-in delay-100">{subtitle}</p>
     </div>
   );
 };

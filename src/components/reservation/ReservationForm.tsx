@@ -15,47 +15,47 @@ export const ReservationForm = ({ isLoading, onSubmit }: ReservationFormProps) =
     <form onSubmit={(e) => {
       e.preventDefault();
       onSubmit(new FormData(e.currentTarget));
-    }} className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2">
+    }} className="space-y-8">
+      <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-gold/90">Prénom</Label>
+          <Label htmlFor="name" className="text-gold/90 text-lg">Prénom</Label>
           <Input 
             id="name" 
             name="name"
             placeholder="Votre prénom" 
             required 
-            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300 h-12 text-lg"
             disabled={isLoading}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastName" className="text-gold/90">Nom</Label>
+          <Label htmlFor="lastName" className="text-gold/90 text-lg">Nom</Label>
           <Input 
             id="lastName" 
             name="lastName"
             placeholder="Votre nom" 
             required 
-            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300 h-12 text-lg"
             disabled={isLoading}
           />
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-gold/90">Email</Label>
+          <Label htmlFor="email" className="text-gold/90 text-lg">Email</Label>
           <Input 
             id="email" 
             name="email"
             type="email" 
             placeholder="votre@email.com" 
             required 
-            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300 h-12 text-lg"
             disabled={isLoading}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="guests" className="text-gold/90">Nombre de personnes</Label>
+          <Label htmlFor="guests" className="text-gold/90 text-lg">Nombre de personnes</Label>
           <Input 
             id="guests" 
             name="guests"
@@ -64,7 +64,7 @@ export const ReservationForm = ({ isLoading, onSubmit }: ReservationFormProps) =
             max="10" 
             defaultValue="1" 
             required 
-            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300"
+            className="bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300 h-12 text-lg"
             disabled={isLoading}
           />
         </div>
@@ -72,7 +72,7 @@ export const ReservationForm = ({ isLoading, onSubmit }: ReservationFormProps) =
 
       <Button 
         type="submit" 
-        className="w-full bg-gradient-to-r from-gold/80 to-gold hover:from-gold hover:to-gold-light transition-all duration-300 text-navy font-semibold py-6"
+        className="w-full bg-gradient-to-r from-gold/80 to-gold hover:from-gold hover:to-gold-light transition-all duration-300 text-navy font-semibold py-6 text-lg rounded-xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1"
         disabled={isLoading}
       >
         {isLoading ? 'Traitement en cours...' : 'Réserver maintenant'}
