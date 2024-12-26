@@ -12,12 +12,12 @@ export const useVoting = () => {
   const { toast } = useToast();
   const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
 
-  // Charger les votes précédents
+  // Optimisation du chargement des votes avec staleTime et cacheTime
   const { data: votes = {} } = useQuery({
     queryKey: ['previousVotes', userEmail],
     queryFn: async () => {
       if (!userEmail) {
-        console.log("Pas d'email utilisateur");
+        console.log("Pas d'email utilisateur, skip du chargement des votes");
         return {};
       }
       
@@ -32,34 +32,33 @@ export const useVoting = () => {
         throw error;
       }
 
-      if (!votes || votes.length === 0) {
-        console.log("Aucun vote trouvé");
-        return {};
-      }
-
-      const votesMap = votes.reduce((acc, vote) => ({
+      const votesMap = votes?.reduce((acc, vote) => ({
         ...acc,
         [vote.category_id]: vote.nominee_id,
-      }), {});
+      }), {}) || {};
 
-      console.log("Votes trouvés:", votesMap);
+      console.log("Votes chargés:", votesMap);
       return votesMap;
     },
     enabled: !!userEmail,
-    staleTime: 30000,
-    gcTime: 5 * 60 * 1000,
+    staleTime: 30000, // Les données restent fraîches pendant 30 secondes
+    gcTime: 5 * 60 * 1000, // Garde en cache pendant 5 minutes
+    refetchOnWindowFocus: false,
   });
 
-  // Synchroniser les votes avec l'état local
+  // Synchronisation des votes avec l'état local
   useEffect(() => {
     if (votes && Object.keys(votes).length > 0) {
-      console.log("Synchronisation des votes avec l'état local:", votes);
-      setSelectedNominees(votes);
+      console.log("Mise à jour de l'état local avec les votes:", votes);
+      setSelectedNominees(prevState => ({
+        ...prevState,
+        ...votes
+      }));
     }
   }, [votes]);
 
-  const handleNomineeSelect = useCallback(async (categoryId: string, nomineeId: string): Promise<void> => {
-    console.log("Début du vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
+  const handleNomineeSelect = useCallback(async (categoryId: string, nomineeId: string) => {
+    console.log("Tentative de vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
 
     if (!isVotingOpen) {
       toast({
@@ -103,18 +102,18 @@ export const useVoting = () => {
         return;
       }
 
-      // Mettre à jour l'état local de manière synchrone
+      // Mise à jour optimiste de l'état local
       setSelectedNominees(prev => ({
         ...prev,
         [categoryId]: nomineeId,
       }));
-      
-      // Invalider le cache de manière asynchrone
+
+      // Invalider uniquement la requête spécifique
       await queryClient.invalidateQueries({ 
         queryKey: ['previousVotes', userEmail],
-        exact: true 
+        exact: true,
       });
-      
+
       console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
       
       toast({
