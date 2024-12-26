@@ -1,27 +1,76 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-
-const MAILJET_API_KEY = Deno.env.get('MAILJET_API_KEY')
-const MAILJET_SECRET_KEY = Deno.env.get('MAILJET_SECRET_KEY')
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 
 interface BookingInfo {
   firstName: string
   lastName: string
   email: string
   numberOfTickets: number
-  sessionId: string
-  status: string
+}
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+const MAILJET_API_KEY = Deno.env.get('MAILJET_API_KEY')
+const MAILJET_SECRET_KEY = Deno.env.get('MAILJET_SECRET_KEY')
+
+const createEmailTemplate = (bookingInfo: BookingInfo) => ({
+  Messages: [{
+    From: {
+      Email: "no-reply@lovable.com",
+      Name: "Lovable Events"
+    },
+    To: [{
+      Email: bookingInfo.email,
+      Name: `${bookingInfo.firstName} ${bookingInfo.lastName}`
+    }],
+    Subject: "Confirmation de votre réservation",
+    TextPart: `Bonjour ${bookingInfo.firstName},\n\nNous vous confirmons votre réservation pour ${bookingInfo.numberOfTickets} place(s).\n\nCordialement,\nL'équipe Lovable Events`,
+    HTMLPart: `
+      <h3>Confirmation de réservation</h3>
+      <p>Bonjour ${bookingInfo.firstName},</p>
+      <p>Nous vous confirmons votre réservation pour <strong>${bookingInfo.numberOfTickets} place(s)</strong>.</p>
+      <p>Détails de la réservation :</p>
+      <ul>
+        <li>Nom : ${bookingInfo.lastName}</li>
+        <li>Prénom : ${bookingInfo.firstName}</li>
+        <li>Email : ${bookingInfo.email}</li>
+        <li>Nombre de places : ${bookingInfo.numberOfTickets}</li>
+      </ul>
+      <p>Cordialement,<br>L'équipe Lovable Events</p>
+    `
+  }]
+})
+
+const sendMailjetEmail = async (emailData: any) => {
+  const response = await fetch('https://api.mailjet.com/v3.1/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${btoa(`${MAILJET_API_KEY}:${MAILJET_SECRET_KEY}`)}`
+    },
+    body: JSON.stringify(emailData)
+  })
+
+  const responseData = await response.json()
+  
+  if (!response.ok) {
+    throw new Error(`Erreur Mailjet: ${JSON.stringify(responseData)}`)
+  }
+
+  return responseData
 }
 
 serve(async (req) => {
-  // Vérification initiale des clés API
-  console.log('Vérification des clés API Mailjet...')
+  // Gestion des requêtes OPTIONS pour CORS
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
+  // Vérification des clés API
   if (!MAILJET_API_KEY || !MAILJET_SECRET_KEY) {
-    console.error('Clés API Mailjet manquantes')
+    console.error('Configuration Mailjet manquante')
     return new Response(
       JSON.stringify({ error: 'Configuration Mailjet manquante' }),
       { 
@@ -30,77 +79,17 @@ serve(async (req) => {
       }
     )
   }
-  console.log('Clés API Mailjet présentes')
-
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
 
   try {
     const bookingInfo: BookingInfo = await req.json()
-    console.log('Informations de réservation reçues:', bookingInfo)
+    console.log('Traitement de la réservation pour:', bookingInfo.email)
 
-    console.log('Préparation du corps de l\'email...')
-    const emailData = {
-      Messages: [
-        {
-          From: {
-            Email: "contact@lyon-dor.fr",
-            Name: "Lyon d'Or"
-          },
-          To: [
-            {
-              Email: bookingInfo.email,
-              Name: `${bookingInfo.firstName} ${bookingInfo.lastName}`
-            }
-          ],
-          Subject: "Confirmation de votre réservation - Trophées Lyon d'Or",
-          HTMLPart: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h1 style="color: #D4AF37; text-align: center;">Confirmation de votre réservation</h1>
-              <p>Bonjour ${bookingInfo.firstName} ${bookingInfo.lastName},</p>
-              <p>Nous vous confirmons votre réservation pour la soirée des Trophées Lyon d'Or.</p>
-              <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
-                <h2 style="color: #D4AF37; margin-top: 0;">Détails de la réservation :</h2>
-                <ul style="list-style: none; padding: 0;">
-                  <li>Nombre de billets : ${bookingInfo.numberOfTickets}</li>
-                  <li>Prix total : ${(bookingInfo.numberOfTickets * 192).toFixed(2)}€</li>
-                  <li>Numéro de transaction : ${bookingInfo.sessionId}</li>
-                  <li>Statut : Confirmé</li>
-                </ul>
-              </div>
-              <p>Nous avons hâte de vous accueillir !</p>
-              <p style="margin-top: 30px;">Cordialement,<br>L'équipe des Trophées Lyon d'Or</p>
-            </div>
-          `
-        }
-      ]
-    }
+    const emailData = createEmailTemplate(bookingInfo)
+    const result = await sendMailjetEmail(emailData)
 
-    console.log('Envoi de la requête à Mailjet...')
-    console.log('URL de l\'API Mailjet:', 'https://api.mailjet.com/v3.1/send')
-    console.log('Authentification utilisée:', `${MAILJET_API_KEY}:${MAILJET_SECRET_KEY}`)
-    
-    const response = await fetch('https://api.mailjet.com/v3.1/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${btoa(`${MAILJET_API_KEY}:${MAILJET_SECRET_KEY}`)}`
-      },
-      body: JSON.stringify(emailData)
-    })
-
-    console.log('Statut de la réponse Mailjet:', response.status)
-    const responseData = await response.json()
-    console.log('Réponse complète de Mailjet:', responseData)
-
-    if (!response.ok) {
-      throw new Error(`Erreur Mailjet: ${JSON.stringify(responseData)}`)
-    }
-
-    console.log('Email envoyé avec succès')
+    console.log('Email envoyé avec succès à:', bookingInfo.email)
     return new Response(
-      JSON.stringify({ success: true, data: responseData }),
+      JSON.stringify({ success: true, data: result }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200 
@@ -108,11 +97,11 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Erreur détaillée:', error)
+    console.error('Erreur lors de l\'envoi de l\'email:', error)
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        details: error instanceof Error ? error.stack : 'Unknown error'
+        details: error instanceof Error ? error.stack : 'Erreur inconnue'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
