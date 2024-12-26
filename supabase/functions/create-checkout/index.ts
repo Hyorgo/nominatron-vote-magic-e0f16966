@@ -74,10 +74,11 @@ serve(async (req) => {
     
     console.log('Session created successfully:', session.id)
 
-    // Enregistrer la transaction dans la base de données
+    // Enregistrer la transaction dans la base de données avec l'ID de session Stripe
     const { error: transactionError } = await supabase
       .from('stripe_transactions')
       .insert({
+        id: session.id, // Utiliser l'ID de session Stripe comme ID de transaction
         email: email,
         amount: 19200 * numberOfTickets,
         status: 'pending',

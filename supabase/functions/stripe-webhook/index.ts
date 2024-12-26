@@ -33,12 +33,11 @@ serve(async (req) => {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session
       
-      // Mettre à jour le statut de la transaction
+      // Mettre à jour le statut de la transaction en utilisant l'ID de session
       const { error: updateError } = await supabase
         .from('stripe_transactions')
         .update({ status: 'succeeded' })
-        .eq('email', session.customer_email)
-        .eq('status', 'pending')
+        .eq('id', session.id)
 
       if (updateError) {
         console.error('Error updating transaction status:', updateError)
