@@ -19,11 +19,11 @@ const fetchCategoriesData = async () => {
 
     if (categoriesResponse.error) {
       console.error("Categories fetch error:", categoriesResponse.error);
-      throw categoriesResponse.error;
+      throw new Error(`Categories fetch error: ${categoriesResponse.error.message}`);
     }
     if (nomineesResponse.error) {
       console.error("Nominees fetch error:", nomineesResponse.error);
-      throw nomineesResponse.error;
+      throw new Error(`Nominees fetch error: ${nomineesResponse.error.message}`);
     }
 
     const categories = categoriesResponse.data.map((category) => ({
@@ -55,6 +55,7 @@ export const useCategories = () => {
     staleTime: 1000 * 60 * 5, // Cache valide pendant 5 minutes
     refetchOnWindowFocus: false,
     retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     meta: {
       errorHandler: (error: Error) => {
         console.error("Error in useCategories:", error);
