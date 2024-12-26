@@ -40,20 +40,19 @@ export const useVoting = () => {
       console.log("Votes chargés:", votesMap);
       return votesMap;
     },
-    enabled: !!userEmail,
-    staleTime: 30000, // Les données restent fraîches pendant 30 secondes
-    gcTime: 5 * 60 * 1000, // Garde en cache pendant 5 minutes
+    enabled: !!userEmail && isVotingOpen,
+    staleTime: 5 * 60 * 1000, // Les données restent fraîches pendant 5 minutes
+    gcTime: 30 * 60 * 1000, // Garde en cache pendant 30 minutes
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   // Synchronisation des votes avec l'état local
   useEffect(() => {
     if (votes && Object.keys(votes).length > 0) {
       console.log("Mise à jour de l'état local avec les votes:", votes);
-      setSelectedNominees(prevState => ({
-        ...prevState,
-        ...votes
-      }));
+      setSelectedNominees(votes);
     }
   }, [votes]);
 
@@ -109,10 +108,10 @@ export const useVoting = () => {
       }));
 
       // Invalider uniquement la requête spécifique
-      await queryClient.invalidateQueries({ 
-        queryKey: ['previousVotes', userEmail],
-        exact: true,
-      });
+      queryClient.setQueryData(['previousVotes', userEmail], (oldData: any) => ({
+        ...oldData,
+        [categoryId]: nomineeId,
+      }));
 
       console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
       
