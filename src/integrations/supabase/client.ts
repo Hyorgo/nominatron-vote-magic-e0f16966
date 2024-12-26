@@ -19,6 +19,7 @@ export const supabase = createClient<Database>(
     global: {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
         'apikey': SUPABASE_PUBLISHABLE_KEY
       },
     },
@@ -46,6 +47,13 @@ if (import.meta.env.DEV) {
       }
     )
     .subscribe();
+
+  // Log all requests in development
+  const originalFrom = supabase.from.bind(supabase);
+  supabase.from = (table: string) => {
+    console.log(`Making request to table: ${table}`);
+    return originalFrom(table);
+  };
 
   // Cleanup on window unload
   window.addEventListener('beforeunload', () => {
