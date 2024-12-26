@@ -1,8 +1,8 @@
 import { QueryOptions } from "@tanstack/react-query";
 
-export const useQueryConfig = <T>(key: string): Partial<QueryOptions<T, Error, T>> => {
+export const useQueryConfig = <T>(key: string): Partial<QueryOptions> => {
   return {
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
   };
 };
