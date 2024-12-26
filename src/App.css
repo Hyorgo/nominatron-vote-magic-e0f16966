@@ -98,11 +98,11 @@
 }
 
 .category-button.active {
-  @apply bg-primary text-primary-foreground;
+  @apply bg-primary/90 text-primary-foreground;
 }
 
 .category-button:not(.active):hover {
-  @apply bg-accent text-accent-foreground;
+  @apply bg-accent/20 text-accent-foreground;
 }
 
 .category-grid {
