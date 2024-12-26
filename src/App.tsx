@@ -1,25 +1,18 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
-import { Toaster } from "@/components/ui/toaster";
-import { Router } from "./Router";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { Outlet } from "react-router-dom";
+import { Navigation } from "./components/Navigation";
+import { Toaster } from "./components/ui/toaster";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Router />
-        <Toaster />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <div className="flex flex-col min-h-screen">
+      <Navigation />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
+      <Toaster />
+    </div>
   );
 }
 
