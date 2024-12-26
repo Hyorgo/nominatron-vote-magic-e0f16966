@@ -62,8 +62,8 @@ const Reserver = () => {
 
       console.log('Redirection vers:', data.url);
       
-      // Utiliser window.location.replace pour une redirection plus propre
-      window.location.replace(data.url);
+      // Redirection directe vers l'URL Stripe
+      window.location.assign(data.url);
 
     } catch (error) {
       console.error('Erreur complète:', error);
