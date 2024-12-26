@@ -10,11 +10,27 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
     try {
       console.log("Tentative de chargement des votes pour:", email);
       
+      // First check if email is validated
+      const { data: validatedEmail, error: validationError } = await supabase
+        .from('validated_emails')
+        .select('email')
+        .eq('email', email)
+        .single();
+
+      if (validationError || !validatedEmail) {
+        console.error('Email non validé:', validationError);
+        toast({
+          variant: "destructive",
+          title: "Accès non autorisé",
+          description: "Votre email n'a pas été validé pour voter.",
+        });
+        return;
+      }
+
       const { data: previousVotes, error } = await supabase
         .from('votes')
         .select('category_id, nominee_id')
-        .eq('email', email)
-        .throwOnError();
+        .eq('email', email);
 
       if (error) {
         console.error('Erreur Supabase:', error);
@@ -67,6 +83,22 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
     }
 
     try {
+      // First check if email is validated
+      const { data: validatedEmail, error: validationError } = await supabase
+        .from('validated_emails')
+        .select('email')
+        .eq('email', userEmail)
+        .single();
+
+      if (validationError || !validatedEmail) {
+        toast({
+          variant: "destructive",
+          title: "Accès non autorisé",
+          description: "Votre email n'a pas été validé pour voter.",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('votes')
         .upsert(
@@ -78,8 +110,7 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
           {
             onConflict: 'category_id,email'
           }
-        )
-        .throwOnError();
+        );
 
       if (error) {
         console.error('Erreur Supabase lors du vote:', error);

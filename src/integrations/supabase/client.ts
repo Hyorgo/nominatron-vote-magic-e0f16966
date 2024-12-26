@@ -35,14 +35,18 @@ if (import.meta.env.DEV) {
       {
         event: '*',
         schema: 'public',
+        table: 'votes' // Specify the table we want to listen to
       },
       (payload) => {
-        console.log('Database change:', payload);
+        console.log('Vote change:', payload);
       }
     )
     .subscribe();
 
-  // Cleanup function (if needed)
+  // Log all Supabase queries in development
+  console.log('Supabase client initialized with URL:', SUPABASE_URL);
+
+  // Cleanup function
   window.addEventListener('beforeunload', () => {
     supabase.removeChannel(channel);
   });
