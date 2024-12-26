@@ -32,19 +32,19 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
     <TooltipProvider>
       <Card 
         className={cn(
-          "group relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl",
-          "border border-border/50 hover:border-primary/50",
-          "animate-fade-in w-full h-full flex flex-col",
-          isSelected && [
+          "group relative overflow-hidden transition-all duration-300",
+          "border hover:scale-[1.02] hover:shadow-xl",
+          isSelected ? [
+            "border-primary/80 bg-primary/5",
             "ring-2 ring-primary ring-offset-2",
-            "bg-primary/5 dark:bg-primary/10",
-            "border-primary"
-          ]
+            "dark:bg-primary/10",
+            "transform scale-[1.02]"
+          ] : "border-border/50 hover:border-primary/50"
         )}
       >
         {isSelected && (
           <div className="absolute top-4 right-4 z-10">
-            <Star className="h-8 w-8 text-gold fill-gold animate-scale-in" />
+            <Star className="h-8 w-8 text-yellow-500 fill-yellow-500 animate-scale-in" />
           </div>
         )}
         
@@ -60,49 +60,47 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
               )}
             />
             {isSelected && (
-              <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px] transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />
             )}
           </div>
         )}
         
-        <CardHeader className="space-y-2 p-5 sm:p-6 flex-grow">
+        <CardHeader className="space-y-2 p-5 sm:p-6">
           <CardTitle 
             className={cn(
               "text-xl sm:text-2xl transition-colors duration-300 line-clamp-2",
-              "group-hover:text-primary",
-              isSelected && "text-primary"
+              isSelected ? "text-primary font-bold" : "group-hover:text-primary"
             )}
           >
             {nominee.name}
           </CardTitle>
           <CardDescription 
             className={cn(
-              "text-base sm:text-lg line-clamp-3 mt-2",
-              isSelected && "text-foreground/80"
+              "text-base sm:text-lg line-clamp-3",
+              isSelected && "text-foreground/90"
             )}
           >
             {nominee.description}
           </CardDescription>
         </CardHeader>
         
-        <CardContent className="p-5 sm:p-6 pt-0 mt-auto">
+        <CardContent className="p-5 sm:p-6 pt-0">
           <div className="space-y-4">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 
                   onClick={onClick}
-                  variant={isSelected ? "secondary" : "default"}
                   size="lg"
                   className={cn(
                     "w-full transition-all duration-300",
                     "text-base sm:text-lg font-semibold",
                     "group-hover:shadow-lg",
-                    isSelected && [
-                      "bg-emerald-100 hover:bg-emerald-200",
-                      "dark:bg-emerald-900/30 dark:hover:bg-emerald-900/40",
-                      "border-2 border-emerald-500",
-                      "text-emerald-700 dark:text-emerald-300"
-                    ]
+                    isSelected ? [
+                      "bg-emerald-600 hover:bg-emerald-700",
+                      "dark:bg-emerald-700 dark:hover:bg-emerald-800",
+                      "text-white border-2 border-emerald-500",
+                      "transform scale-105"
+                    ] : "bg-primary hover:bg-primary/90"
                   )}
                 >
                   {isSelected ? (
@@ -126,7 +124,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
             </Tooltip>
 
             {isSelected && (
-              <div className="pt-4 border-t space-y-3">
+              <div className="pt-4 border-t space-y-3 animate-fade-in">
                 <div className="text-base text-muted-foreground text-center">
                   Partagez votre vote !
                 </div>
