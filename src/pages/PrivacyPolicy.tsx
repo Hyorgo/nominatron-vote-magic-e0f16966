@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
             <li>Inscription à la newsletter : adresse email.</li>
             <li>Formulaire de rappel : numéro de téléphone.</li>
           </ul>
-          <p>Ces données sont collectées exclusivement dans le cadre de votre interaction avec Sortir-Lyon pour vous fournir des informations sur nos services et vous proposer des offres adaptées à vos besoins.</p>
+          <p>Ces données sont collectées exclusivement dans le cadre de votre interaction avec ideAI pour vous fournir des informations sur nos services et vous proposer des offres adaptées à vos besoins.</p>
         </section>
 
         <section className="space-y-4 text-white/90">
@@ -38,14 +38,14 @@ const PrivacyPolicy = () => {
           <ul className="list-disc pl-6 space-y-2">
             <li>Réponse aux demandes : les informations collectées via les formulaires de contact et de devis permettent de traiter vos requêtes et de vous recontacter selon vos préférences (téléphone ou email).</li>
             <li>Envoi de communications commerciales : sous réserve de votre consentement, nous pouvons vous envoyer des offres promotionnelles et actualités.</li>
-            <li>Inscription à la Newsletter : pour vous transmettre des informations régulières sur les services proposés par Sortir-Lyon.</li>
+            <li>Inscription à la Newsletter : pour vous transmettre des informations régulières sur les services proposés par ideAI.</li>
           </ul>
           <p>Les données sont traitées par nos équipes internes et ne sont accessibles qu'aux collaborateurs habilités.</p>
         </section>
 
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">4. Durée de Conservation des Données</h2>
-          <p>Sortir-Lyon conserve vos données personnelles uniquement pour la durée nécessaire à leur traitement :</p>
+          <p>ideAI conserve vos données personnelles uniquement pour la durée nécessaire à leur traitement :</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Données de contact et de devis : conservées pendant une durée maximale de 3 ans après la dernière interaction.</li>
             <li>Données de la newsletter : conservées jusqu'à désinscription.</li>
@@ -57,7 +57,7 @@ const PrivacyPolicy = () => {
           <h2 className="text-xl font-semibold text-white">5. Vos Droits Concernant Vos Données</h2>
           <p>Conformément à la législation en vigueur et notamment au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Droit d'accès : pour obtenir une copie de vos données personnelles traitées par Sortir-Lyon.</li>
+            <li>Droit d'accès : pour obtenir une copie de vos données personnelles traitées par ideAI.</li>
             <li>Droit de rectification : pour corriger vos informations personnelles.</li>
             <li>Droit à l'effacement : pour demander la suppression de vos données, sauf si leur traitement est justifié par des obligations légales.</li>
             <li>Droit à la limitation du traitement : pour restreindre temporairement l'utilisation de vos données.</li>
@@ -68,18 +68,18 @@ const PrivacyPolicy = () => {
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">6. Sécurité des Données</h2>
           <p>
-            Sortir-Lyon met en œuvre des mesures techniques et organisationnelles appropriées pour garantir la sécurité de vos données personnelles. Les données sont protégées contre tout accès non autorisé, perte, altération ou divulgation. Seuls les collaborateurs habilités peuvent y accéder dans le cadre de leurs missions.
+            ideAI met en œuvre des mesures techniques et organisationnelles appropriées pour garantir la sécurité de vos données personnelles. Les données sont protégées contre tout accès non autorisé, perte, altération ou divulgation. Seuls les collaborateurs habilités peuvent y accéder dans le cadre de leurs missions.
           </p>
         </section>
 
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">7. Partage des Données avec des Tiers</h2>
-          <p>Les données personnelles collectées par Sortir-Lyon ne sont pas partagées avec des tiers, sauf dans les cas suivants :</p>
+          <p>Les données personnelles collectées par ideAI ne sont pas partagées avec des tiers, sauf dans les cas suivants :</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Prestataires de services : pour l'envoi des newsletters, des offres ou d'autres services spécifiques, sous réserve de la confidentialité.</li>
             <li>Obligations légales : lorsque la loi exige la divulgation de vos informations.</li>
           </ul>
-          <p>Sortir-Lyon s'engage à ne pas vendre, échanger ou transférer vos données personnelles sans votre consentement.</p>
+          <p>ideAI s'engage à ne pas vendre, échanger ou transférer vos données personnelles sans votre consentement.</p>
         </section>
 
         <section className="space-y-4 text-white/90">
@@ -95,7 +95,7 @@ const PrivacyPolicy = () => {
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">9. Modifications de la Politique de Confidentialité</h2>
           <p>
-            Sortir-Lyon se réserve le droit de modifier cette politique de confidentialité pour refléter les évolutions légales ou techniques. Nous vous invitons à consulter cette page régulièrement pour vous tenir informé de tout changement. La date de la dernière mise à jour est indiquée en haut de cette page.
+            ideAI se réserve le droit de modifier cette politique de confidentialité pour refléter les évolutions légales ou techniques. Nous vous invitons à consulter cette page régulièrement pour vous tenir informé de tout changement. La date de la dernière mise à jour est indiquée en haut de cette page.
           </p>
         </section>
 
