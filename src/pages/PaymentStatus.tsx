@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SuccessContent } from "@/components/payment/SuccessContent";
 import { ErrorContent } from "@/components/payment/ErrorContent";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,48 +15,53 @@ const PaymentStatus = () => {
   const { data: bookingInfo, isLoading } = useQuery({
     queryKey: ['booking', sessionId],
     queryFn: async () => {
-      if (!sessionId) return null;
+      if (!sessionId) {
+        console.error('No session ID provided');
+        return null;
+      }
 
+      console.log('Fetching transaction with session ID:', sessionId);
+      
       // Récupérer la transaction Stripe correspondant au session_id
-      const { data: transactions, error: transactionError } = await supabase
+      const { data: transaction, error: transactionError } = await supabase
         .from('stripe_transactions')
-        .select('email')
+        .select('email, status')
         .eq('id', sessionId)
-        .eq('status', 'succeeded')
         .single();
 
       if (transactionError) {
-        console.error('Erreur lors de la récupération de la transaction:', transactionError);
+        console.error('Error fetching transaction:', transactionError);
         return null;
       }
 
-      if (!transactions) {
-        console.error('Aucune transaction trouvée');
+      if (!transaction) {
+        console.error('No transaction found');
         return null;
       }
 
-      console.log('Transaction trouvée:', transactions);
+      console.log('Transaction found:', transaction);
+
+      if (transaction.status !== 'succeeded') {
+        console.error('Transaction status is not succeeded:', transaction.status);
+        return null;
+      }
 
       // Utiliser l'email pour récupérer les informations de réservation
       const { data: bookings, error: bookingError } = await supabase
         .from('bookings')
         .select('*')
-        .eq('email', transactions.email)
+        .eq('email', transaction.email)
         .order('created_at', { ascending: false })
-        .limit(1);
+        .limit(1)
+        .single();
 
       if (bookingError) {
-        console.error('Erreur lors de la récupération de la réservation:', bookingError);
+        console.error('Error fetching booking:', bookingError);
         return null;
       }
 
-      if (!bookings || bookings.length === 0) {
-        console.error('Aucune réservation trouvée');
-        return null;
-      }
-
-      console.log('Réservation trouvée:', bookings[0]);
-      return bookings[0];
+      console.log('Booking found:', bookings);
+      return bookings;
     },
     enabled: isSuccess && !!sessionId,
   });
