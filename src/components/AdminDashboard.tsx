@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { AdminTabs } from "./admin/navigation/AdminTabs";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useQueryConfig } from "@/hooks/useQueryConfig";
 import { Loader2 } from "lucide-react";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const queryConfig = useQueryConfig("adminDashboard");
 
   const { data: scrollingTexts, isLoading: loadingTexts } = useQuery({
@@ -18,7 +19,7 @@ export const AdminDashboard = () => {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      return data || [];
     },
     ...queryConfig,
   });
@@ -32,7 +33,7 @@ export const AdminDashboard = () => {
         .eq("page_name", "home")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      return data || [];
     },
     ...queryConfig,
   });
@@ -45,7 +46,7 @@ export const AdminDashboard = () => {
         .select("*")
         .order("display_order", { ascending: true });
       if (error) throw error;
-      return data;
+      return data || [];
     },
     ...queryConfig,
   });
@@ -99,7 +100,6 @@ export const AdminDashboard = () => {
         homeLogo={settings?.homeLogo || ""}
         homeYearText={settings?.homeYearText || ""}
         onUpdate={() => {
-          // Invalider les requêtes pour forcer un rechargement
           queryClient.invalidateQueries({ queryKey: ["scrollingTexts"] });
           queryClient.invalidateQueries({ queryKey: ["backgrounds"] });
           queryClient.invalidateQueries({ queryKey: ["homeContent"] });
