@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 import Stripe from 'https://esm.sh/stripe@14.21.0'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,7 +10,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { 
       headers: {
@@ -33,11 +33,19 @@ serve(async (req) => {
       throw new Error('STRIPE_SECRET_KEY not configured')
     }
 
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase configuration')
+    }
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
     const stripe = new Stripe(stripeKey, {
       apiVersion: '2023-10-16',
     })
 
-    console.log('Creating basic payment session...')
+    console.log('Creating payment session...')
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
@@ -53,7 +61,7 @@ serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `${req.headers.get('origin')}/payment-status?status=success`,
+      success_url: `${req.headers.get('origin')}/payment-status?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get('origin')}/payment-status?status=cancel`,
       customer_email: email,
       metadata: {
@@ -65,7 +73,33 @@ serve(async (req) => {
     })
     
     console.log('Session created successfully:', session.id)
-    console.log('Checkout URL:', session.url)
+
+    // Enregistrer la transaction dans la base de données
+    const { error: transactionError } = await supabase
+      .from('stripe_transactions')
+      .insert({
+        email: email,
+        amount: 19200 * numberOfTickets,
+        status: 'pending',
+      })
+
+    if (transactionError) {
+      console.error('Error storing transaction:', transactionError)
+    }
+
+    // Enregistrer la réservation dans la base de données
+    const { error: bookingError } = await supabase
+      .from('bookings')
+      .insert({
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        number_of_tickets: numberOfTickets,
+      })
+
+    if (bookingError) {
+      console.error('Error storing booking:', bookingError)
+    }
 
     return new Response(
       JSON.stringify({ url: session.url }),
