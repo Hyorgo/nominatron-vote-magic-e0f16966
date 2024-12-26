@@ -26,15 +26,15 @@ export const useVoting = () => {
       return !!data;
     },
     enabled: !!userEmail,
-    staleTime: 5 * 60 * 1000, // Cache valide pendant 5 minutes
+    staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
 
   // Charger les votes précédents
-  const { data: previousVotes = {} } = useQuery({
+  const { data: previousVotes } = useQuery({
     queryKey: ['previousVotes', userEmail],
     queryFn: async () => {
-      if (!userEmail || !isEmailValidated) return {};
+      if (!userEmail || !isEmailValidated) return selectedNominees;
       
       console.log("Chargement des votes pour:", userEmail);
       const { data: votes } = await supabase
@@ -42,16 +42,19 @@ export const useVoting = () => {
         .select('category_id, nominee_id')
         .eq('email', userEmail);
 
-      if (!votes) return {};
+      if (!votes?.length) return selectedNominees;
 
-      return votes.reduce((acc, vote) => ({
+      const votesMap = votes.reduce((acc, vote) => ({
         ...acc,
         [vote.category_id]: vote.nominee_id,
       }), {});
+
+      return { ...selectedNominees, ...votesMap };
     },
     enabled: !!userEmail && !!isEmailValidated,
-    staleTime: 30000, // Cache valide pendant 30 secondes
+    staleTime: 30000,
     gcTime: 5 * 60 * 1000,
+    initialData: selectedNominees,
   });
 
   // Précharger les données quand l'email est validé
@@ -71,7 +74,7 @@ export const useVoting = () => {
   return {
     votingConfig,
     isVotingOpen,
-    selectedNominees: previousVotes,
+    selectedNominees: previousVotes || selectedNominees,
     handleNomineeSelect,
     userEmail,
   };
