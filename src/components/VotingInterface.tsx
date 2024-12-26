@@ -9,16 +9,21 @@ import { EmptyState } from "./voting/EmptyState";
 import { useState, useMemo } from "react";
 
 export const VotingInterface = () => {
+  // 1. Tous les useState d'abord
   const [currentCategory, setCurrentCategory] = useState(0);
-  const { isVotingOpen, selectedNominees, handleNomineeSelect, votingConfig, userEmail } = useVoting();
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  // 2. Les hooks personnalisés ensuite
+  const { isVotingOpen, selectedNominees, handleNomineeSelect, votingConfig, userEmail } = useVoting();
   const { categories, isLoading, fetchCategories } = useCategories();
 
+  // 3. Les useMemo après
   const currentCategoryData = useMemo(() => 
     categories && categories.length > 0 ? categories[currentCategory] : null, 
     [categories, currentCategory]
   );
 
+  // 4. Les fonctions du composant en dernier
   const handleCategoryChange = (index: number) => {
     if (categories && categories.length > index) {
       setCurrentCategory(index);
