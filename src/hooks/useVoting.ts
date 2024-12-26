@@ -77,8 +77,12 @@ export const useVoting = () => {
     }
   };
 
-  const handleNomineeSelect = async (categoryId: string, nomineeId: string) => {
-    if (!isVotingOpen || !userEmail) return;
+  const handleNomineeSelect = async (categoryId: string, nomineeId: string): Promise<void> => {
+    if (!isVotingOpen || !userEmail) {
+      throw new Error("Les votes ne sont pas ouverts ou utilisateur non connecté");
+    }
+
+    console.log("Début de handleNomineeSelect", { categoryId, nomineeId, userEmail });
 
     try {
       const { error } = await supabase
@@ -90,33 +94,25 @@ export const useVoting = () => {
             email: userEmail
           },
           {
-            onConflict: 'category_id,email',
-            ignoreDuplicates: false
+            onConflict: 'category_id,email'
           }
         );
 
       if (error) {
         console.error('Erreur lors du vote:', error);
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de l'enregistrement de votre vote",
-        });
-      } else {
-        setSelectedNominees((prev) => ({
-          ...prev,
-          [categoryId]: nomineeId,
-        }));
-        
-        console.log("Vote enregistré:", { categoryId, nomineeId });
+        throw error;
       }
+
+      // Mettre à jour l'état local seulement après confirmation du serveur
+      setSelectedNominees(prev => ({
+        ...prev,
+        [categoryId]: nomineeId,
+      }));
+      
+      console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
     } catch (error) {
-      console.error('Erreur lors du vote:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'enregistrement de votre vote",
-      });
+      console.error('Erreur détaillée lors du vote:', error);
+      throw error; // Propager l'erreur pour la gestion dans le composant
     }
   };
 
