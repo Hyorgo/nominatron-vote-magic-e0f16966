@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
 interface LogEntry {
