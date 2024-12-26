@@ -2,11 +2,31 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Nominee } from "@/types/nominees";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const fetchNominees = async () => {
+  const { data, error } = await supabase
+    .from("nominees")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+};
 
 export const useNominees = (onUpdate: () => void) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"name" | "date">("name");
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: nominees = [] } = useQuery({
+    queryKey: ["nominees"],
+    queryFn: fetchNominees,
+    staleTime: 5 * 60 * 1000, // Cache valide pendant 5 minutes
+    gcTime: 10 * 60 * 1000, // Garde en cache pendant 10 minutes
+    refetchOnWindowFocus: false,
+  });
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase
@@ -27,6 +47,10 @@ export const useNominees = (onUpdate: () => void) => {
       title: "Succès",
       description: "Nominé supprimé avec succès",
     });
+    
+    // Invalider le cache après la suppression
+    queryClient.invalidateQueries({ queryKey: ["nominees"] });
+    queryClient.invalidateQueries({ queryKey: ["categories"] });
     onUpdate();
   };
 
@@ -50,6 +74,10 @@ export const useNominees = (onUpdate: () => void) => {
       title: "Succès",
       description: "Nominé ajouté avec succès",
     });
+    
+    // Invalider le cache après l'ajout
+    queryClient.invalidateQueries({ queryKey: ["nominees"] });
+    queryClient.invalidateQueries({ queryKey: ["categories"] });
     onUpdate();
   };
 
@@ -76,5 +104,6 @@ export const useNominees = (onUpdate: () => void) => {
     handleDelete,
     handleSubmit,
     filterAndSortNominees,
+    nominees,
   };
 };

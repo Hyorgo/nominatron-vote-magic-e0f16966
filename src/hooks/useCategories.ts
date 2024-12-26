@@ -55,7 +55,8 @@ export const useCategories = () => {
   } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategoriesData,
-    staleTime: 1000 * 60 * 5, // Cache valide pendant 5 minutes
+    staleTime: 5 * 60 * 1000, // Cache valide pendant 5 minutes
+    gcTime: 10 * 60 * 1000, // Garde en cache pendant 10 minutes
     refetchOnWindowFocus: false,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
