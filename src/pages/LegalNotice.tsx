@@ -9,9 +9,9 @@ const LegalNotice = () => {
         
         <section className="space-y-4 text-white/90">
           <h2 className="text-xl font-semibold text-white">Édition et publication du site</h2>
-          <p>Société de conseil et gestion et bilan retraite à Lyon</p>
+          <p>Société de communication</p>
           <p>Nom de la société : Sortir-Lyon</p>
-          <p>Statut juridique : SAS au capital de 5.000 €</p>
+          <p>Statut juridique : SAS au capital de 1.000 €</p>
           <p>Numéro d'immatriculation au RCS : Lyon B 934 391 913</p>
           <p>Numéro de TVA intracommunautaire : FR45394391123</p>
           <p>Siège social : 10-12 BD Vivier Merle, 69003 Lyon, France</p>
