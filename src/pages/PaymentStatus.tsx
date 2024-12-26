@@ -13,14 +13,17 @@ const PaymentStatus = () => {
   const sessionId = searchParams.get('session_id');
   const isSuccess = status === 'success';
   const { toast } = useToast();
+  
+  // Récupérer les informations de réservation du sessionStorage
   const [bookingInfo, setBookingInfo] = useState(() => {
     const stored = sessionStorage.getItem('bookingInfo');
+    console.log('Stored booking info:', stored);
     return stored ? JSON.parse(stored) : null;
   });
 
-  // Si nous avons un succès, vérifions la transaction dans Supabase
+  // Vérifier le statut de la transaction dans Supabase
   const { data: transactionData, isLoading } = useQuery({
-    queryKey: ['booking', sessionId],
+    queryKey: ['transaction', sessionId],
     queryFn: async () => {
       if (!sessionId) {
         throw new Error('Aucun ID de session fourni');
