@@ -40,7 +40,7 @@ const getCategoryIcon = (categoryName: string) => {
 export const CategoryTabs = ({ categories, currentCategory }: CategoryTabsProps) => {
   return (
     <div className="w-full overflow-x-auto pb-4 mb-8">
-      <div className="flex flex-wrap gap-2 justify-center">
+      <TabsList className="flex flex-wrap gap-2 justify-center h-auto p-2 bg-transparent">
         {categories.map((category) => (
           <TabsTrigger
             key={category.id}
@@ -56,7 +56,7 @@ export const CategoryTabs = ({ categories, currentCategory }: CategoryTabsProps)
             <span className="text-sm font-medium">{category.name}</span>
           </TabsTrigger>
         ))}
-      </div>
+      </TabsList>
     </div>
   );
 };
