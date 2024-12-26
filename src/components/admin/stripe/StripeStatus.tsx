@@ -14,21 +14,22 @@ export const StripeStatus = ({ connectionStatus, onTest, dashboardUrl }: StripeS
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold">État de la connexion</h3>
           <Badge variant={isConnected ? "success" : "destructive"}>
             {isConnected ? 'Connecté' : 'Déconnecté'}
           </Badge>
         </div>
-        <div className="flex items-center gap-2">
-          <Button onClick={onTest} variant="outline">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button onClick={onTest} variant="outline" className="w-full sm:w-auto">
             Tester la connexion
           </Button>
           {dashboardUrl && (
             <Button 
-              variant="outline" 
+              variant="outline"
               onClick={() => window.open(dashboardUrl, '_blank')}
+              className="w-full sm:w-auto"
             >
               Dashboard Stripe <ExternalLink className="ml-2 h-4 w-4" />
             </Button>
