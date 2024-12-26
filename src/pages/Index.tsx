@@ -18,5 +18,4 @@ export const Index = () => {
   );
 };
 
-// Assurons-nous que le composant est exporté par défaut
 export default Index;
