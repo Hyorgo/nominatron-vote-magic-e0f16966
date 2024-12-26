@@ -49,15 +49,22 @@ export const useCategories = () => {
     staleTime: 1000 * 60 * 5, // Cache valide pendant 5 minutes
     refetchOnWindowFocus: false,
     retry: 3,
-    onError: (error: Error) => {
-      console.error("Error in useCategories:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur de chargement",
-        description: "Impossible de charger les catégories et les nominés. Veuillez réessayer.",
-      });
-    },
+    meta: {
+      errorHandler: (error: Error) => {
+        console.error("Error in useCategories:", error);
+        toast({
+          variant: "destructive",
+          title: "Erreur de chargement",
+          description: "Impossible de charger les catégories et les nominés. Veuillez réessayer.",
+        });
+      }
+    }
   });
+
+  // Handle errors through the error property
+  if (error) {
+    error.meta?.errorHandler?.(error as Error);
+  }
 
   return {
     categories,
