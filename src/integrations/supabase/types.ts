@@ -27,6 +27,33 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_attempts: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          ip_address: string
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          ip_address: string
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          ip_address?: string
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           created_at: string | null
@@ -538,6 +565,13 @@ export type Database = {
       }
     }
     Functions: {
+      check_auth_attempts: {
+        Args: {
+          check_email: string
+          check_ip: string
+        }
+        Returns: boolean
+      }
       check_booking_rate_limit: {
         Args: {
           user_email: string

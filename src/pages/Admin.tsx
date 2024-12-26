@@ -33,17 +33,60 @@ const Admin = () => {
     }
   };
 
+  const recordAuthAttempt = async (email: string, success: boolean) => {
+    try {
+      const userAgent = navigator.userAgent;
+      const response = await fetch('https://api.ipify.org?format=json');
+      const { ip } = await response.json();
+
+      await supabase
+        .from('auth_attempts')
+        .insert([
+          {
+            email,
+            ip_address: ip,
+            success,
+            user_agent: userAgent
+          }
+        ]);
+    } catch (error) {
+      console.error('Error recording auth attempt:', error);
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // Vérifier les tentatives de connexion suspectes
+      const response = await fetch('https://api.ipify.org?format=json');
+      const { ip } = await response.json();
+      
+      const { data: checkResult } = await supabase
+        .rpc('check_auth_attempts', {
+          check_email: email,
+          check_ip: ip
+        });
+
+      if (!checkResult) {
+        toast({
+          variant: "destructive",
+          title: "Trop de tentatives",
+          description: "Veuillez réessayer dans quelques minutes",
+        });
+        return;
+      }
+
       const { data: { session }, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        await recordAuthAttempt(email, false);
+        throw authError;
+      }
 
       if (session) {
         const { data: adminData, error: adminError } = await supabase
@@ -54,9 +97,11 @@ const Admin = () => {
 
         if (adminError || !adminData) {
           await supabase.auth.signOut();
+          await recordAuthAttempt(email, false);
           throw new Error("Accès non autorisé");
         }
 
+        await recordAuthAttempt(email, true);
         toast({
           title: "Connexion réussie",
           description: "Bienvenue dans l'interface d'administration",
