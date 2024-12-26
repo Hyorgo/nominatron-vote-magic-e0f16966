@@ -1,7 +1,6 @@
 import { Heart, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTicketDownload } from "@/hooks/useTicketDownload";
-import { useEffect } from "react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface SuccessContentProps {
   bookingInfo: any;
@@ -9,18 +8,13 @@ interface SuccessContentProps {
 }
 
 export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentProps) => {
-  const { isDownloading, downloadTicket } = useTicketDownload();
-
-  useEffect(() => {
-    console.log('SuccessContent monté, bookingInfo:', bookingInfo);
-    
-    if (bookingInfo && bookingInfo.firstName && bookingInfo.lastName && bookingInfo.email && bookingInfo.numberOfTickets) {
-      console.log('Traitement de la réservation avec les données:', bookingInfo);
-      downloadTicket(bookingInfo);
-    } else {
-      console.error('Informations de réservation manquantes ou invalides:', bookingInfo);
-    }
-  }, [bookingInfo, downloadTicket]);
+  const qrCodeData = bookingInfo ? JSON.stringify({
+    firstName: bookingInfo.firstName,
+    lastName: bookingInfo.lastName,
+    email: bookingInfo.email,
+    numberOfTickets: bookingInfo.numberOfTickets,
+    paymentStatus: "validé"
+  }) : "";
 
   return (
     <>
@@ -38,9 +32,29 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
           <p className="text-lg">
             <span className="block mb-2 text-primary text-2xl">🎉 Merci pour votre confiance ! 🎉</span>
             <span className="text-muted-foreground">
-              Votre réservation a bien été prise en compte.
+              Voici votre QR code de réservation :
             </span>
           </p>
+          
+          {bookingInfo && (
+            <div className="mt-6 flex flex-col items-center justify-center">
+              <div className="bg-white p-4 rounded-lg shadow-lg">
+                <QRCodeSVG
+                  value={qrCodeData}
+                  size={200}
+                  level="H"
+                  includeMargin={true}
+                />
+              </div>
+              <div className="mt-6 text-left space-y-2">
+                <p><strong>Nom :</strong> {bookingInfo.lastName}</p>
+                <p><strong>Prénom :</strong> {bookingInfo.firstName}</p>
+                <p><strong>Email :</strong> {bookingInfo.email}</p>
+                <p><strong>Nombre de places :</strong> {bookingInfo.numberOfTickets}</p>
+                <p><strong>Statut du paiement :</strong> Validé</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <Button 
