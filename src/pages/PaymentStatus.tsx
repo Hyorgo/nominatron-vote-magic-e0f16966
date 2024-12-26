@@ -17,8 +17,12 @@ const PaymentStatus = () => {
   // Récupérer les informations de réservation du sessionStorage
   const [bookingInfo, setBookingInfo] = useState(() => {
     const stored = sessionStorage.getItem('bookingInfo');
-    console.log('Stored booking info:', stored);
-    return stored ? JSON.parse(stored) : null;
+    if (stored) {
+      console.log('Informations de réservation trouvées:', JSON.parse(stored));
+      return JSON.parse(stored);
+    }
+    console.log('Aucune information de réservation trouvée dans le sessionStorage');
+    return null;
   });
 
   // Vérifier le statut de la transaction dans Supabase
@@ -40,6 +44,7 @@ const PaymentStatus = () => {
         throw new Error('Erreur lors de la récupération des informations de transaction');
       }
 
+      console.log('Données de transaction:', data);
       return data;
     },
     enabled: isSuccess && !!sessionId,
@@ -63,6 +68,17 @@ const PaymentStatus = () => {
     }
   }, [status, navigate]);
 
+  // Afficher un message si aucune information de réservation n'est trouvée
+  useEffect(() => {
+    if (isSuccess && !bookingInfo) {
+      toast({
+        title: "Information",
+        description: "Les informations de réservation ne sont pas disponibles.",
+        variant: "default",
+      });
+    }
+  }, [isSuccess, bookingInfo, toast]);
+
   if (isLoading) {
     return (
       <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8">
@@ -76,7 +92,10 @@ const PaymentStatus = () => {
       {isSuccess ? (
         <SuccessContent 
           bookingInfo={bookingInfo}
-          onNavigateHome={() => navigate("/")}
+          onNavigateHome={() => {
+            sessionStorage.removeItem('bookingInfo'); // Nettoyer le storage après utilisation
+            navigate("/");
+          }}
         />
       ) : (
         <ErrorContent 
