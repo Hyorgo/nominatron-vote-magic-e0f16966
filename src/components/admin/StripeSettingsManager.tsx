@@ -32,18 +32,21 @@ export const StripeSettingsManager = () => {
 
       if (error) throw error;
 
-      const settingsMap = data?.reduce((acc: Record<string, string>, curr: StripeSetting) => {
-        acc[curr.setting_name] = curr.setting_value;
-        return acc;
-      }, {});
+      if (data && data.length > 0) {
+        const settingsMap = data.reduce((acc: Record<string, string>, curr: StripeSetting) => {
+          acc[curr.setting_name] = curr.setting_value;
+          return acc;
+        }, {});
 
-      setSettings({
-        stripe_price_id: settingsMap?.stripe_price_id || "",
-        stripe_success_url: settingsMap?.stripe_success_url || "",
-        stripe_cancel_url: settingsMap?.stripe_cancel_url || "",
-      });
+        console.log("Paramètres Stripe chargés:", settingsMap);
 
-      if (!data || data.length === 0) {
+        setSettings({
+          stripe_price_id: settingsMap.stripe_price_id || "",
+          stripe_success_url: settingsMap.stripe_success_url || "",
+          stripe_cancel_url: settingsMap.stripe_cancel_url || "",
+        });
+      } else {
+        console.log("Aucun paramètre Stripe trouvé");
         toast({
           title: "Information",
           description: "Aucun paramètre Stripe n'a été configuré",
