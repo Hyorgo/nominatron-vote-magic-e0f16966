@@ -27,8 +27,14 @@ export const Navigation = () => {
 
   const links = [
     { href: "/", label: "Accueil" },
+    { href: "/categories", label: "Voter" },
     { href: "/reserver", label: "Réserver mes places" },
     { href: "/contact", label: "Contact" },
+  ];
+
+  const footerLinks = [
+    { href: "/mentions-legales", label: "Mentions légales" },
+    { href: "/politique-de-confidentialite", label: "Politique de confidentialité" },
   ];
 
   return (
@@ -37,7 +43,7 @@ export const Navigation = () => {
         <Link to="/" className="flex-shrink-0">
           <img 
             src={logoUrl}
-            alt="Sortir Lyon x Sixtynine Event" 
+            alt="Lyon d'Or" 
             className="h-8 sm:h-12 w-auto"
           />
         </Link>
@@ -92,6 +98,18 @@ export const Navigation = () => {
                   {link.label}
                 </Link>
               ))}
+              <div className="border-t border-white/10 mt-2 pt-2">
+                {footerLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         )}
