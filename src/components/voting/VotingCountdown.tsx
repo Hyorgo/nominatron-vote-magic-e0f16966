@@ -20,13 +20,20 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
   useEffect(() => {
     const fetchUserInfo = async () => {
       if (userEmail) {
-        const { data } = await supabase
+        console.log("Fetching user info for email:", userEmail); // Debug log
+        const { data, error } = await supabase
           .from("validated_emails")
           .select("first_name")
           .eq("email", userEmail)
           .maybeSingle();
         
+        if (error) {
+          console.error("Erreur lors de la récupération du prénom:", error);
+          return;
+        }
+        
         if (data?.first_name) {
+          console.log("Prénom trouvé:", data.first_name); // Debug log
           setFirstName(data.first_name);
         } else {
           console.error("Prénom non trouvé pour l'email:", userEmail);
