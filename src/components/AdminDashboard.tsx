@@ -5,13 +5,25 @@ import { AdminTabs } from "./admin/navigation/AdminTabs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useQueryConfig } from "@/hooks/useQueryConfig";
 import { Loader2 } from "lucide-react";
+import { Database } from "@/integrations/supabase/types";
+
+type ScrollingText = Database['public']['Tables']['scrolling_text']['Row'];
+type PageBackground = Database['public']['Tables']['page_backgrounds']['Row'];
+type HomeContent = Database['public']['Tables']['home_content']['Row'];
+type SiteSettings = Database['public']['Tables']['site_settings']['Row'];
+
+interface Settings {
+  headerLogo: string;
+  homeLogo: string;
+  homeYearText: string;
+}
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const queryConfig = useQueryConfig("adminDashboard");
 
-  const { data: scrollingTexts, isLoading: loadingTexts } = useQuery({
+  const { data: scrollingTexts, isLoading: loadingTexts } = useQuery<ScrollingText[]>({
     queryKey: ["scrollingTexts"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -24,7 +36,7 @@ export const AdminDashboard = () => {
     ...queryConfig,
   });
 
-  const { data: backgrounds, isLoading: loadingBackgrounds } = useQuery({
+  const { data: backgrounds, isLoading: loadingBackgrounds } = useQuery<PageBackground[]>({
     queryKey: ["backgrounds"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -38,7 +50,7 @@ export const AdminDashboard = () => {
     ...queryConfig,
   });
 
-  const { data: homeContent, isLoading: loadingContent } = useQuery({
+  const { data: homeContent, isLoading: loadingContent } = useQuery<HomeContent[]>({
     queryKey: ["homeContent"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -51,7 +63,7 @@ export const AdminDashboard = () => {
     ...queryConfig,
   });
 
-  const { data: settings, isLoading: loadingSettings } = useQuery({
+  const { data: settings, isLoading: loadingSettings } = useQuery<Settings>({
     queryKey: ["siteSettings"],
     queryFn: async () => {
       const { data, error } = await supabase
