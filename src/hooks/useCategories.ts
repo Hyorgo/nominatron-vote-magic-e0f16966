@@ -31,17 +31,27 @@ export const useCategories = () => {
   } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategoriesData,
-    onError: (error) => {
-      console.error("Erreur lors du chargement des données:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de charger les catégories et les nominés",
-      });
-    },
     staleTime: 1000 * 60 * 5, // Cache valide pendant 5 minutes
     refetchOnWindowFocus: false,
+    meta: {
+      errorHandler: (error: Error) => {
+        console.error("Erreur lors du chargement des données:", error);
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de charger les catégories et les nominés",
+        });
+      }
+    }
   });
+
+  if (error && error instanceof Error) {
+    error.message && toast({
+      variant: "destructive",
+      title: "Erreur",
+      description: error.message
+    });
+  }
 
   return {
     categories,
