@@ -51,7 +51,11 @@ const PaymentStatus = () => {
         try {
           console.log('Envoi de l\'email de confirmation...');
           const { error: emailError } = await supabase.functions.invoke('send-booking-confirmation', {
-            body: bookingInfo
+            body: {
+              ...bookingInfo,
+              sessionId,
+              status: 'succeeded'
+            }
           });
 
           if (emailError) {
@@ -63,6 +67,10 @@ const PaymentStatus = () => {
             });
           } else {
             console.log('Email de confirmation envoyé avec succès');
+            toast({
+              title: "Succès",
+              description: "Un email de confirmation vous a été envoyé.",
+            });
           }
         } catch (emailError) {
           console.error('Erreur lors de l\'envoi de l\'email:', emailError);
@@ -72,18 +80,8 @@ const PaymentStatus = () => {
       return data;
     },
     enabled: isSuccess && !!sessionId,
-    retry: 1,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    meta: {
-      onError: (error: Error) => {
-        toast({
-          title: "Erreur",
-          description: error.message,
-          variant: "destructive",
-        });
-      },
-    },
+    retry: 3,
+    retryDelay: 1000,
   });
 
   useEffect(() => {
@@ -91,17 +89,6 @@ const PaymentStatus = () => {
       navigate('/');
     }
   }, [status, navigate]);
-
-  // Afficher un message si aucune information de réservation n'est trouvée
-  useEffect(() => {
-    if (isSuccess && !bookingInfo) {
-      toast({
-        title: "Information",
-        description: "Les informations de réservation ne sont pas disponibles.",
-        variant: "default",
-      });
-    }
-  }, [isSuccess, bookingInfo, toast]);
 
   if (isLoading) {
     return (
