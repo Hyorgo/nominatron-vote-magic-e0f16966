@@ -1,16 +1,17 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { supabase } from "@/integrations/supabase/client";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export const calculateTimeLeft = (endDate: Date) => {
+  const total = Date.parse(endDate.toString()) - Date.now();
+  const seconds = Math.floor((total / 1000) % 60);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
 
-export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(date)
-}
+  return {
+    total,
+    days,
+    hours,
+    minutes,
+    seconds,
+  };
+};
