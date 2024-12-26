@@ -12,12 +12,14 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
   const { isDownloading, downloadTicket } = useTicketDownload();
 
   useEffect(() => {
-    console.log('SuccessContent mounted, bookingInfo:', bookingInfo);
-    if (bookingInfo && Object.keys(bookingInfo).length > 0) {
-      console.log('Démarrage du téléchargement automatique...');
+    console.log('SuccessContent monté, bookingInfo:', bookingInfo);
+    
+    // Vérifier que bookingInfo contient toutes les données nécessaires
+    if (bookingInfo && bookingInfo.firstName && bookingInfo.lastName && bookingInfo.email && bookingInfo.numberOfTickets) {
+      console.log('Démarrage du téléchargement automatique avec les données:', bookingInfo);
       downloadTicket(bookingInfo);
     } else {
-      console.error('Informations de réservation manquantes');
+      console.error('Informations de réservation manquantes ou invalides:', bookingInfo);
     }
   }, [bookingInfo, downloadTicket]);
 
@@ -45,7 +47,10 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
           </p>
         </div>
         <Button
-          onClick={() => downloadTicket(bookingInfo)}
+          onClick={() => {
+            console.log('Tentative de téléchargement manuel avec bookingInfo:', bookingInfo);
+            downloadTicket(bookingInfo);
+          }}
           className="w-full mb-6"
           disabled={isDownloading}
         >

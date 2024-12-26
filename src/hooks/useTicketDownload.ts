@@ -7,7 +7,9 @@ export const useTicketDownload = () => {
   const { toast } = useToast();
 
   const downloadTicket = async (bookingInfo: any) => {
-    if (!bookingInfo || !bookingInfo.firstName || !bookingInfo.lastName || !bookingInfo.email) {
+    console.log('Début de la fonction downloadTicket avec bookingInfo:', bookingInfo);
+    
+    if (!bookingInfo || !bookingInfo.firstName || !bookingInfo.lastName || !bookingInfo.email || !bookingInfo.numberOfTickets) {
       console.error('Informations de réservation invalides:', bookingInfo);
       toast({
         title: "Erreur",
@@ -20,7 +22,12 @@ export const useTicketDownload = () => {
 
     try {
       setIsDownloading(true);
-      console.log('Envoi des données pour génération du PDF:', bookingInfo);
+      console.log('Envoi des données pour génération du PDF:', {
+        firstName: bookingInfo.firstName,
+        lastName: bookingInfo.lastName,
+        email: bookingInfo.email,
+        numberOfTickets: bookingInfo.numberOfTickets
+      });
       
       const { data, error } = await supabase.functions.invoke('generate-ticket-pdf', {
         body: {
