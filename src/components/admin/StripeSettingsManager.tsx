@@ -30,7 +30,10 @@ export const StripeSettingsManager = () => {
         .from('stripe_settings')
         .select("*");
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur lors du chargement des paramètres:", error);
+        throw error;
+      }
 
       if (data && data.length > 0) {
         const settingsMap = data.reduce((acc: Record<string, string>, curr: StripeSetting) => {
@@ -45,19 +48,13 @@ export const StripeSettingsManager = () => {
           stripe_success_url: settingsMap.stripe_success_url || "",
           stripe_cancel_url: settingsMap.stripe_cancel_url || "",
         });
-      } else {
-        console.log("Aucun paramètre Stripe trouvé");
-        toast({
-          title: "Information",
-          description: "Aucun paramètre Stripe n'a été configuré",
-        });
       }
     } catch (error) {
       console.error("Erreur lors du chargement des paramètres Stripe:", error);
       toast({
+        variant: "destructive",
         title: "Erreur",
         description: "Impossible de charger les paramètres Stripe",
-        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -75,7 +72,7 @@ export const StripeSettingsManager = () => {
       for (const update of updates) {
         const { error } = await supabase
           .from('stripe_settings')
-          .upsert(update, { onConflict: "setting_name" });
+          .upsert(update, { onConflict: 'setting_name' });
 
         if (error) throw error;
       }
@@ -87,9 +84,9 @@ export const StripeSettingsManager = () => {
     } catch (error) {
       console.error("Erreur lors de la sauvegarde des paramètres Stripe:", error);
       toast({
+        variant: "destructive",
         title: "Erreur",
         description: "Impossible de sauvegarder les paramètres",
-        variant: "destructive",
       });
     } finally {
       setSaving(false);
