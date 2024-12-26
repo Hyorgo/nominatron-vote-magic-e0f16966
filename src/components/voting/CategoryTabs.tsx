@@ -8,7 +8,7 @@ import {
   Cake, 
   Croissant, 
   ShoppingBag, 
-  Bowl, 
+  UtensilsCrossed as RestaurantIcon, 
   Scissors, 
   Cigarette, 
   Pizza 
@@ -29,7 +29,7 @@ const getCategoryIcon = (categoryName: string) => {
     "Patissiers": <Cake className="h-4 w-4" />,
     "Boulangerie": <Croissant className="h-4 w-4" />,
     "Boutique": <ShoppingBag className="h-4 w-4" />,
-    "Restaurant chinois": <Bowl className="h-4 w-4" />,
+    "Restaurant chinois": <RestaurantIcon className="h-4 w-4" />,
     "Coiffeurs": <Scissors className="h-4 w-4" />,
     "Tabacs": <Cigarette className="h-4 w-4" />,
     "Restaurant italien": <Pizza className="h-4 w-4" />,
