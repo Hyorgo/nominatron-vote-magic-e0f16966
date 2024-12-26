@@ -1,11 +1,11 @@
 import { useVoting } from "@/hooks/useVoting";
 import { useCategories } from "@/hooks/useCategories";
-import { VotingHeader } from "./voting/VotingHeader";
-import { VotingDialog } from "./voting/VotingDialog";
-import { VotingContent } from "./voting/VotingContent";
-import { VotingCountdown } from "./voting/VotingCountdown";
-import { LoadingState } from "./voting/LoadingState";
-import { EmptyState } from "./voting/EmptyState";
+import { VotingHeader } from "./VotingHeader";
+import { VotingDialog } from "./VotingDialog";
+import { VotingContent } from "./VotingContent";
+import { VotingCountdown } from "./VotingCountdown";
+import { LoadingState } from "./LoadingState";
+import { EmptyState } from "./EmptyState";
 import { useState, useMemo } from "react";
 
 export const VotingInterface = () => {
