@@ -3,7 +3,7 @@ import { useEmailSession } from "./voting/useEmailSession";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const useVoting = () => {
   const { votingConfig, isVotingOpen } = useVotingConfig();
@@ -65,13 +65,15 @@ export const useVoting = () => {
     enabled: !!userEmail && !!isEmailValidated,
     staleTime: 30000,
     gcTime: 5 * 60 * 1000,
-    meta: {
-      onSuccess: (data: Record<string, string>) => {
-        console.log("Mise à jour des votes sélectionnés avec:", data);
-        setSelectedNominees(data);
-      }
-    }
   });
+
+  // Mettre à jour les votes sélectionnés quand les votes sont chargés
+  useEffect(() => {
+    if (votes && Object.keys(votes).length > 0) {
+      console.log("Mise à jour des votes sélectionnés avec:", votes);
+      setSelectedNominees(votes);
+    }
+  }, [votes]);
 
   const handleNomineeSelect = async (categoryId: string, nomineeId: string): Promise<void> => {
     console.log("Début du vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
