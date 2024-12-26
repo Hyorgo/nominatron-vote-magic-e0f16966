@@ -8,12 +8,23 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
 
   const loadPreviousVotes = async (email: string) => {
     try {
+      console.log("Tentative de chargement des votes pour:", email);
+      
       const { data: previousVotes, error } = await supabase
         .from('votes')
         .select('category_id, nominee_id')
-        .eq('email', email);
+        .eq('email', email)
+        .throwOnError();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur Supabase:', error);
+        toast({
+          variant: "destructive",
+          title: "Erreur de chargement",
+          description: "Impossible de charger vos votes précédents. Veuillez réessayer.",
+        });
+        return;
+      }
 
       if (previousVotes && previousVotes.length > 0) {
         const votesMap = previousVotes.reduce((acc, vote) => ({
@@ -22,10 +33,15 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
         }), {});
         
         setSelectedNominees(votesMap);
-        console.log("Votes précédents chargés:", votesMap);
+        console.log("Votes précédents chargés avec succès:", votesMap);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des votes précédents:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de connexion",
+        description: "La connexion au serveur a échoué. Veuillez vérifier votre connexion internet.",
+      });
     }
   };
 
@@ -33,25 +49,21 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
     console.log("Début du vote...", { categoryId, nomineeId, userEmail, isVotingOpen });
 
     if (!isVotingOpen) {
-      const error = new Error("Les votes ne sont pas ouverts actuellement");
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Votes fermés",
         description: "Les votes ne sont pas ouverts actuellement.",
       });
-      throw error;
+      return;
     }
 
     if (!userEmail) {
-      const error = new Error("Vous devez être connecté avec un email validé pour voter");
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Non connecté",
         description: "Vous devez être connecté avec un email validé pour voter.",
       });
-      throw error;
+      return;
     }
 
     try {
@@ -66,16 +78,17 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
           {
             onConflict: 'category_id,email'
           }
-        );
+        )
+        .throwOnError();
 
       if (error) {
-        console.error('Erreur lors du vote:', error);
+        console.error('Erreur Supabase lors du vote:', error);
         toast({
           variant: "destructive",
           title: "Erreur",
           description: "Une erreur est survenue lors de l'enregistrement de votre vote.",
         });
-        throw error;
+        return;
       }
 
       setSelectedNominees(prev => ({
@@ -91,7 +104,11 @@ export const useVoteManagement = (userEmail: string | undefined, isVotingOpen: b
       });
     } catch (error) {
       console.error('Erreur détaillée lors du vote:', error);
-      throw error;
+      toast({
+        variant: "destructive",
+        title: "Erreur de connexion",
+        description: "La connexion au serveur a échoué. Veuillez vérifier votre connexion internet.",
+      });
     }
   };
 
