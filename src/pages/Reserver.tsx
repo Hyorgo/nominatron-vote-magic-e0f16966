@@ -60,7 +60,15 @@ const Reserver = () => {
       }
 
       console.log('Redirection vers:', data.url);
-      window.location.href = data.url;
+      const stripeWindow = window.open(data.url, '_blank');
+      
+      if (!stripeWindow) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez autoriser les popups pour accéder à la page de paiement.",
+          variant: "destructive",
+        });
+      }
 
     } catch (error) {
       console.error('Erreur complète:', error);
