@@ -1,48 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
-
-interface StripeSettings {
-  stripe_price_id: string;
-  stripe_success_url: string;
-  stripe_cancel_url: string;
-  stripe_dashboard_url: string;
-  stripe_price_ht: string;
-  stripe_price_ttc: string;
-  stripe_connection_status: string;
-}
-
-const defaultSettings: StripeSettings = {
-  stripe_price_id: '',
-  stripe_success_url: '',
-  stripe_cancel_url: '',
-  stripe_dashboard_url: '',
-  stripe_price_ht: '',
-  stripe_price_ttc: '',
-  stripe_connection_status: 'disconnected',
-};
+import { useAuthSession } from '@/hooks/useAuthSession';
+import { stripeService } from '@/services/stripeService';
+import { StripeSettings, defaultStripeSettings } from '@/types/stripe';
 
 export const useStripeSettings = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const { checkSession } = useAuthSession();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [settings, setSettings] = useState<StripeSettings>(defaultSettings);
-
-  const checkSession = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      toast({
-        variant: 'destructive',
-        title: 'Session expirée',
-        description: 'Veuillez vous reconnecter',
-      });
-      navigate('/');
-      return false;
-    }
-    return true;
-  }, [toast, navigate]);
+  const [settings, setSettings] = useState<StripeSettings>(defaultStripeSettings);
 
   const loadStripeSettings = useCallback(async () => {
     try {
@@ -52,14 +19,10 @@ export const useStripeSettings = () => {
         return;
       }
 
-      const { data: stripeSettings, error } = await supabase
-        .from('stripe_settings')
-        .select('*');
-
-      if (error) throw error;
+      const stripeSettings = await stripeService.loadSettings();
 
       if (stripeSettings && stripeSettings.length > 0) {
-        const settingsObject = { ...defaultSettings };
+        const settingsObject = { ...defaultStripeSettings };
         stripeSettings.forEach((setting) => {
           if (setting.setting_name in settingsObject) {
             settingsObject[setting.setting_name as keyof StripeSettings] = setting.setting_value;
@@ -70,9 +33,9 @@ export const useStripeSettings = () => {
     } catch (error) {
       console.error('Erreur lors du chargement des paramètres Stripe:', error);
       toast({
-        variant: 'destructive',
-        title: 'Erreur',
-        description: 'Impossible de charger les paramètres Stripe',
+        title: "Erreur",
+        description: "Impossible de charger les paramètres Stripe",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -85,70 +48,49 @@ export const useStripeSettings = () => {
       const hasValidSession = await checkSession();
       if (!hasValidSession) return;
 
-      const updates = Object.entries(settings).map(([key, value]) => ({
-        setting_name: key,
-        setting_value: value,
-      }));
-
-      for (const update of updates) {
-        const { error } = await supabase
-          .from('stripe_settings')
-          .upsert(update, { onConflict: 'setting_name' });
-
-        if (error) throw error;
-      }
+      await stripeService.saveSettings(settings);
 
       toast({
-        title: 'Succès',
-        description: 'Les paramètres Stripe ont été mis à jour',
+        title: "Succès",
+        description: "Paramètres Stripe sauvegardés avec succès",
       });
     } catch (error) {
       console.error('Erreur lors de la sauvegarde des paramètres Stripe:', error);
       toast({
-        variant: 'destructive',
-        title: 'Erreur',
-        description: 'Impossible de sauvegarder les paramètres',
+        title: "Erreur",
+        description: "Impossible de sauvegarder les paramètres",
+        variant: "destructive",
       });
     } finally {
       setSaving(false);
     }
   };
 
-  const testConnection = async () => {
+  const testStripeConnection = async () => {
     try {
       const hasValidSession = await checkSession();
       if (!hasValidSession) return;
 
-      const response = await supabase.functions.invoke('test-stripe-connection');
-      const { success, message } = response.data;
-      
-      setSettings(prev => ({
-        ...prev,
-        stripe_connection_status: success ? 'connected' : 'disconnected'
-      }));
-
-      toast({
-        title: success ? 'Succès' : 'Erreur',
-        description: message,
-        variant: success ? 'default' : 'destructive',
-      });
+      const { success, message } = await stripeService.testConnection();
 
       if (success) {
-        const { error } = await supabase
-          .from('stripe_settings')
-          .upsert({ 
-            setting_name: 'stripe_connection_status', 
-            setting_value: 'connected' 
-          }, { onConflict: 'setting_name' });
-
-        if (error) throw error;
+        setSettings(prev => ({
+          ...prev,
+          stripe_connection_status: 'connected'
+        }));
       }
-    } catch (error) {
-      console.error('Erreur lors du test de connexion:', error);
+
       toast({
-        variant: 'destructive',
-        title: 'Erreur',
-        description: 'Impossible de tester la connexion Stripe',
+        title: success ? "Succès" : "Erreur",
+        description: message,
+        variant: success ? "default" : "destructive",
+      });
+    } catch (error) {
+      console.error('Erreur lors du test de connexion Stripe:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de tester la connexion Stripe",
+        variant: "destructive",
       });
     }
   };
@@ -163,6 +105,6 @@ export const useStripeSettings = () => {
     settings,
     setSettings,
     saveSettings,
-    testConnection,
+    testStripeConnection,
   };
 };
