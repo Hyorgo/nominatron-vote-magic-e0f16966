@@ -8,6 +8,7 @@ import { NomineesManager } from "../NomineesManager";
 import { VoteStatistics } from "../statistics/VoteStatistics";
 import { VoteParticipants } from "../statistics/components/VoteParticipants";
 import { EventConfigManager } from "../EventConfigManager";
+import { StripeSettingsManager } from "../StripeSettingsManager";
 
 interface AdminTabsProps {
   homeContent: any[];
@@ -77,6 +78,7 @@ export const AdminTabs = ({
           currentLogo={headerLogo}
           onUpdate={onUpdate}
         />
+        <StripeSettingsManager />
       </TabsContent>
     </Tabs>
   );
