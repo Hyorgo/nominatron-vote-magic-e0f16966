@@ -5,6 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type StripeSetting = Database['public']['Tables']['stripe_settings']['Row'];
 
 export const StripeSettingsManager = () => {
   const { toast } = useToast();
@@ -22,12 +25,12 @@ export const StripeSettingsManager = () => {
   const loadStripeSettings = async () => {
     try {
       const { data, error } = await supabase
-        .from("stripe_settings")
+        .from('stripe_settings')
         .select("*");
 
       if (error) throw error;
 
-      const settingsMap = data?.reduce((acc: any, curr) => {
+      const settingsMap = data?.reduce((acc: Record<string, string>, curr: StripeSetting) => {
         acc[curr.setting_name] = curr.setting_value;
         return acc;
       }, {});
@@ -57,7 +60,7 @@ export const StripeSettingsManager = () => {
 
       for (const update of updates) {
         const { error } = await supabase
-          .from("stripe_settings")
+          .from('stripe_settings')
           .upsert(update, { onConflict: "setting_name" });
 
         if (error) throw error;

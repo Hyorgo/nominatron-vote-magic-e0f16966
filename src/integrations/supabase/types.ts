@@ -299,6 +299,30 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          setting_name: string
+          setting_value: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          setting_name: string
+          setting_value: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          setting_name?: string
+          setting_value?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ticket_pricing: {
         Row: {
           created_at: string | null
