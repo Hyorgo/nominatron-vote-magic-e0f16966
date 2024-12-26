@@ -5,8 +5,6 @@ import { Category } from "@/types/nominees";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs } from "@/components/ui/tabs";
 import { CategoryTabs } from "./CategoryTabs";
-import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface VotingContentProps {
   currentCategory: number;
@@ -27,19 +25,29 @@ export const VotingContent = ({
   const category = categories[currentCategory];
 
   const handleVote = async (categoryId: string, nomineeId: string) => {
-    await onVote(categoryId, nomineeId);
-    
-    toast({
-      title: "Vote enregistré !",
-      description: `Votre choix a été sauvegardé avec succès${
-        currentCategory < categories.length - 1 ? ". Passage à la catégorie suivante..." : " !"
-      }`,
-    });
+    try {
+      console.log("Vote en cours...", { categoryId, nomineeId });
+      await onVote(categoryId, nomineeId);
+      
+      toast({
+        title: "Vote enregistré !",
+        description: `Votre choix a été sauvegardé avec succès${
+          currentCategory < categories.length - 1 ? ". Passage à la catégorie suivante..." : " !"
+        }`,
+      });
 
-    if (currentCategory < categories.length - 1) {
-      setTimeout(() => {
-        onCategoryChange(currentCategory + 1);
-      }, 500);
+      if (currentCategory < categories.length - 1) {
+        setTimeout(() => {
+          onCategoryChange(currentCategory + 1);
+        }, 500);
+      }
+    } catch (error) {
+      console.error("Erreur lors du vote:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'enregistrement de votre vote",
+      });
     }
   };
 
