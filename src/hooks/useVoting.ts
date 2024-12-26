@@ -2,6 +2,7 @@ import { useVotingConfig } from "./voting/useVotingConfig";
 import { useVoteManagement } from "./voting/useVoteManagement";
 import { useEmailSession } from "./voting/useEmailSession";
 import { usePreviousVotes } from "./voting/usePreviousVotes";
+import { useQuery } from "@tanstack/react-query";
 
 export const useVoting = () => {
   const { votingConfig, isVotingOpen } = useVotingConfig();
@@ -11,12 +12,19 @@ export const useVoting = () => {
     isVotingOpen
   );
 
-  usePreviousVotes(userEmail, loadPreviousVotes);
+  // Utiliser React Query pour mettre en cache les résultats et éviter les requêtes répétées
+  const { data: previousVotes } = useQuery({
+    queryKey: ['previousVotes', userEmail],
+    queryFn: () => loadPreviousVotes(userEmail),
+    enabled: !!userEmail,
+    staleTime: 30000, // Considérer les données comme fraîches pendant 30 secondes
+    cacheTime: 5 * 60 * 1000, // Garder en cache pendant 5 minutes
+  });
 
   return {
     votingConfig,
     isVotingOpen,
-    selectedNominees,
+    selectedNominees: previousVotes || selectedNominees,
     handleNomineeSelect,
     userEmail,
   };
