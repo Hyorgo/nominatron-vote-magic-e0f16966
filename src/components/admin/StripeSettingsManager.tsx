@@ -11,7 +11,8 @@ type StripeSetting = Database['public']['Tables']['stripe_settings']['Row'];
 
 export const StripeSettingsManager = () => {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
     stripe_price_id: "",
     stripe_success_url: "",
@@ -23,6 +24,7 @@ export const StripeSettingsManager = () => {
   }, []);
 
   const loadStripeSettings = async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('stripe_settings')
@@ -40,6 +42,13 @@ export const StripeSettingsManager = () => {
         stripe_success_url: settingsMap?.stripe_success_url || "",
         stripe_cancel_url: settingsMap?.stripe_cancel_url || "",
       });
+
+      if (!data || data.length === 0) {
+        toast({
+          title: "Information",
+          description: "Aucun paramètre Stripe n'a été configuré",
+        });
+      }
     } catch (error) {
       console.error("Erreur lors du chargement des paramètres Stripe:", error);
       toast({
@@ -47,11 +56,13 @@ export const StripeSettingsManager = () => {
         description: "Impossible de charger les paramètres Stripe",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setSaving(true);
     try {
       const updates = Object.entries(settings).map(([key, value]) => ({
         setting_name: key,
@@ -78,9 +89,22 @@ export const StripeSettingsManager = () => {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Configuration Stripe</CardTitle>
+        </CardHeader>
+        <CardContent>
+          Chargement des paramètres...
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -124,8 +148,8 @@ export const StripeSettingsManager = () => {
           />
         </div>
 
-        <Button onClick={handleSave} disabled={loading}>
-          {loading ? "Enregistrement..." : "Enregistrer"}
+        <Button onClick={handleSave} disabled={saving}>
+          {saving ? "Enregistrement..." : "Enregistrer"}
         </Button>
       </CardContent>
     </Card>
