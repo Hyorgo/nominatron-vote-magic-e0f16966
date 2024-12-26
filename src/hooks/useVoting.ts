@@ -71,7 +71,7 @@ export const useVoting = () => {
   useEffect(() => {
     if (votes && Object.keys(votes).length > 0) {
       console.log("Mise à jour des votes sélectionnés avec:", votes);
-      setSelectedNominees(votes);
+      setSelectedNominees(prev => ({ ...prev, ...votes }));
     }
   }, [votes]);
 
@@ -97,22 +97,6 @@ export const useVoting = () => {
     }
 
     try {
-      // Vérifier si l'email est validé
-      const { data: validatedEmail, error: validationError } = await supabase
-        .from('validated_emails')
-        .select('email')
-        .eq('email', userEmail)
-        .maybeSingle();
-
-      if (validationError || !validatedEmail) {
-        toast({
-          variant: "destructive",
-          title: "Accès non autorisé",
-          description: "Votre email n'a pas été validé pour voter.",
-        });
-        return;
-      }
-
       const { error } = await supabase
         .from('votes')
         .upsert(
@@ -136,14 +120,14 @@ export const useVoting = () => {
         return;
       }
 
-      // Mettre à jour l'état local
+      // Mettre à jour l'état local immédiatement
       setSelectedNominees(prev => ({
         ...prev,
         [categoryId]: nomineeId,
       }));
       
       // Invalider le cache pour forcer un rechargement
-      queryClient.invalidateQueries({ queryKey: ['previousVotes', userEmail] });
+      await queryClient.invalidateQueries({ queryKey: ['previousVotes', userEmail] });
       
       console.log("Vote enregistré avec succès:", { categoryId, nomineeId });
       
@@ -164,7 +148,7 @@ export const useVoting = () => {
   return {
     votingConfig,
     isVotingOpen,
-    selectedNominees: { ...selectedNominees, ...votes },
+    selectedNominees,
     handleNomineeSelect,
     userEmail,
   };
