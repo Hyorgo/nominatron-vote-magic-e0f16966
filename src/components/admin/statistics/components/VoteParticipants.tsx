@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ParticipantsTable } from "./participants/ParticipantsTable";
 import { ParticipantsActions } from "./participants/ParticipantsActions";
+import { useQuery } from "@tanstack/react-query";
 
 type Participant = {
   email: string;
@@ -12,36 +13,41 @@ type Participant = {
   created_at: string;
 };
 
+const ITEMS_PER_PAGE = 50;
+
 export const VoteParticipants = () => {
-  const [participants, setParticipants] = useState<Participant[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
 
-  const loadParticipants = async () => {
-    try {
-      const { data, error } = await supabase
+  const { data: participantsData, isLoading } = useQuery({
+    queryKey: ['participants', currentPage, searchTerm],
+    queryFn: async () => {
+      const start = (currentPage - 1) * ITEMS_PER_PAGE;
+      const end = start + ITEMS_PER_PAGE - 1;
+
+      let query = supabase
         .from("validated_emails")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .select("*", { count: 'exact' });
+
+      if (searchTerm) {
+        query = query.or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`);
+      }
+
+      const { data, error, count } = await query
+        .order("created_at", { ascending: false })
+        .range(start, end);
 
       if (error) throw error;
-      setParticipants(data || []);
-    } catch (error) {
-      console.error("Erreur lors du chargement des participants:", error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger la liste des participants",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  useEffect(() => {
-    loadParticipants();
-  }, []);
+      return {
+        participants: data || [],
+        total: count || 0
+      };
+    },
+    staleTime: 30000, // Cache for 30 seconds
+    keepPreviousData: true
+  });
 
   const handleEdit = async (participant: Participant) => {
     try {
@@ -59,8 +65,6 @@ export const VoteParticipants = () => {
         title: "Succès",
         description: "Le participant a été mis à jour",
       });
-
-      loadParticipants();
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
       toast({
@@ -84,8 +88,6 @@ export const VoteParticipants = () => {
         title: "Succès",
         description: "Le participant a été supprimé",
       });
-
-      loadParticipants();
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
       toast({
@@ -101,7 +103,7 @@ export const VoteParticipants = () => {
       const { error } = await supabase
         .from("validated_emails")
         .delete()
-        .neq("email", "dummy"); // Delete all records
+        .neq("email", "dummy");
 
       if (error) throw error;
 
@@ -109,8 +111,6 @@ export const VoteParticipants = () => {
         title: "Succès",
         description: "Tous les participants ont été supprimés",
       });
-
-      loadParticipants();
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
       toast({
@@ -122,10 +122,11 @@ export const VoteParticipants = () => {
   };
 
   const handleExportCsv = () => {
-    // Prepare CSV data
+    if (!participantsData?.participants) return;
+    
     const csvContent = [
       ["Email", "Prénom", "Nom", "Date d'inscription"],
-      ...participants.map((p) => [
+      ...participantsData.participants.map((p) => [
         p.email,
         p.first_name || "",
         p.last_name || "",
@@ -135,7 +136,6 @@ export const VoteParticipants = () => {
       .map((row) => row.join(","))
       .join("\n");
 
-    // Create blob and download
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
@@ -146,12 +146,7 @@ export const VoteParticipants = () => {
     document.body.removeChild(link);
   };
 
-  const filteredParticipants = participants.filter(
-    (participant) =>
-      participant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      participant.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      participant.last_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const totalPages = participantsData ? Math.ceil(participantsData.total / ITEMS_PER_PAGE) : 0;
 
   return (
     <Card className="p-6">
@@ -161,11 +156,14 @@ export const VoteParticipants = () => {
           onSearchChange={setSearchTerm}
           onDeleteAll={handleDeleteAll}
           onExportCsv={handleExportCsv}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
 
         <ParticipantsTable
-          participants={filteredParticipants}
-          loading={loading}
+          participants={participantsData?.participants || []}
+          loading={isLoading}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
