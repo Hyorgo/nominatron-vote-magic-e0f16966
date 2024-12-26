@@ -21,15 +21,15 @@ export const NavigationButtons = ({
   onNext,
 }: NavigationButtonsProps) => {
   return (
-    <>
+    <div className="flex gap-2">
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             onClick={onPrevious}
             disabled={currentIndex === 0}
-            className="transition-transform hover:scale-105"
+            className="transition-all hover:scale-105 disabled:opacity-50"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
@@ -42,11 +42,11 @@ export const NavigationButtons = ({
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             onClick={onNext}
             disabled={currentIndex === totalCategories - 1}
-            className="transition-transform hover:scale-105"
+            className="transition-all hover:scale-105 disabled:opacity-50"
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
@@ -55,6 +55,6 @@ export const NavigationButtons = ({
           Catégorie suivante
         </TooltipContent>
       </Tooltip>
-    </>
+    </div>
   );
 };

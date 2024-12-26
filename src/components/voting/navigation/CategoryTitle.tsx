@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Menu } from "lucide-react";
+import { HelpCircle, Grid3X3 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -7,11 +7,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CategoryTitleProps {
   categoryName: string;
@@ -43,31 +45,36 @@ export const CategoryTitle = ({
           </TooltipContent>
         </Tooltip>
         {categories.length > 0 && (
-          <DropdownMenu>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                Naviguer vers une catégorie spécifique
-              </TooltipContent>
-            </Tooltip>
-            <DropdownMenuContent align="end" className="w-56">
-              {categories.map((category, index) => (
-                <DropdownMenuItem
-                  key={index}
-                  onClick={() => onSelectCategory?.(index)}
-                  className="cursor-pointer"
-                >
-                  {category.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <Grid3X3 className="h-4 w-4" />
+                Toutes les catégories
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <SheetHeader>
+                <SheetTitle>Catégories</SheetTitle>
+              </SheetHeader>
+              <ScrollArea className="h-[calc(100vh-8rem)] pr-4">
+                <div className="grid gap-2 py-4">
+                  {categories.map((category, index) => (
+                    <Button
+                      key={index}
+                      variant={currentIndex === index ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => onSelectCategory?.(index)}
+                    >
+                      <span className="mr-2 text-sm text-muted-foreground">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      {category.name}
+                    </Button>
+                  ))}
+                </div>
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
         )}
       </div>
       <p className="text-sm text-muted-foreground mt-2">
