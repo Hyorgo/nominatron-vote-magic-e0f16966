@@ -24,7 +24,6 @@ export const useStripeSettings = () => {
   const loadStripeSettings = async () => {
     setLoading(true);
     try {
-      console.log("Chargement des paramètres Stripe...");
       const { data: stripeSettings, error } = await supabase
         .from('stripe_settings')
         .select("*");
@@ -33,8 +32,6 @@ export const useStripeSettings = () => {
         console.error("Erreur lors du chargement des paramètres:", error);
         throw error;
       }
-
-      console.log("Données Stripe brutes reçues:", stripeSettings);
 
       if (stripeSettings && stripeSettings.length > 0) {
         const settingsObject: StripeSettings = {
@@ -49,7 +46,6 @@ export const useStripeSettings = () => {
           }
         });
 
-        console.log("Paramètres transformés:", settingsObject);
         setSettings(settingsObject);
       }
     } catch (error) {
@@ -67,7 +63,6 @@ export const useStripeSettings = () => {
   const saveSettings = async () => {
     setSaving(true);
     try {
-      console.log("Sauvegarde des paramètres:", settings);
       const updates = Object.entries(settings).map(([key, value]) => ({
         setting_name: key,
         setting_value: value,
