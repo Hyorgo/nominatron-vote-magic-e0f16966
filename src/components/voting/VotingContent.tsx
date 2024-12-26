@@ -3,8 +3,8 @@ import { NomineeCard } from "./NomineeCard";
 import { FinishVotingButton } from "./FinishVotingButton";
 import { Category } from "@/types/nominees";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Tabs } from "@/components/ui/tabs";
+import { CategoryTabs } from "./CategoryTabs";
 
 interface VotingContentProps {
   currentCategory: number;
@@ -28,7 +28,9 @@ export const VotingContent = ({
     await onVote(categoryId, nomineeId);
     toast({
       title: "Vote enregistré !",
-      description: `Votre choix a été sauvegardé avec succès${currentCategory < categories.length - 1 ? ". Passage à la catégorie suivante..." : " !"}`,
+      description: `Votre choix a été sauvegardé avec succès${
+        currentCategory < categories.length - 1 ? ". Passage à la catégorie suivante..." : " !"
+      }`,
     });
 
     if (currentCategory < categories.length - 1) {
@@ -38,52 +40,30 @@ export const VotingContent = ({
     }
   };
 
-  return (
-    <div className="space-y-8 px-4 sm:px-0">
-      <div className="flex flex-col items-center space-y-6">
-        <h2 className="text-2xl font-bold text-center golden-reflection">
-          {category.name}
-        </h2>
-        
-        <div className="flex items-center justify-center gap-4 w-full">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onCategoryChange(Math.max(0, currentCategory - 1))}
-            disabled={currentCategory === 0}
-            className="w-32"
-          >
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            Précédent
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onCategoryChange(Math.min(categories.length - 1, currentCategory + 1))}
-            disabled={currentCategory === categories.length - 1}
-            className="w-32"
-          >
-            Suivant
-            <ChevronRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+  const handleTabChange = (categoryId: string) => {
+    const newIndex = categories.findIndex((cat) => cat.id === categoryId);
+    if (newIndex !== -1) {
+      onCategoryChange(newIndex);
+    }
+  };
 
-        <div className="w-full max-w-2xl overflow-x-auto">
-          <div className="flex flex-wrap justify-center gap-2 py-4">
-            {categories.map((cat, index) => (
-              <Button
-                key={cat.id}
-                variant={currentCategory === index ? "default" : "ghost"}
-                size="sm"
-                onClick={() => onCategoryChange(index)}
-                className="min-w-[120px]"
-              >
-                {cat.name}
-              </Button>
-            ))}
-          </div>
-        </div>
+  return (
+    <div className="space-y-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="flex flex-col items-center space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center golden-reflection">
+          Votez pour vos établissements préférés
+        </h2>
+
+        <Tabs
+          value={category.id}
+          onValueChange={handleTabChange}
+          className="w-full"
+        >
+          <CategoryTabs 
+            categories={categories} 
+            currentCategory={category.id}
+          />
+        </Tabs>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
