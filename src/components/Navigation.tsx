@@ -27,7 +27,6 @@ export const Navigation = () => {
 
   const links = [
     { href: "/", label: "Accueil" },
-    { href: "/categories", label: "Voter" },
     { href: "/reserver", label: "Réserver mes places" },
     { href: "/contact", label: "Contact" },
   ];
