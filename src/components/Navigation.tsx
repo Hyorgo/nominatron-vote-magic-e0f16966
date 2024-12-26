@@ -32,11 +32,6 @@ export const Navigation = () => {
     { href: "/contact", label: "Contact" },
   ];
 
-  const footerLinks = [
-    { href: "/mentions-legales", label: "Mentions légales" },
-    { href: "/politique-de-confidentialite", label: "Politique de confidentialité" },
-  ];
-
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-white/5 backdrop-blur-md backdrop-saturate-150 supports-[backdrop-filter]:bg-white/5">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -98,18 +93,6 @@ export const Navigation = () => {
                   {link.label}
                 </Link>
               ))}
-              <div className="border-t border-white/10 mt-2 pt-2">
-                {footerLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
             </div>
           </div>
         )}
