@@ -13,9 +13,10 @@ interface FormData {
 
 interface VotingRegistrationFormProps {
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export const VotingRegistrationForm = ({ onClose }: VotingRegistrationFormProps) => {
+export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistrationFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -53,6 +54,7 @@ export const VotingRegistrationForm = ({ onClose }: VotingRegistrationFormProps)
         if (error) throw error;
         
         onClose();
+        if (onSuccess) onSuccess();
         toast({
           title: "Inscription réussie",
           description: "Vous pouvez maintenant voter pour vos favoris.",

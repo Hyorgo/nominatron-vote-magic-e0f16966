@@ -95,6 +95,7 @@ export const VotingInterface = () => {
       <VotingDialog 
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+        onSuccess={fetchData}
       />
 
       {isVotingOpen && currentCategoryData && (

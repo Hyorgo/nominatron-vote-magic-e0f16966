@@ -10,9 +10,10 @@ import { VotingRegistrationForm } from "./VotingRegistrationForm";
 interface VotingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
-export const VotingDialog = ({ open, onOpenChange }: VotingDialogProps) => {
+export const VotingDialog = ({ open, onOpenChange, onSuccess }: VotingDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -22,7 +23,7 @@ export const VotingDialog = ({ open, onOpenChange }: VotingDialogProps) => {
             Veuillez renseigner vos informations pour participer aux votes.
           </DialogDescription>
         </DialogHeader>
-        <VotingRegistrationForm onClose={() => onOpenChange(false)} />
+        <VotingRegistrationForm onClose={() => onOpenChange(false)} onSuccess={onSuccess} />
       </DialogContent>
     </Dialog>
   );
