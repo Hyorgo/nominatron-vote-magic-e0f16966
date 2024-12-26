@@ -12,7 +12,7 @@ export const StripeSettingsManager = () => {
     settings,
     setSettings,
     saveSettings,
-    testConnection
+    testStripeConnection
   } = useStripeSettings();
 
   if (loading) {
@@ -36,7 +36,7 @@ export const StripeSettingsManager = () => {
       <CardContent className="space-y-6">
         <StripeStatus 
           connectionStatus={settings.stripe_connection_status} 
-          onTest={testConnection}
+          onTest={testStripeConnection}
           dashboardUrl={settings.stripe_dashboard_url}
         />
         <Separator />
