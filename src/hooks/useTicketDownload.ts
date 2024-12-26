@@ -13,6 +13,7 @@ export const useTicketDownload = () => {
         title: "Erreur",
         description: "Informations de réservation manquantes ou invalides",
         variant: "destructive",
+        duration: 5000,
       });
       return;
     }
@@ -61,6 +62,7 @@ export const useTicketDownload = () => {
       toast({
         title: "Succès",
         description: "Votre billet a été téléchargé",
+        duration: 5000,
       });
     } catch (error) {
       console.error('Erreur détaillée lors du téléchargement du billet:', error);
@@ -68,6 +70,7 @@ export const useTicketDownload = () => {
         title: "Erreur",
         description: "Impossible de télécharger votre billet. Veuillez réessayer.",
         variant: "destructive",
+        duration: 5000,
       });
     } finally {
       setIsDownloading(false);
