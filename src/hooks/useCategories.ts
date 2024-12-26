@@ -3,6 +3,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Category } from "@/types/nominees";
 
+interface QueryError extends Error {
+  meta?: {
+    errorHandler?: (error: Error) => void;
+  };
+}
+
 const fetchCategoriesData = async () => {
   try {
     console.log("Fetching categories data...");
@@ -63,7 +69,7 @@ export const useCategories = () => {
 
   // Handle errors through the error property
   if (error) {
-    error.meta?.errorHandler?.(error as Error);
+    (error as QueryError).meta?.errorHandler?.(error);
   }
 
   return {
