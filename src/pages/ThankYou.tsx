@@ -12,43 +12,74 @@ const ThankYou = () => {
   const createConfetti = useCallback(() => {
     const confetti = document.createElement("div");
     confetti.className = "confetti";
-    confetti.style.left = `${Math.random() * window.innerWidth}px`;
+    
+    // Position aléatoire horizontale sur toute la largeur de l'écran
+    confetti.style.left = `${Math.random() * 100}vw`;
+    // Démarrer au-dessus de l'écran
+    confetti.style.top = '-20px';
+    
     const colors = ["#FFD700", "#FF69B4", "#00CED1", "#FF6347", "#98FB98", "#DDA0DD"];
     const color = colors[Math.floor(Math.random() * colors.length)];
     confetti.innerHTML = "❤";
+    confetti.style.position = "fixed";
     confetti.style.color = color;
     confetti.style.fontSize = `${Math.random() * 20 + 10}px`;
     confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-    confetti.style.animationDelay = `${Math.random() * 3}s`;
+    confetti.style.opacity = "1";
+    confetti.style.animation = `fall ${Math.random() * 2 + 3}s linear`;
+    confetti.style.zIndex = "50";
+    confetti.style.pointerEvents = "none";
+    
     document.body.appendChild(confetti);
     setConfettiCount(prev => prev + 1);
 
-    setTimeout(() => {
+    // Supprimer l'élément après l'animation
+    confetti.addEventListener('animationend', () => {
       confetti.remove();
       setConfettiCount(prev => prev - 1);
-    }, 5000);
+    });
   }, []);
 
   useEffect(() => {
+    // Ajout des styles d'animation au document
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        75% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
     // Initial confetti burst
     const initialConfettiCount = 50;
     for (let i = 0; i < initialConfettiCount; i++) {
-      createConfetti();
+      setTimeout(() => createConfetti(), i * 50);
     }
 
     // Periodic confetti creation
     const confettiInterval = setInterval(() => {
       if (confettiCount < 100) { // Limit maximum confetti
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 3; i++) {
           createConfetti();
         }
       }
-    }, 3000);
+    }, 2000);
 
     return () => {
       clearInterval(confettiInterval);
       const confettis = document.querySelectorAll('.confetti');
       confettis.forEach(confetti => confetti.remove());
+      style.remove();
     };
   }, [createConfetti, confettiCount]);
 
@@ -106,7 +137,7 @@ const ThankYou = () => {
   }, [toast]);
 
   return (
-    <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in">
+    <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in relative">
       <div className="animate-[bounce_2s_ease-in-out_infinite]">
         <Heart 
           size={64} 
@@ -114,6 +145,7 @@ const ThankYou = () => {
           aria-hidden="true"
         />
       </div>
+      
       <h1 className="mb-6 text-4xl font-bold golden-reflection">
         Merci pour votre participation !
       </h1>
