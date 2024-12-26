@@ -73,7 +73,7 @@ export const VotingCountdown = ({ endDate, userEmail }: VotingCountdownProps) =>
           <div className="flex items-center gap-2 text-primary">
             <User className="h-5 w-5" />
             <p className="text-xl font-semibold">
-              Bienvenue {firstName} 👋 Nous sommes ravis de vous voir participer aux votes.
+              Bienvenue {firstName} 👋 : Nous sommes ravis de vous voir participer aux votes.
             </p>
           </div>
         )}
