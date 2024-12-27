@@ -46,10 +46,8 @@
     overflow-x: hidden;
   }
 
-  /* Masquer les halos sur mobile */
+  /* Masquer uniquement les halos sur mobile tout en gardant le fond sombre */
   @media (max-width: 768px) {
-    body::before,
-    body::after,
     .gold-halo,
     [class*="bg-[radial-gradient"] {
       display: none !important;
