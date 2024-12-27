@@ -89,7 +89,7 @@ const Reserver = () => {
   return (
     <>
       <div className="gold-halo" />
-      <div className="container max-w-2xl py-8 sm:py-12 px-4 sm:px-6 animate-fade-in relative z-10">
+      <div className="container max-w-2xl py-24 sm:py-28 px-4 sm:px-6 animate-fade-in relative z-10">
         <ReservationHeader 
           title="Réserver mes places"
           subtitle="Toutes les informations de l'événement en un coup d'œil"
