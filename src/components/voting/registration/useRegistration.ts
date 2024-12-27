@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   firstName: string;
@@ -16,35 +17,42 @@ export const useRegistration = (onClose: () => void, onSuccess?: () => void) => 
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    setIsSubmitting(true);
     
     try {
-      setIsSubmitting(true);
-      console.log("Tentative d'inscription avec:", formData);
-
-      const { data: existingEmail, error: checkError } = await supabase
+      const { data: existingEmail } = await supabase
         .from("validated_emails")
         .select("*")
         .eq("email", formData.email)
         .maybeSingle();
 
-      if (checkError) throw checkError;
-
       if (existingEmail) {
-        console.log("Email déjà validé:", formData.email);
         localStorage.setItem('userEmail', formData.email);
-        window.dispatchEvent(new CustomEvent('emailValidated', { 
-          detail: { email: formData.email }
-        }));
-        
         onClose();
-        if (onSuccess) onSuccess();
+
+        const { data: existingVotes } = await supabase
+          .from("votes")
+          .select("*")
+          .eq("email", formData.email);
+
+        if (existingVotes && existingVotes.length > 0) {
+          toast({
+            title: "Votes existants détectés",
+            description: "Vous pouvez maintenant modifier vos votes.",
+          });
+        } else {
+          toast({
+            title: "🎉 Inscription réussie !",
+            description: "C'est parti ! Votez pour vos favoris dans chaque catégorie. Votre voix compte !",
+          });
+        }
+        navigate("/categories");
       } else {
-        console.log("Nouvel email, création de l'entrée");
-        const { error: insertError } = await supabase
+        const { error } = await supabase
           .from("validated_emails")
           .insert([
             {
@@ -54,26 +62,23 @@ export const useRegistration = (onClose: () => void, onSuccess?: () => void) => 
             },
           ]);
 
-        if (insertError) throw insertError;
+        if (error) throw error;
         
         localStorage.setItem('userEmail', formData.email);
-        window.dispatchEvent(new CustomEvent('emailValidated', { 
-          detail: { email: formData.email }
-        }));
-        
         onClose();
-        if (onSuccess) onSuccess();
         toast({
-          title: "Inscription réussie",
-          description: "Vous pouvez maintenant voter pour vos favoris.",
+          title: "🎉 Inscription réussie !",
+          description: "C'est parti ! Votez pour vos favoris dans chaque catégorie. Votre voix compte !",
         });
+        if (onSuccess) onSuccess();
+        navigate("/categories");
       }
     } catch (error) {
       console.error("Erreur lors de la validation:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la validation. Veuillez réessayer.",
+        description: "Une erreur est survenue lors de la validation.",
       });
     } finally {
       setIsSubmitting(false);
