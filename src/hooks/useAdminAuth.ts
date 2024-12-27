@@ -110,8 +110,7 @@ export const useAdminAuth = () => {
         title: "Connexion réussie",
         description: "Bienvenue dans l'interface d'administration",
       });
-      // Forcer la redirection avec window.location
-      window.location.href = '/admin/dashboard';
+      navigate('/admin/dashboard');
       
     } catch (error) {
       await recordAuthAttempt(email, false);
