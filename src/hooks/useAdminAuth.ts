@@ -83,13 +83,17 @@ export const useAdminAuth = () => {
       }
 
       // Succès
-      logger.info('Connexion réussie', { email });
+      logger.info('Connexion réussie, redirection vers le dashboard', { email });
       await recordAuthAttempt(email, true);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue dans l'interface d'administration",
       });
-      navigate('/admin/dashboard', { replace: true });
+      
+      // Forcer un petit délai pour s'assurer que la session est bien établie
+      setTimeout(() => {
+        navigate('/admin/dashboard', { replace: true });
+      }, 100);
       
     } catch (error) {
       toast({
