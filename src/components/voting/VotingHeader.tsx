@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface VotingHeaderProps {
   isVotingOpen: boolean;
@@ -8,7 +10,7 @@ interface VotingHeaderProps {
 
 export const VotingHeader = ({ isVotingOpen, onOpenDialog, userEmail }: VotingHeaderProps) => {
   return (
-    <div className="flex flex-col items-center space-y-4 mb-8">
+    <div className="flex flex-col items-center space-y-6 mb-8">
       <h1 className="text-3xl sm:text-4xl font-bold text-center">
         Votez pour vos établissements préférés
       </h1>
@@ -25,14 +27,17 @@ export const VotingHeader = ({ isVotingOpen, onOpenDialog, userEmail }: VotingHe
           )}
         </div>
       ) : (
-        <div className="text-center space-y-2">
-          <div className="text-destructive">
-            Vous devez être connecté avec un email validé pour voter
-          </div>
+        <div className="text-center space-y-4 w-full max-w-lg">
+          <Alert variant="destructive" className="border-destructive/50 text-destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="ml-2 text-base font-medium">
+              Vous devez être connecté avec un email validé pour voter
+            </AlertDescription>
+          </Alert>
           <Button 
-            variant="outline" 
+            size="lg"
             onClick={onOpenDialog}
-            className="mt-2"
+            className="w-full sm:w-auto animate-pulse hover:animate-none bg-primary hover:bg-primary/90 text-base"
           >
             S'inscrire pour voter
           </Button>
