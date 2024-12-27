@@ -43,7 +43,7 @@ export const HomeHero = () => {
       <img 
         src={homeLogo}
         alt="Lyon d'Or" 
-        className="mx-auto w-[200px] md:w-[400px] mb-4 md:mb-8 animate-fade-in"
+        className="mx-auto h-[150px] md:h-[300px] object-contain animate-fade-in"
       />
       <h1 className="text-5xl md:text-8xl font-bold animate-fade-in">
         <span className="golden-reflection" data-text={yearText}>{yearText}</span>
