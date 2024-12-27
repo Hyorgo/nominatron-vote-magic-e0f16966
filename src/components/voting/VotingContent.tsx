@@ -24,12 +24,16 @@ export const VotingContent = ({
   const { toast } = useToast();
   const category = categories[currentCategory];
 
+  console.log("Current category:", category?.id);
+  console.log("Selected nominees:", selectedNominees);
+
   const handleVote = async (nomineeId: string) => {
     try {
       console.log("Tentative de vote pour:", { 
         categoryId: category.id, 
         nomineeId,
-        currentCategory 
+        currentCategory,
+        currentSelectedNominee: selectedNominees[category.id]
       });
       
       await onVote(category.id, nomineeId);
@@ -38,11 +42,10 @@ export const VotingContent = ({
       if (currentCategory < categories.length - 1) {
         setTimeout(() => {
           onCategoryChange(currentCategory + 1);
-        }, 1500); // Augmenté à 1.5s pour plus de stabilité
+        }, 1500);
       }
     } catch (error) {
       console.error("Erreur lors du vote:", error);
-      // L'erreur est déjà gérée dans useVoting
     }
   };
 
@@ -74,14 +77,19 @@ export const VotingContent = ({
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {category.nominees.map((nominee) => (
-          <NomineeCard
-            key={nominee.id}
-            nominee={nominee}
-            isSelected={selectedNominees[category.id] === nominee.id}
-            onClick={() => handleVote(nominee.id)}
-          />
-        ))}
+        {category.nominees.map((nominee) => {
+          const isSelected = selectedNominees[category.id] === nominee.id;
+          console.log(`Nominee ${nominee.id} selected:`, isSelected);
+          
+          return (
+            <NomineeCard
+              key={nominee.id}
+              nominee={nominee}
+              isSelected={isSelected}
+              onClick={() => handleVote(nominee.id)}
+            />
+          );
+        })}
       </div>
 
       <FinishVotingButton 
