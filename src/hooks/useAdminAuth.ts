@@ -9,32 +9,6 @@ export const useAdminAuth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const recordAuthAttempt = async (email: string, success: boolean) => {
-    try {
-      const response = await fetch('https://api.ipify.org?format=json');
-      const { ip } = await response.json();
-      const userAgent = navigator.userAgent;
-
-      const { error } = await supabase
-        .from('auth_attempts')
-        .insert([{
-          email,
-          ip_address: ip,
-          success,
-          user_agent: userAgent
-        }]);
-      
-      if (error) {
-        logger.error('Erreur lors de l\'enregistrement de la tentative', { error, email });
-        return;
-      }
-      
-      logger.info('Tentative de connexion enregistrée', { email, success });
-    } catch (error) {
-      logger.error('Erreur lors de l\'enregistrement de la tentative', { error, email });
-    }
-  };
-
   const verifyAdminRights = async (email: string): Promise<boolean> => {
     try {
       logger.info('Début de la vérification des droits admin', { email });
@@ -105,7 +79,6 @@ export const useAdminAuth = () => {
 
       // Succès
       logger.info('Connexion réussie', { email });
-      await recordAuthAttempt(email, true);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue dans l'interface d'administration",
@@ -113,7 +86,6 @@ export const useAdminAuth = () => {
       navigate('/admin/dashboard');
       
     } catch (error) {
-      await recordAuthAttempt(email, false);
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
