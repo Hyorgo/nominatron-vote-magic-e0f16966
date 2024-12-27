@@ -11,14 +11,14 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen flex-col relative">
+      <div className="flex min-h-screen flex-col">
         <BokehEffect />
         {!isMobile && (
-          <>
+          <div className="fixed inset-0 pointer-events-none">
             <div className="gold-halo" />
             <div className="fuchsia-halo" />
             <div className="blue-halo" />
-          </>
+          </div>
         )}
         <Navigation />
         <Router />
