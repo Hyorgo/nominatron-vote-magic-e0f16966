@@ -37,7 +37,6 @@ export const Router = () => {
       {/* Navigation - Hidden for admin routes */}
       {!isAdminRoute && <Navigation />}
       
-      <ScrollingText />
       <main className="flex-grow relative z-[1]">
         <Routes>
           <Route path="/" element={<Index />} />
@@ -53,6 +52,7 @@ export const Router = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      <ScrollingText />
       <Footer />
     </div>
   );
