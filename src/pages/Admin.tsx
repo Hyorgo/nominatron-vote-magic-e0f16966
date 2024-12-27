@@ -20,7 +20,10 @@ const Admin = () => {
 
   const checkAdmin = async () => {
     try {
+      console.log("Vérification de la session admin...");
       const { data: { session } } = await supabase.auth.getSession();
+      console.log("Session actuelle:", session);
+      
       if (session) {
         const { data: adminData } = await supabase
           .from('admin_users')
@@ -28,6 +31,7 @@ const Admin = () => {
           .eq('email', session.user.email)
           .maybeSingle();
 
+        console.log("Données admin:", adminData);
         if (adminData) {
           navigate('/admin/dashboard');
         }
@@ -39,11 +43,12 @@ const Admin = () => {
 
   const recordAuthAttempt = async (email: string, success: boolean) => {
     try {
-      const userAgent = navigator.userAgent;
+      console.log("Enregistrement de la tentative de connexion...");
       const response = await fetch('https://api.ipify.org?format=json');
       const { ip } = await response.json();
+      const userAgent = navigator.userAgent;
 
-      await supabase
+      const { error } = await supabase
         .from('auth_attempts')
         .insert([{
           email,
@@ -51,6 +56,10 @@ const Admin = () => {
           success,
           user_agent: userAgent
         }]);
+
+      if (error) {
+        console.error("Erreur lors de l'enregistrement de la tentative:", error);
+      }
     } catch (error) {
       console.error('Error recording auth attempt:', error);
     }
@@ -58,13 +67,29 @@ const Admin = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
+    console.log("Début de la tentative de connexion");
     
+    if (loading) {
+      console.log("Déjà en cours de chargement, annulation");
+      return;
+    }
+    
+    if (!email || !password) {
+      console.log("Email ou mot de passe manquant");
+      toast({
+        variant: "destructive",
+        title: "Erreur de saisie",
+        description: "Veuillez remplir tous les champs",
+      });
+      return;
+    }
+
     setLoading(true);
-    console.log("Tentative de connexion...");
+    console.log("Tentative de connexion pour:", email);
 
     try {
       // Vérification du rate limit
+      console.log("Vérification du rate limit...");
       const response = await fetch('https://api.ipify.org?format=json');
       const { ip } = await response.json();
       
@@ -73,6 +98,8 @@ const Admin = () => {
           check_email: email,
           check_ip: ip
         });
+
+      console.log("Résultat du rate limit:", checkResult);
 
       if (!checkResult) {
         toast({
@@ -85,7 +112,7 @@ const Admin = () => {
       }
 
       // Tentative de connexion
-      console.log("Authentification avec Supabase...");
+      console.log("Tentative de connexion Supabase...");
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -103,6 +130,8 @@ const Admin = () => {
         return;
       }
 
+      console.log("Résultat de la connexion:", data);
+
       if (data.session) {
         console.log("Session créée, vérification des droits admin...");
         const { data: adminData, error: adminError } = await supabase
@@ -110,6 +139,8 @@ const Admin = () => {
           .select('*')
           .eq('email', data.session.user.email)
           .maybeSingle();
+
+        console.log("Résultat de la vérification admin:", adminData, adminError);
 
         if (adminError || !adminData) {
           console.error("Erreur ou pas de droits admin:", adminError);
