@@ -39,20 +39,18 @@
     @apply border-border;
   }
 
-  html, body {
+  html {
     min-height: 100vh;
-    background: linear-gradient(to bottom, 
-      hsl(230, 33%, 8%),
-      hsl(230, 33%, 12%)
-    ) fixed;
+    @apply bg-white dark:bg-background;
   }
 
   body {
     @apply text-foreground relative;
+    min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* Masquer uniquement les halos sur mobile tout en gardant le fond sombre */
+  /* Masquer uniquement les halos sur mobile tout en gardant le fond adaptatif */
   @media (max-width: 768px) {
     .gold-halo,
     [class*="bg-[radial-gradient"] {
@@ -60,33 +58,36 @@
     }
   }
 
-  /* Halo fuchsia à gauche */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -50%;
-    left: -35%;
-    width: 100%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 50%);
-    z-index: -3;
-    pointer-events: none;
+  /* Halos pour desktop uniquement */
+  @media (min-width: 769px) {
+    /* Halo fuchsia à gauche */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -35%;
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 50%);
+      z-index: -3;
+      pointer-events: none;
+    }
+
+    /* Halo bleu à droite */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -50%;
+      right: -35%;
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 50%);
+      z-index: -3;
+      pointer-events: none;
+    }
   }
 
-  /* Halo bleu à droite */
-  body::after {
-    content: '';
-    position: fixed;
-    top: -50%;
-    right: -35%;
-    width: 100%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 50%);
-    z-index: -3;
-    pointer-events: none;
-  }
-
-  /* Halo doré central */
+  /* Halo doré central - masqué sur mobile via media query plus haut */
   .gold-halo {
     position: fixed;
     top: 85%;

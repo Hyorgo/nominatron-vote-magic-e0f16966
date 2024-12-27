@@ -7,7 +7,10 @@ const Categories = () => {
   const isMobile = useIsMobile();
 
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden">
+    <main className="min-h-screen relative overflow-hidden">
+      {/* Fond adaptatif selon le device */}
+      <div className="fixed inset-0 bg-gradient-to-b from-gray-50 to-blue-50/50 dark:from-background dark:to-background/95 -z-10" />
+
       {/* Halos - uniquement affichés sur desktop */}
       {!isMobile && (
         <div className="fixed inset-0 pointer-events-none">
@@ -17,8 +20,8 @@ const Categories = () => {
         </div>
       )}
 
-      {/* Grain Effect */}
-      <div className="fixed inset-0 opacity-20 z-[-2] pointer-events-none">
+      {/* Grain Effect - réduit sur mobile */}
+      <div className="fixed inset-0 opacity-[0.15] dark:opacity-20 z-[-2] pointer-events-none">
         <div className="absolute inset-0 bg-[url('/noise.png')] bg-repeat opacity-50" />
       </div>
 
