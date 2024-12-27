@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Menu, X } from "lucide-react";
+import { Logo } from "./navigation/Logo";
+import { MobileMenuButton } from "./navigation/MobileMenuButton";
+import { NavigationLinks } from "./navigation/NavigationLinks";
 
 export const Navigation = () => {
   const location = useLocation();
@@ -34,71 +35,25 @@ export const Navigation = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-white/5 backdrop-blur-md backdrop-saturate-150 supports-[backdrop-filter]:bg-white/5">
       <div className="container flex h-16 items-center justify-between px-4">
-        <Link to="/" className="flex-shrink-0 relative group">
-          {/* Effet néon intensifié */}
-          <div className="absolute -inset-2 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="absolute inset-0 blur-2xl bg-primary/60" />
-            <div className="absolute inset-0 blur-3xl bg-[#FFD700]/40" />
-          </div>
-          <img 
-            src={logoUrl}
-            alt="Lyon d'Or" 
-            className="h-8 sm:h-12 w-auto relative"
-          />
-        </Link>
+        <Logo logoUrl={logoUrl} />
+        
+        <MobileMenuButton 
+          isOpen={isMenuOpen} 
+          onClick={() => setIsMenuOpen(!isMenuOpen)} 
+        />
 
-        {/* Mobile menu button */}
-        <button 
-          className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? (
-            <X className="h-6 w-6 text-white" />
-          ) : (
-            <Menu className="h-6 w-6 text-white" />
-          )}
-        </button>
+        <NavigationLinks 
+          links={links} 
+          currentPath={location.pathname} 
+        />
 
-        {/* Desktop navigation */}
-        <div className="hidden md:flex gap-6 text-sm">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className={cn(
-                "transition-colors hover:text-primary px-3 py-2 rounded-lg",
-                location.pathname === link.href
-                  ? "text-primary font-medium bg-white/10"
-                  : "text-muted-foreground hover:bg-white/5"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Mobile navigation */}
         {isMenuOpen && (
-          <div className="absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-lg md:hidden border-b border-white/10">
-            <div className="container py-4 flex flex-col space-y-1">
-              {links.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={cn(
-                    "transition-colors hover:text-primary px-4 py-3 rounded-lg",
-                    location.pathname === link.href
-                      ? "text-primary font-medium bg-white/10"
-                      : "text-muted-foreground hover:bg-white/5"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+          <NavigationLinks 
+            links={links} 
+            currentPath={location.pathname} 
+            isMobile={true}
+            onLinkClick={() => setIsMenuOpen(false)}
+          />
         )}
       </div>
     </nav>
