@@ -32,25 +32,25 @@ export const useAdminAuth = () => {
 
   const verifyAdminRights = async (email: string): Promise<boolean> => {
     try {
-      logger.info('Vérification des droits admin', { email });
+      logger.info('Début de la vérification des droits admin', { email });
       
-      const { data, error } = await supabase
+      const { data: adminUser, error } = await supabase
         .from('admin_users')
         .select()
         .eq('email', email)
         .maybeSingle();
 
       if (error) {
-        logger.error('Erreur lors de la vérification admin', error);
-        return false;
+        logger.error('Erreur lors de la vérification admin', { error, email });
+        throw new Error('Erreur lors de la vérification des droits administrateur');
       }
 
-      if (!data) {
+      if (!adminUser) {
         logger.warn('Utilisateur non trouvé dans admin_users', { email });
         return false;
       }
 
-      logger.info('Droits admin vérifiés avec succès', { email });
+      logger.info('Droits admin vérifiés avec succès', { email, adminUser });
       return true;
     } catch (error) {
       logger.error('Exception lors de la vérification admin', error);
@@ -80,6 +80,7 @@ export const useAdminAuth = () => {
       // Vérification préalable des droits admin
       const isAdmin = await verifyAdminRights(email);
       if (!isAdmin) {
+        logger.warn('Tentative de connexion - Utilisateur non admin', { email });
         throw new Error('Accès non autorisé - Utilisateur non admin');
       }
 
@@ -90,14 +91,17 @@ export const useAdminAuth = () => {
       });
 
       if (authError) {
+        logger.error('Erreur d\'authentification Supabase', { error: authError, email });
         throw authError;
       }
 
       if (!data.session) {
+        logger.error('Session invalide après authentification', { email });
         throw new Error('Session invalide');
       }
 
       // Succès
+      logger.info('Connexion réussie', { email });
       await recordAuthAttempt(email, true);
       toast({
         title: "Connexion réussie",
@@ -114,7 +118,7 @@ export const useAdminAuth = () => {
           ? error.message 
           : "Une erreur est survenue lors de la connexion",
       });
-      logger.error('Erreur lors de la connexion', error);
+      logger.error('Erreur lors de la connexion', { error, email });
     } finally {
       setLoading(false);
     }

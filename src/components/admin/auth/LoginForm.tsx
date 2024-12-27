@@ -13,7 +13,7 @@ export const LoginForm = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    logger.info('Soumission du formulaire de connexion');
+    logger.info('Soumission du formulaire de connexion', { email });
     await handleLogin(email, password);
   };
 
