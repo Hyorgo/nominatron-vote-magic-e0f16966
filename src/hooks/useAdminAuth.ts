@@ -36,7 +36,7 @@ export const useAdminAuth = () => {
         .from('admin_users')
         .select('*')
         .eq('email', email)
-        .maybeSingle();
+        .single();
 
       if (adminError) {
         logger.error('Erreur lors de la vérification admin', adminError);
@@ -78,11 +78,11 @@ export const useAdminAuth = () => {
       // Vérification préalable des droits admin
       const isAdmin = await verifyAdminRights(email);
       if (!isAdmin) {
-        throw new Error('Accès non autorisé');
+        throw new Error('Accès non autorisé - Utilisateur non admin');
       }
 
       // Authentification
-      const { data: { session }, error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -91,7 +91,7 @@ export const useAdminAuth = () => {
         throw authError;
       }
 
-      if (!session) {
+      if (!data.session) {
         throw new Error('Session invalide');
       }
 

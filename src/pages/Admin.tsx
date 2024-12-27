@@ -24,7 +24,7 @@ const Admin = () => {
           .from('admin_users')
           .select('*')
           .eq('email', session.user.email)
-          .maybeSingle();
+          .single();
 
         if (adminError) {
           throw new Error('Erreur lors de la vérification des droits admin');
@@ -36,6 +36,11 @@ const Admin = () => {
         } else {
           logger.warn('Session existante mais pas de droits admin');
           await supabase.auth.signOut();
+          toast({
+            variant: "destructive",
+            title: "Accès refusé",
+            description: "Vous n'avez pas les droits administrateur nécessaires",
+          });
         }
       } catch (error) {
         logger.error('Erreur lors de la vérification de session', error);
