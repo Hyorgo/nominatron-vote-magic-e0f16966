@@ -1,4 +1,4 @@
-import { VotingInterface } from "@/components/VotingInterface";
+import { VotingInterface } from "@/components/voting/VotingInterface";
 import { Suspense } from "react";
 import { LoadingState } from "@/components/voting/LoadingState";
 import { useIsMobile } from "@/hooks/use-mobile";
