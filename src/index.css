@@ -75,8 +75,7 @@
     height: 200%;
     background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 50%);
     pointer-events: none;
-    z-index: -1;
-    animation: pulse 8s ease-in-out infinite alternate;
+    z-index: 0;
   }
 
   /* Halo bleu à droite */
@@ -89,8 +88,7 @@
     height: 200%;
     background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 50%);
     pointer-events: none;
-    z-index: -1;
-    animation: pulse 8s ease-in-out infinite alternate-reverse;
+    z-index: 0;
   }
 
   /* Halo doré central */
@@ -103,8 +101,7 @@
     height: 150%;
     background: radial-gradient(circle, rgba(201, 165, 92, 0.25) 0%, transparent 60%);
     pointer-events: none;
-    z-index: -1;
-    animation: pulse 8s ease-in-out infinite;
+    z-index: 0;
   }
 
   @keyframes pulse {
