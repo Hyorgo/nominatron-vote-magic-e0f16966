@@ -15,7 +15,8 @@ export const ActionCards = () => {
       subtitle: content.card_book?.subtitle || "",
       buttonText: content.card_book?.content || "",
       to: "/reserver",
-      showButton: true
+      showButton: true,
+      showStar: true
     },
     {
       icon: Mail,
