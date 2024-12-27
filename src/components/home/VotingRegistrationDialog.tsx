@@ -18,17 +18,22 @@ interface VotingRegistrationDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrationDialogProps) => {
+export const VotingRegistrationDialog = ({ 
+  open, 
+  onOpenChange 
+}: VotingRegistrationDialogProps) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     try {
       // Vérifier si l'email existe déjà dans validated_emails
@@ -36,15 +41,29 @@ export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrat
         .from("validated_emails")
         .select("*")
         .eq("email", formData.email)
-        .single();
+        .maybeSingle();
 
       if (existingEmail) {
-        // Email déjà validé, fermer le dialogue et informer l'utilisateur
+        // Email déjà validé, vérifier s'il y a des votes existants
+        const { data: existingVotes } = await supabase
+          .from("votes")
+          .select("*")
+          .eq("email", formData.email);
+
+        localStorage.setItem('userEmail', formData.email);
         onOpenChange(false);
-        toast({
-          title: "Email déjà enregistré",
-          description: "Vous pouvez directement accéder aux votes.",
-        });
+
+        if (existingVotes && existingVotes.length > 0) {
+          toast({
+            title: "Votes existants détectés",
+            description: "Vous pouvez maintenant modifier vos votes.",
+          });
+        } else {
+          toast({
+            title: "Email vérifié",
+            description: "Vous pouvez maintenant voter pour vos favoris.",
+          });
+        }
         navigate("/categories");
       } else {
         // Ajouter le nouvel email validé
@@ -60,6 +79,7 @@ export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrat
 
         if (error) throw error;
         
+        localStorage.setItem('userEmail', formData.email);
         onOpenChange(false);
         toast({
           title: "Inscription réussie",
@@ -74,6 +94,8 @@ export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrat
         description: "Une erreur est survenue lors de la validation.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -94,6 +116,7 @@ export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrat
               value={formData.firstName}
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
               required
+              disabled={isSubmitting}
             />
           </div>
           <div className="space-y-2">
@@ -103,6 +126,7 @@ export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrat
               value={formData.lastName}
               onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
               required
+              disabled={isSubmitting}
             />
           </div>
           <div className="space-y-2">
@@ -113,10 +137,11 @@ export const VotingRegistrationDialog = ({ open, onOpenChange }: VotingRegistrat
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
+              disabled={isSubmitting}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Valider
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Validation en cours..." : "Valider"}
           </Button>
         </form>
       </DialogContent>
