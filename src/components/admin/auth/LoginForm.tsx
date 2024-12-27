@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { logger } from '@/services/monitoring/logger';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +13,18 @@ export const LoginForm = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleLogin(email, password);
+    logger.info('Tentative de connexion admin', { email });
+    
+    if (!email || !password) {
+      logger.warn('Tentative de connexion avec champs vides');
+      return;
+    }
+
+    try {
+      await handleLogin(email, password);
+    } catch (error) {
+      logger.error('Erreur lors de la connexion admin', error);
+    }
   };
 
   return (
@@ -33,6 +45,7 @@ export const LoginForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
+                required
               />
             </div>
             <div>
@@ -42,6 +55,7 @@ export const LoginForm = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
+                required
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
