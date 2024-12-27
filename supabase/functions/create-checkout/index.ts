@@ -46,6 +46,9 @@ serve(async (req) => {
       httpClient: Stripe.createFetchHttpClient(),
     })
 
+    // Récupérer l'URL d'origine de la requête
+    const origin = req.headers.get('origin') || 'https://lyon-dor.fr'
+
     console.log('Creating payment session...')
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -63,8 +66,8 @@ serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `${req.headers.get('origin')}/payment-status?status=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get('origin')}/payment-status?status=cancel`,
+      success_url: `${origin}/payment-status?status=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/payment-status?status=cancel`,
       customer_email: email,
       metadata: {
         firstName,
