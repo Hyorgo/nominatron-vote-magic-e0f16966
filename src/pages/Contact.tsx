@@ -53,16 +53,19 @@ const Contact = () => {
   };
 
   return (
-    <>
-      <div className="fixed inset-0 pointer-events-none z-[-1]">
-        <div className="fuchsia-halo" />
-        <div className="blue-halo" />
-        <div className="gold-halo" />
+    <div className="min-h-screen relative">
+      {/* Background effects container with proper z-index */}
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div className="fuchsia-halo absolute" />
+        <div className="blue-halo absolute" />
+        <div className="gold-halo absolute" />
       </div>
-      <div className="container max-w-2xl pt-32 pb-24 px-4 sm:px-6 animate-fade-in relative z-10">
+
+      {/* Main content with proper spacing for fixed header */}
+      <div className="container max-w-2xl pt-32 pb-24 px-4 sm:px-6 relative z-[1]">
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 golden-reflection animate-fade-in">Contact</h1>
-          <p className="text-lg sm:text-xl text-gold/80 animate-fade-in delay-100">Une question ? N'hésitez pas à nous contacter</p>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 golden-reflection">Contact</h1>
+          <p className="text-lg sm:text-xl text-gold/80">Une question ? N'hésitez pas à nous contacter</p>
         </div>
 
         <div className="relative">
@@ -114,7 +117,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
