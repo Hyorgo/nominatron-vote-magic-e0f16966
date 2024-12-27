@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export const ScrollingText = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { data: scrollingTexts = [], isLoading, error } = useScrollingText();
+  const { data: scrollingTexts, isLoading, error } = useScrollingText();
   const { toast } = useToast();
 
   useEffect(() => {
