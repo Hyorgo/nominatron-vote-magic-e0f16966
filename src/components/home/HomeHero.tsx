@@ -40,12 +40,17 @@ export const HomeHero = () => {
 
   return (
     <div className="text-center space-y-4 md:space-y-8">
+      <img 
+        src={homeLogo}
+        alt="Lyon d'Or" 
+        className="mx-auto w-[200px] md:w-[400px] mb-4 md:mb-8 animate-fade-in"
+      />
       <div className="relative mx-auto w-[200px] md:w-[400px] mb-4 md:mb-8 animate-fade-in">
         <div className="absolute inset-0 blur-[20px] opacity-50 bg-gold-light rounded-full" />
         <div className="absolute inset-0 blur-[40px] opacity-30 bg-primary rounded-full" />
         <img 
-          src={homeLogo}
-          alt="Lyon d'Or" 
+          src="/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png"
+          alt="Sortir à Lyon" 
           className="relative z-10 w-full h-auto"
         />
       </div>
