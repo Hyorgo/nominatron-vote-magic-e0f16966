@@ -3,51 +3,53 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { LoginForm } from "@/components/admin/auth/LoginForm";
 import { logger } from '@/services/monitoring/logger';
+import { useToast } from '@/hooks/use-toast';
 
 const Admin = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    checkAdmin();
-  }, []);
-
-  const checkAdmin = async () => {
-    try {
-      logger.info('Vérification de la session admin');
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        logger.error('Erreur lors de la récupération de la session', sessionError);
-        return;
-      }
-      
-      if (session?.user?.email) {
-        logger.info('Session trouvée, vérification des droits admin');
-        const { data: adminData, error: adminError } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('email', session.user.email)
-          .maybeSingle();
-
-        if (adminError) {
-          logger.error('Erreur lors de la vérification des droits admin', adminError);
-          return;
+    const checkAdminSession = async () => {
+      try {
+        logger.info('Vérification de la session admin');
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          throw new Error('Erreur lors de la récupération de la session');
         }
+        
+        if (session?.user?.email) {
+          const { data: adminData, error: adminError } = await supabase
+            .from('admin_users')
+            .select('*')
+            .eq('email', session.user.email)
+            .maybeSingle();
 
-        if (adminData) {
-          logger.info('Utilisateur admin déjà connecté, redirection');
-          navigate('/admin/dashboard');
-        } else {
-          logger.info('Session existante mais pas de droits admin');
-          await supabase.auth.signOut();
+          if (adminError) {
+            throw new Error('Erreur lors de la vérification des droits admin');
+          }
+
+          if (adminData) {
+            logger.info('Session admin valide, redirection');
+            navigate('/admin/dashboard');
+          } else {
+            logger.info('Session existante mais pas de droits admin');
+            await supabase.auth.signOut();
+          }
         }
-      } else {
-        logger.info('Aucune session active');
+      } catch (error) {
+        logger.error('Erreur lors de la vérification de session', error);
+        toast({
+          variant: "destructive",
+          title: "Erreur de session",
+          description: "Impossible de vérifier votre session",
+        });
       }
-    } catch (error) {
-      logger.error('Erreur lors de la vérification admin', error);
-    }
-  };
+    };
+
+    checkAdminSession();
+  }, [navigate, toast]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">

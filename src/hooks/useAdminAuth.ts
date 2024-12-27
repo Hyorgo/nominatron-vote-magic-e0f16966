@@ -33,6 +33,24 @@ export const useAdminAuth = () => {
     }
   };
 
+  const verifyAdminRights = async (email: string) => {
+    const { data: adminData, error: adminError } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (adminError) {
+      throw new Error('Erreur lors de la vérification admin');
+    }
+
+    if (!adminData) {
+      throw new Error('Utilisateur non admin');
+    }
+
+    return true;
+  };
+
   const handleLogin = async (email: string, password: string) => {
     if (loading) {
       logger.info('Tentative de connexion déjà en cours');
@@ -53,68 +71,24 @@ export const useAdminAuth = () => {
     logger.info('Début de la tentative de connexion', { email });
 
     try {
-      // Première étape : authentification
+      // Vérification préalable des droits admin
+      const isAdmin = await verifyAdminRights(email);
+      if (!isAdmin) {
+        throw new Error('Utilisateur non admin');
+      }
+
+      // Authentification
       const { data: { session }, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (authError) {
-        logger.error('Erreur d\'authentification', authError);
-        await recordAuthAttempt(email, false);
-        toast({
-          variant: "destructive",
-          title: "Erreur de connexion",
-          description: "Email ou mot de passe incorrect",
-        });
-        setLoading(false);
-        return;
+        throw new Error('Erreur d\'authentification');
       }
 
       if (!session) {
-        logger.error('Pas de session après authentification réussie');
-        await recordAuthAttempt(email, false);
-        toast({
-          variant: "destructive",
-          title: "Erreur de connexion",
-          description: "Impossible de créer une session",
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Deuxième étape : vérification des droits admin
-      logger.info('Session créée, vérification des droits admin');
-      const { data: adminData, error: adminError } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('email', email)
-        .maybeSingle();
-
-      if (adminError) {
-        logger.error('Erreur lors de la vérification admin', adminError);
-        await supabase.auth.signOut();
-        await recordAuthAttempt(email, false);
-        toast({
-          variant: "destructive",
-          title: "Erreur de vérification",
-          description: "Impossible de vérifier vos droits d'administration",
-        });
-        setLoading(false);
-        return;
-      }
-
-      if (!adminData) {
-        logger.error('Utilisateur non admin');
-        await supabase.auth.signOut();
-        await recordAuthAttempt(email, false);
-        toast({
-          variant: "destructive",
-          title: "Accès refusé",
-          description: "Vous n'avez pas les droits d'administration",
-        });
-        setLoading(false);
-        return;
+        throw new Error('Impossible de créer une session');
       }
 
       // Succès
@@ -126,11 +100,12 @@ export const useAdminAuth = () => {
       });
       navigate('/admin/dashboard');
     } catch (error) {
-      logger.error('Erreur inattendue lors de la connexion', error);
+      logger.error('Erreur lors de la connexion', error);
+      await recordAuthAttempt(email, false);
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
-        description: "Une erreur est survenue lors de la connexion",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la connexion",
       });
     } finally {
       setLoading(false);
