@@ -5,6 +5,7 @@ import { Category } from "@/types/nominees";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs } from "@/components/ui/tabs";
 import { CategoryTabs } from "./CategoryTabs";
+import { useEffect } from "react";
 
 interface VotingContentProps {
   currentCategory: number;
@@ -24,8 +25,16 @@ export const VotingContent = ({
   const { toast } = useToast();
   const category = categories[currentCategory];
 
-  console.log("Current category:", category?.id);
-  console.log("Selected nominees:", selectedNominees);
+  // Log l'état initial et les changements
+  useEffect(() => {
+    if (category) {
+      console.log("Catégorie actuelle:", {
+        id: category.id,
+        name: category.name,
+        selectedNomineeId: selectedNominees[category.id]
+      });
+    }
+  }, [category, selectedNominees]);
 
   const handleVote = async (nomineeId: string) => {
     try {
@@ -46,6 +55,11 @@ export const VotingContent = ({
       }
     } catch (error) {
       console.error("Erreur lors du vote:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur lors du vote",
+        description: "Une erreur est survenue lors de l'enregistrement de votre vote. Veuillez réessayer."
+      });
     }
   };
 
@@ -55,6 +69,10 @@ export const VotingContent = ({
       onCategoryChange(newIndex);
     }
   };
+
+  if (!category) {
+    return null;
+  }
 
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
