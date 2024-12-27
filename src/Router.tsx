@@ -12,7 +12,7 @@ import PaymentStatus from "@/pages/PaymentStatus";
 import LegalNotice from "@/pages/LegalNotice";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/NotFound";
-import Footer from "@/components/Footer";
+import { Footer } from "@/components/Footer";
 
 export const Router = () => {
   const location = useLocation();
