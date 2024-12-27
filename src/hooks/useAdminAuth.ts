@@ -32,9 +32,11 @@ export const useAdminAuth = () => {
 
   const verifyAdminRights = async (email: string): Promise<boolean> => {
     try {
+      logger.info('Vérification des droits admin', { email });
+      
       const { data, error } = await supabase
         .from('admin_users')
-        .select('*')
+        .select()
         .eq('email', email)
         .maybeSingle();
 

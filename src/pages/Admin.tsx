@@ -22,7 +22,7 @@ const Admin = () => {
 
         const { data: adminData, error: adminError } = await supabase
           .from('admin_users')
-          .select('*')
+          .select()
           .eq('email', session.user.email)
           .maybeSingle();
 
