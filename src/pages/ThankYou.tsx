@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Home } from "lucide-react";
+import { Heart, Home, Ticket } from "lucide-react";
 import { ShareButtons } from "@/components/thank-you/ShareButtons";
 
 const ThankYou = () => {
@@ -40,15 +40,27 @@ const ThankYou = () => {
         <ShareButtons />
       </div>
 
-      <Button 
-        onClick={() => navigate("/")}
-        variant="default"
-        size="lg"
-        className="min-w-[200px]"
-      >
-        <Home className="mr-2" aria-hidden="true" />
-        Retour à l'accueil
-      </Button>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Button 
+          onClick={() => navigate("/reserver")}
+          variant="default"
+          size="lg"
+          className="min-w-[200px] bg-gold hover:bg-gold-dark"
+        >
+          <Ticket className="mr-2" aria-hidden="true" />
+          Réserver ma place
+        </Button>
+
+        <Button 
+          onClick={() => navigate("/")}
+          variant="outline"
+          size="lg"
+          className="min-w-[200px]"
+        >
+          <Home className="mr-2" aria-hidden="true" />
+          Retour à l'accueil
+        </Button>
+      </div>
     </div>
   );
 };
