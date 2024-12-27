@@ -13,6 +13,26 @@ export const HomeHero = () => {
     loadSettings();
     loadContent();
     loadEventDate();
+
+    // Écouter les changements en temps réel sur la table event_information
+    const channel = supabase.channel('event-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'event_information'
+        },
+        () => {
+          console.log('Mise à jour de la date détectée');
+          loadEventDate(); // Recharger la date quand il y a un changement
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadSettings = async () => {
