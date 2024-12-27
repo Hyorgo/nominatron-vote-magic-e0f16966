@@ -89,7 +89,7 @@ export const useAdminAuth = () => {
         title: "Connexion réussie",
         description: "Bienvenue dans l'interface d'administration",
       });
-      navigate('/admin/dashboard');
+      navigate('/admin/dashboard', { replace: true });
       
     } catch (error) {
       toast({
