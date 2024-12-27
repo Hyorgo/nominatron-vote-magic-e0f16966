@@ -7,7 +7,7 @@ const ThankYou = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in relative">
+    <div className="container flex min-h-[80vh] flex-col items-center justify-center py-8 text-center animate-fade-in relative mt-20 md:mt-8">
       <div className="animate-[bounce_2s_ease-in-out_infinite]">
         <Heart 
           size={64} 
