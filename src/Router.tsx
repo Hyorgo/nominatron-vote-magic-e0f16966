@@ -11,6 +11,7 @@ import ThankYou from "@/pages/ThankYou";
 import PaymentStatus from "@/pages/PaymentStatus";
 import LegalNotice from "@/pages/LegalNotice";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import NotFound from "@/pages/NotFound";
 import Footer from "@/components/Footer";
 
 export const Router = () => {
@@ -35,6 +36,7 @@ export const Router = () => {
           <Route path="/payment-status" element={<PaymentStatus />} />
           <Route path="/mentions-legales" element={<LegalNotice />} />
           <Route path="/politique-de-confidentialite" element={<PrivacyPolicy />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
