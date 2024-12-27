@@ -53,15 +53,15 @@ const Contact = () => {
   };
 
   return (
-    <div className="container max-w-2xl py-8 sm:py-12 px-4 sm:px-6 animate-fade-in relative z-10">
+    <div className="container max-w-2xl py-8 sm:py-12 px-4 sm:px-6 animate-fade-in relative">
       <div className="gold-halo" />
       
-      <div className="text-center mb-8 sm:mb-12">
+      <div className="text-center mb-8 sm:mb-12 relative z-10">
         <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 golden-reflection animate-fade-in">Contact</h1>
         <p className="text-lg sm:text-xl text-gold/80 animate-fade-in delay-100">Une question ? N'hésitez pas à nous contacter</p>
       </div>
 
-      <div className="relative">
+      <div className="relative z-10">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-xl" />
         
         <div className="relative bg-white/5 backdrop-blur-lg rounded-xl p-6 sm:p-8 shadow-2xl border border-white/10">
