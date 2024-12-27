@@ -43,7 +43,8 @@ const Admin = () => {
 
         if (adminUser) {
           logger.info('Session admin valide, redirection vers le dashboard', { email: session.user.email });
-          navigate('/admin/dashboard', { replace: true });
+          // Forcer la redirection avec window.location
+          window.location.href = '/admin/dashboard';
         }
       } catch (error) {
         logger.error('Erreur lors de la vérification de session', error);
