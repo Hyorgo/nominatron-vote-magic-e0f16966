@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { LoginForm } from "@/components/admin/auth/LoginForm";
+import { logger } from '@/services/monitoring/logger';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Admin = () => {
 
   const checkAdmin = async () => {
     try {
+      logger.info('Vérification de la session admin');
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session) {
@@ -22,11 +24,12 @@ const Admin = () => {
           .maybeSingle();
 
         if (adminData) {
+          logger.info('Utilisateur admin déjà connecté, redirection');
           navigate('/admin/dashboard');
         }
       }
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      logger.error('Erreur lors de la vérification admin', error);
     }
   };
 

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { logger } from '@/services/monitoring/logger';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export const LoginForm = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    logger.info('Soumission du formulaire de connexion');
     await handleLogin(email, password);
   };
 
