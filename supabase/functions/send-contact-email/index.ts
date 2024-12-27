@@ -20,15 +20,21 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Début du traitement de la requête de contact')
+    console.log('🚀 Début du traitement de la requête de contact')
+    console.log('📝 Vérification des clés Mailjet:', {
+      apiKeyExists: !!MAILJET_API_KEY,
+      secretKeyExists: !!MAILJET_SECRET_KEY,
+      apiKeyLength: MAILJET_API_KEY?.length,
+      secretKeyLength: MAILJET_SECRET_KEY?.length
+    })
     
     if (!MAILJET_API_KEY || !MAILJET_SECRET_KEY) {
-      console.error('Clés Mailjet manquantes')
+      console.error('❌ Clés Mailjet manquantes')
       throw new Error('Configuration Mailjet manquante')
     }
 
     const { name, email, message } = await req.json() as ContactForm
-    console.log('Données reçues:', { name, email })
+    console.log('📨 Données reçues:', { name, email })
 
     const mailjetPayload = {
       Messages: [
@@ -78,7 +84,7 @@ serve(async (req) => {
       ]
     }
 
-    console.log('Tentative d\'envoi via Mailjet')
+    console.log('📤 Tentative d\'envoi via Mailjet')
     const response = await fetch('https://api.mailjet.com/v3.1/send', {
       method: 'POST',
       headers: {
@@ -89,10 +95,10 @@ serve(async (req) => {
     })
 
     const result = await response.json()
-    console.log('Réponse Mailjet:', result)
+    console.log('📬 Réponse Mailjet:', result)
 
     if (!response.ok) {
-      console.error('Erreur Mailjet:', result)
+      console.error('❌ Erreur Mailjet:', result)
       throw new Error(JSON.stringify(result))
     }
 
@@ -101,7 +107,7 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error) {
-    console.error('Erreur lors de l\'envoi:', error)
+    console.error('❌ Erreur lors de l\'envoi:', error)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
