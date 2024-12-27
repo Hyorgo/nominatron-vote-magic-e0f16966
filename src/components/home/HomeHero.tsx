@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { MapPin } from "lucide-react";
 
 export const HomeHero = () => {
   const [homeLogo, setHomeLogo] = useState("/lovable-uploads/1017081c-8fa6-42cf-966b-318e893a0f68.png");
   const [yearText, setYearText] = useState("2025");
   const [introContent, setIntroContent] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [eventLocation, setEventLocation] = useState("");
+  const [eventAddress, setEventAddress] = useState("");
 
   useEffect(() => {
     loadSettings();
@@ -65,17 +68,19 @@ export const HomeHero = () => {
   const loadEventDate = async () => {
     const { data } = await supabase
       .from('event_information')
-      .select('event_date')
+      .select('event_date, location, address')
       .order('created_at', { ascending: false })
       .limit(1);
 
-    if (data && data[0]?.event_date) {
+    if (data && data[0]) {
       const formattedDate = format(
         new Date(data[0].event_date),
         "EEEE d MMMM yyyy 'à' HH'h'mm",
         { locale: fr }
       );
       setEventDate(formattedDate);
+      setEventLocation(data[0].location || "");
+      setEventAddress(data[0].address || "");
     }
   };
 
@@ -90,9 +95,22 @@ export const HomeHero = () => {
         <span className="golden-reflection" data-text={yearText}>{yearText}</span>
       </h1>
       {eventDate && (
-        <p className="text-xl md:text-2xl text-gold animate-fade-in whitespace-nowrap">
-          {eventDate}
-        </p>
+        <div className="space-y-2 animate-fade-in">
+          <p className="text-xl md:text-2xl text-gold whitespace-nowrap">
+            {eventDate}
+          </p>
+          {eventLocation && (
+            <div className="flex items-center justify-center gap-2 text-lg md:text-xl text-gold/80">
+              <MapPin className="w-5 h-5" />
+              <p>{eventLocation}</p>
+              {eventAddress && (
+                <span className="text-gold/60 text-base md:text-lg">
+                  - {eventAddress}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       )}
       <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in px-4 md:px-0">
         {introContent}
