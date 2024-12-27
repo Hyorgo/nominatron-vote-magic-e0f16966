@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,7 +85,13 @@ const Admin = () => {
 
       if (authError) {
         await recordAuthAttempt(email, false);
-        throw authError;
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Email ou mot de passe incorrect",
+        });
+        setLoading(false);
+        return;
       }
 
       if (session) {
@@ -118,7 +124,7 @@ const Admin = () => {
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
-        description: "Email ou mot de passe incorrect",
+        description: "Une erreur est survenue lors de la connexion",
       });
     } finally {
       setLoading(false);
