@@ -1,17 +1,14 @@
 import { useVotingConfig } from "./voting/useVotingConfig";
 import { useEmailSession } from "./voting/useEmailSession";
-import { useVoteManagement } from "./voting/useVoteManagement";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState, useEffect } from "react";
 
 export const useVoting = () => {
   const { votingConfig, isVotingOpen } = useVotingConfig();
   const { userEmail } = useEmailSession();
-  const [selectedNominees, setSelectedNominees] = useState<Record<string, string>>({});
-  
-  // Chargement des votes précédents
-  const { data: previousVotes } = useQuery({
+  const queryClient = useQueryClient();
+
+  const { data: selectedNominees = {} } = useQuery({
     queryKey: ['previousVotes', userEmail],
     queryFn: async () => {
       if (!userEmail) {
@@ -39,15 +36,9 @@ export const useVoting = () => {
       return votesMap;
     },
     enabled: !!userEmail && isVotingOpen,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
   });
-
-  // Synchronisation des votes précédents avec l'état local
-  useEffect(() => {
-    if (previousVotes) {
-      console.log("Mise à jour des votes sélectionnés:", previousVotes);
-      setSelectedNominees(previousVotes);
-    }
-  }, [previousVotes]);
 
   const handleNomineeSelect = async (categoryId: string, nomineeId: string) => {
     if (!isVotingOpen) {
@@ -61,9 +52,9 @@ export const useVoting = () => {
     }
 
     try {
-      // Mise à jour optimiste
-      setSelectedNominees(prev => ({
-        ...prev,
+      // Mise à jour optimiste du cache
+      queryClient.setQueryData(['previousVotes', userEmail], (old: Record<string, string> = {}) => ({
+        ...old,
         [categoryId]: nomineeId,
       }));
 
@@ -78,12 +69,8 @@ export const useVoting = () => {
 
       if (error) {
         console.error("Erreur lors de l'enregistrement du vote:", error);
-        // Annulation de la mise à jour optimiste en cas d'erreur
-        setSelectedNominees(prev => {
-          const newState = { ...prev };
-          delete newState[categoryId];
-          return newState;
-        });
+        // Invalider le cache en cas d'erreur
+        queryClient.invalidateQueries({ queryKey: ['previousVotes', userEmail] });
         throw error;
       }
 
