@@ -7,11 +7,12 @@ interface ActionCardProps {
   icon: LucideIcon;
   title: string;
   subtitle: string;
-  buttonText: string;
+  buttonText?: string;
   to?: string;
   showButton?: boolean;
   votingNotStarted?: boolean;
   onClick?: () => void;
+  children?: React.ReactNode;
 }
 
 export const ActionCard = ({ 
@@ -22,7 +23,8 @@ export const ActionCard = ({
   to, 
   showButton = true,
   votingNotStarted = false,
-  onClick 
+  onClick,
+  children
 }: ActionCardProps) => {
   return (
     <div className="bg-card/80 backdrop-blur-md backdrop-saturate-150 rounded-lg p-4 md:p-6 flex flex-col h-full border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:bg-card/90">
@@ -34,7 +36,7 @@ export const ActionCard = ({
         </p>
       </div>
       <div className="mt-4 md:mt-6">
-        {showButton && (
+        {showButton && buttonText && (
           onClick ? (
             <Button onClick={onClick} className="w-full">
               {buttonText}
@@ -45,6 +47,7 @@ export const ActionCard = ({
             </Button>
           )
         )}
+        {children}
         {votingNotStarted && <NotificationSignup />}
       </div>
     </div>
