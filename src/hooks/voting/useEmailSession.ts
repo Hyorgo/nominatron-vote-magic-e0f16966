@@ -17,7 +17,7 @@ export const useEmailSession = () => {
         .from('validated_emails')
         .select('email')
         .eq('email', userEmail)
-        .single();
+        .maybeSingle();  // Changé de .single() à .maybeSingle()
 
       if (error) {
         console.error("Erreur lors de la vérification de l'email:", error);
