@@ -10,7 +10,6 @@ export const HomeHero = () => {
   const [introContent, setIntroContent] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventLocation, setEventLocation] = useState("");
-  const [eventAddress, setEventAddress] = useState("");
 
   useEffect(() => {
     loadSettings();
@@ -68,7 +67,7 @@ export const HomeHero = () => {
   const loadEventDate = async () => {
     const { data } = await supabase
       .from('event_information')
-      .select('event_date, location, address')
+      .select('event_date, location')
       .order('created_at', { ascending: false })
       .limit(1);
 
@@ -80,7 +79,6 @@ export const HomeHero = () => {
       );
       setEventDate(formattedDate);
       setEventLocation(data[0].location || "");
-      setEventAddress(data[0].address || "");
     }
   };
 
@@ -103,11 +101,6 @@ export const HomeHero = () => {
             <div className="flex items-center justify-center gap-2 text-lg md:text-xl text-gold/80">
               <MapPin className="w-5 h-5" />
               <p>{eventLocation}</p>
-              {eventAddress && (
-                <span className="text-gold/60 text-base md:text-lg">
-                  - {eventAddress}
-                </span>
-              )}
             </div>
           )}
         </div>
