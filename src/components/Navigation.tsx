@@ -56,7 +56,7 @@ export const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-background/95 backdrop-blur-md backdrop-saturate-150">
+    <nav className="fixed top-0 left-0 right-0 z-[9999] border-b border-white/10 bg-background/95 backdrop-blur-md backdrop-saturate-150">
       <div className="container flex h-16 items-center justify-between px-4">
         <Logo logoUrl={logoUrl} />
         
