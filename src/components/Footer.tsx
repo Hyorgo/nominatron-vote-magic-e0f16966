@@ -27,7 +27,7 @@ const Footer = () => {
               <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                 Dirigeants, propulsez votre entreprise en ligne
               </h3>
-              <p className="text-sm sm:text-base text-white/90">
+              <p className="text-sm sm:text-base golden-reflection">
                 Transformez votre présence digitale en machine à croissance avec notre expertise en IA et marketing digital.
               </p>
             </div>
