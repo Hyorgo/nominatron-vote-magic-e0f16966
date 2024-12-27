@@ -108,3 +108,21 @@
 .category-grid {
   @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
 }
+
+/* Ajout des styles pour la navigation et les halos */
+nav {
+  position: relative;
+  z-index: 50;
+}
+
+.gold-halo {
+  z-index: -1 !important;
+}
+
+.purple-halo {
+  z-index: -1 !important;
+}
+
+.blue-halo {
+  z-index: -1 !important;
+}
