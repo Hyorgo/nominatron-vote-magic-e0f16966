@@ -24,7 +24,7 @@ const Admin = () => {
           .from('admin_users')
           .select('*')
           .eq('email', session.user.email)
-          .single();
+          .maybeSingle();
 
         if (adminError) {
           throw new Error('Erreur lors de la vérification des droits admin');

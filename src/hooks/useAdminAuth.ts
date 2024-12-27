@@ -36,7 +36,7 @@ export const useAdminAuth = () => {
         .from('admin_users')
         .select('*')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
       if (adminError) {
         logger.error('Erreur lors de la vérification admin', adminError);
