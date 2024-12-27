@@ -35,10 +35,10 @@ export const Navigation = () => {
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-white/5 backdrop-blur-md backdrop-saturate-150 supports-[backdrop-filter]:bg-white/5">
       <div className="container flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex-shrink-0 relative group">
-          {/* Effet néon */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="absolute inset-0 blur-md bg-primary/20" />
-            <div className="absolute inset-0 blur-lg bg-gold/20" />
+          {/* Effet néon amélioré */}
+          <div className="absolute inset-0 opacity-40 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 blur-xl bg-primary/40" />
+            <div className="absolute inset-0 blur-2xl bg-[#FFD700]/30" />
           </div>
           <img 
             src={logoUrl}
