@@ -6,7 +6,7 @@ import "@/styles/bokeh.css";
 
 export const Index = () => {
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Halos */}
       <div className="fuchsia-halo" />
       <div className="blue-halo" />
