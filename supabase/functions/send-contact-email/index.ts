@@ -33,12 +33,12 @@ serve(async (req) => {
         Messages: [
           {
             From: {
-              Email: "contact@lyon-dor.fr",
+              Email: "contact@ideai.fr",
               Name: "Lyon d'Or Contact"
             },
             To: [
               {
-                Email: "contact@lyon-dor.fr",
+                Email: "contact@ideai.fr",
                 Name: "Lyon d'Or"
               }
             ],
@@ -54,7 +54,7 @@ serve(async (req) => {
           },
           {
             From: {
-              Email: "contact@lyon-dor.fr",
+              Email: "contact@ideai.fr",
               Name: "Lyon d'Or"
             },
             To: [
