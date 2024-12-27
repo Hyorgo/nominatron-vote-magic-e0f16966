@@ -22,6 +22,7 @@ serve(async (req) => {
   try {
     const { name, email, message } = await req.json() as ContactForm
 
+    // Send to both the admin and the user
     const response = await fetch('https://api.mailjet.com/v3.1/send', {
       method: 'POST',
       headers: {
@@ -49,6 +50,28 @@ serve(async (req) => {
               <p><strong>Email:</strong> ${email}</p>
               <p><strong>Message:</strong></p>
               <p>${message.replace(/\n/g, '<br>')}</p>
+            `
+          },
+          {
+            From: {
+              Email: "contact@lyon-dor.fr",
+              Name: "Lyon d'Or"
+            },
+            To: [
+              {
+                Email: email,
+                Name: name
+              }
+            ],
+            Subject: "Confirmation de votre message - Lyon d'Or",
+            TextPart: `Bonjour ${name},\n\nNous avons bien reçu votre message et nous vous en remercions. Notre équipe vous répondra dans les plus brefs délais.\n\nVotre message :\n${message}\n\nCordialement,\nL'équipe Lyon d'Or`,
+            HTMLPart: `
+              <h3>Confirmation de votre message</h3>
+              <p>Bonjour ${name},</p>
+              <p>Nous avons bien reçu votre message et nous vous en remercions. Notre équipe vous répondra dans les plus brefs délais.</p>
+              <p><strong>Votre message :</strong></p>
+              <p>${message.replace(/\n/g, '<br>')}</p>
+              <p>Cordialement,<br>L'équipe Lyon d'Or</p>
             `
           }
         ]
