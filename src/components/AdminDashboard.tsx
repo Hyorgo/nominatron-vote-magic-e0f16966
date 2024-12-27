@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -5,10 +6,12 @@ import { AdminTabs } from "./admin/navigation/AdminTabs";
 import { Loader2 } from "lucide-react";
 import { useAdminData } from "@/hooks/useAdminData";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { checkSession } = useAuthSession();
   const { 
     scrollingTexts, 
     backgrounds, 
@@ -18,6 +21,16 @@ export const AdminDashboard = () => {
     invalidateQueries 
   } = useAdminData();
 
+  useEffect(() => {
+    const verifySession = async () => {
+      const isValid = await checkSession();
+      if (!isValid) {
+        navigate('/admin');
+      }
+    };
+    verifySession();
+  }, [checkSession, navigate]);
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -25,7 +38,6 @@ export const AdminDashboard = () => {
         title: "Déconnexion réussie",
         description: "Vous avez été déconnecté avec succès",
       });
-      // Redirection vers la page d'accueil après la déconnexion
       navigate('/');
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);

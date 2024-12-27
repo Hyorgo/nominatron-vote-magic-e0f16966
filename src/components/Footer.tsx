@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Settings2 } from "lucide-react";
+import { Lock } from "lucide-react";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -99,7 +99,7 @@ export const Footer = () => {
         className="absolute bottom-4 right-4 text-white/30 hover:text-gold/50 transition-colors"
         aria-label="Accéder à l'administration"
       >
-        <Settings2 size={20} />
+        <Lock size={20} />
       </Link>
     </footer>
   );

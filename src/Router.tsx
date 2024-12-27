@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Index } from "@/pages/Index";
-import AdminDashboard from "@/pages/AdminDashboard";
+import Admin from "@/pages/Admin";
 import Categories from "@/pages/Categories";
 import Contact from "@/pages/Contact";
 import Reserver from "@/pages/Reserver";
@@ -26,7 +26,8 @@ export const Router = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/dashboard" element={<Admin />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/reserver" element={<Reserver />} />
