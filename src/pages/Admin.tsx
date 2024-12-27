@@ -13,30 +13,29 @@ const Admin = () => {
     const checkAdminSession = async () => {
       try {
         logger.info('Vérification de la session admin');
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        const { data: { session } } = await supabase.auth.getSession();
         
-        if (sessionError) {
-          throw new Error('Erreur lors de la récupération de la session');
+        if (!session?.user?.email) {
+          logger.info('Pas de session active');
+          return;
         }
-        
-        if (session?.user?.email) {
-          const { data: adminData, error: adminError } = await supabase
-            .from('admin_users')
-            .select('*')
-            .eq('email', session.user.email)
-            .maybeSingle();
 
-          if (adminError) {
-            throw new Error('Erreur lors de la vérification des droits admin');
-          }
+        const { data: adminData, error: adminError } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('email', session.user.email)
+          .maybeSingle();
 
-          if (adminData) {
-            logger.info('Session admin valide, redirection');
-            navigate('/admin/dashboard');
-          } else {
-            logger.info('Session existante mais pas de droits admin');
-            await supabase.auth.signOut();
-          }
+        if (adminError) {
+          throw new Error('Erreur lors de la vérification des droits admin');
+        }
+
+        if (adminData) {
+          logger.info('Session admin valide, redirection');
+          navigate('/admin/dashboard');
+        } else {
+          logger.warn('Session existante mais pas de droits admin');
+          await supabase.auth.signOut();
         }
       } catch (error) {
         logger.error('Erreur lors de la vérification de session', error);

@@ -11,12 +11,11 @@ export const useAdminAuth = () => {
 
   const recordAuthAttempt = async (email: string, success: boolean) => {
     try {
-      logger.info('Enregistrement de la tentative de connexion', { email, success });
       const response = await fetch('https://api.ipify.org?format=json');
       const { ip } = await response.json();
       const userAgent = navigator.userAgent;
 
-      const { error } = await supabase
+      await supabase
         .from('auth_attempts')
         .insert([{
           email,
@@ -24,31 +23,37 @@ export const useAdminAuth = () => {
           success,
           user_agent: userAgent
         }]);
-
-      if (error) {
-        logger.error('Erreur lors de l\'enregistrement de la tentative', error);
-      }
+      
+      logger.info('Tentative de connexion enregistrée', { email, success });
     } catch (error) {
-      logger.error('Erreur lors de la récupération de l\'IP', error);
+      logger.error('Erreur lors de l\'enregistrement de la tentative', error);
     }
   };
 
-  const verifyAdminRights = async (email: string) => {
-    const { data: adminData, error: adminError } = await supabase
-      .from('admin_users')
-      .select('*')
-      .eq('email', email)
-      .maybeSingle();
+  const verifyAdminRights = async (email: string): Promise<boolean> => {
+    try {
+      const { data: adminData, error: adminError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
 
-    if (adminError) {
-      throw new Error('Erreur lors de la vérification admin');
+      if (adminError) {
+        logger.error('Erreur lors de la vérification admin', adminError);
+        return false;
+      }
+
+      if (!adminData) {
+        logger.warn('Utilisateur non trouvé dans admin_users', { email });
+        return false;
+      }
+
+      logger.info('Droits admin vérifiés avec succès', { email });
+      return true;
+    } catch (error) {
+      logger.error('Exception lors de la vérification admin', error);
+      return false;
     }
-
-    if (!adminData) {
-      throw new Error('Utilisateur non admin');
-    }
-
-    return true;
   };
 
   const handleLogin = async (email: string, password: string) => {
@@ -58,7 +63,6 @@ export const useAdminAuth = () => {
     }
     
     if (!email || !password) {
-      logger.warn('Email ou mot de passe manquant');
       toast({
         variant: "destructive",
         title: "Erreur de saisie",
@@ -74,7 +78,7 @@ export const useAdminAuth = () => {
       // Vérification préalable des droits admin
       const isAdmin = await verifyAdminRights(email);
       if (!isAdmin) {
-        throw new Error('Utilisateur non admin');
+        throw new Error('Accès non autorisé');
       }
 
       // Authentification
@@ -84,29 +88,31 @@ export const useAdminAuth = () => {
       });
 
       if (authError) {
-        throw new Error('Erreur d\'authentification');
+        throw authError;
       }
 
       if (!session) {
-        throw new Error('Impossible de créer une session');
+        throw new Error('Session invalide');
       }
 
       // Succès
-      logger.info('Connexion admin réussie');
       await recordAuthAttempt(email, true);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue dans l'interface d'administration",
       });
       navigate('/admin/dashboard');
+      
     } catch (error) {
-      logger.error('Erreur lors de la connexion', error);
       await recordAuthAttempt(email, false);
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
-        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la connexion",
+        description: error instanceof Error 
+          ? error.message 
+          : "Une erreur est survenue lors de la connexion",
       });
+      logger.error('Erreur lors de la connexion', error);
     } finally {
       setLoading(false);
     }
