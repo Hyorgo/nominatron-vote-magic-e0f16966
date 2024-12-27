@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Settings2 } from "lucide-react";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -13,7 +14,7 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="w-full py-8 px-4 mt-auto border-t border-gold/10 bg-background/30 backdrop-blur-md supports-[backdrop-filter]:bg-background/30">
+    <footer className="w-full py-8 px-4 mt-auto border-t border-gold/10 bg-background/30 backdrop-blur-md supports-[backdrop-filter]:bg-background/30 relative">
       <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4 md:gap-12">
           {/* Logo et message section */}
@@ -91,6 +92,15 @@ export const Footer = () => {
           </div>
         </div>
       </div>
+
+      {/* Admin icon */}
+      <Link 
+        to="/admin" 
+        className="absolute bottom-4 right-4 text-white/30 hover:text-gold/50 transition-colors"
+        aria-label="Accéder à l'administration"
+      >
+        <Settings2 size={20} />
+      </Link>
     </footer>
   );
 };
