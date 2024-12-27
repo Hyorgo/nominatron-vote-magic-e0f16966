@@ -39,7 +39,7 @@ export const HomeHero = () => {
   };
 
   return (
-    <div className="text-center space-y-4 md:space-y-8">
+    <div className="text-center space-y-4 md:space-y-8 pt-20">
       <img 
         src={homeLogo}
         alt="Lyon d'Or" 
