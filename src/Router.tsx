@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { Index } from "@/pages/Index";
 import AdminDashboard from "@/pages/AdminDashboard";
 import { Navigation } from "@/components/Navigation";
@@ -13,6 +14,12 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Footer from "@/components/Footer";
 
 export const Router = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
