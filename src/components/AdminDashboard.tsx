@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useAdminData } from "@/hooks/useAdminData";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthSession } from "@/hooks/useAuthSession";
+import { logger } from '@/services/monitoring/logger';
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -23,16 +24,39 @@ export const AdminDashboard = () => {
 
   useEffect(() => {
     const verifySession = async () => {
-      const isValid = await checkSession();
-      if (!isValid) {
+      try {
+        logger.info('Début de la vérification de session admin');
+        const isValid = await checkSession();
+        
+        if (!isValid) {
+          logger.info('Session admin invalide, redirection vers la page de connexion');
+          toast({
+            variant: "destructive",
+            title: "Session invalide",
+            description: "Veuillez vous reconnecter",
+          });
+          navigate('/admin');
+          return;
+        }
+        
+        logger.info('Session admin valide');
+      } catch (error) {
+        logger.error('Erreur lors de la vérification de session', error);
+        toast({
+          variant: "destructive",
+          title: "Erreur de session",
+          description: "Une erreur est survenue lors de la vérification de votre session",
+        });
         navigate('/admin');
       }
     };
+
     verifySession();
-  }, [checkSession, navigate]);
+  }, [checkSession, navigate, toast]);
 
   const handleLogout = async () => {
     try {
+      logger.info('Tentative de déconnexion');
       await supabase.auth.signOut();
       toast({
         title: "Déconnexion réussie",
@@ -40,7 +64,7 @@ export const AdminDashboard = () => {
       });
       navigate('/');
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      logger.error('Erreur lors de la déconnexion:', error);
       toast({
         variant: "destructive",
         title: "Erreur de déconnexion",
