@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 interface ScrollingText {
   id: string;
@@ -10,22 +12,56 @@ interface ScrollingText {
 export const ScrollingText = () => {
   const [scrollingTexts, setScrollingTexts] = useState<ScrollingText[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadScrollingTexts();
   }, []);
 
   const loadScrollingTexts = async () => {
-    const { data } = await supabase
-      .from('scrolling_text')
-      .select('*')
-      .eq('is_active', true);
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('scrolling_text')
+        .select('*')
+        .eq('is_active', true);
+      
+      if (error) {
+        console.error('Erreur lors du chargement des textes défilants:', error);
+        toast({
+          variant: "destructive",
+          title: "Erreur de chargement",
+          description: "Impossible de charger les textes défilants. Veuillez rafraîchir la page.",
+        });
+        return;
+      }
     
-    if (data) {
-      setScrollingTexts(data);
-      setIsVisible(true);
+      if (data) {
+        setScrollingTexts(data);
+        setIsVisible(true);
+      }
+    } catch (error) {
+      console.error('Erreur inattendue:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur inattendue",
+        description: "Une erreur est survenue lors du chargement des textes.",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full bg-navy/80 backdrop-blur-sm border-t border-gold/20 py-2 sm:py-3">
+        <div className="flex justify-center">
+          <Loader2 className="h-5 w-5 animate-spin text-gold/90" />
+        </div>
+      </div>
+    );
+  }
 
   if (scrollingTexts.length === 0) return null;
 
