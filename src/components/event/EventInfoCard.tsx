@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Calendar, Download } from "lucide-react";
+import { MapPin, Calendar, Download, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const EventInfoCard = () => {
@@ -56,7 +56,8 @@ END:VCALENDAR`;
   };
 
   return (
-    <Card className="bg-white/5 backdrop-blur-lg border-white/10 text-white">
+    <Card className="bg-white/5 backdrop-blur-lg border-white/10 text-white relative">
+      <Star className="absolute top-4 right-4 text-gold fill-gold" size={24} />
       <CardContent className="pt-6 space-y-4">
         <div className="flex items-start gap-3">
           <Calendar className="h-5 w-5 text-gold shrink-0 mt-0.5" />
