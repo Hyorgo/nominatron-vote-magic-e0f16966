@@ -1,57 +1,29 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-
-interface ScrollingText {
-  id: string;
-  content: string;
-  is_active: boolean;
-}
+import { useScrollingText } from "@/hooks/useScrollingText";
+import { useToast } from "@/hooks/use-toast";
 
 export const ScrollingText = () => {
-  const [scrollingTexts, setScrollingTexts] = useState<ScrollingText[]>([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: scrollingTexts = [], isLoading, error } = useScrollingText();
   const { toast } = useToast();
 
   useEffect(() => {
-    loadScrollingTexts();
-  }, []);
+    if (scrollingTexts.length > 0) {
+      setIsVisible(true);
+    }
+  }, [scrollingTexts]);
 
-  const loadScrollingTexts = async () => {
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from('scrolling_text')
-        .select('*')
-        .eq('is_active', true);
-      
-      if (error) {
-        console.error('Erreur lors du chargement des textes défilants:', error);
-        toast({
-          variant: "destructive",
-          title: "Erreur de chargement",
-          description: "Impossible de charger les textes défilants. Veuillez rafraîchir la page.",
-        });
-        return;
-      }
-    
-      if (data) {
-        setScrollingTexts(data);
-        setIsVisible(true);
-      }
-    } catch (error) {
-      console.error('Erreur inattendue:', error);
+  useEffect(() => {
+    if (error) {
+      console.error('Erreur lors du chargement des textes défilants:', error);
       toast({
         variant: "destructive",
-        title: "Erreur inattendue",
-        description: "Une erreur est survenue lors du chargement des textes.",
+        title: "Erreur de chargement",
+        description: "Impossible de charger les textes défilants. Veuillez rafraîchir la page.",
       });
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [error, toast]);
 
   if (isLoading) {
     return (
