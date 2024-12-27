@@ -60,8 +60,9 @@ export const VotingRegistrationDialog = ({
           });
         } else {
           toast({
-            title: "Email vérifié",
-            description: "Vous pouvez maintenant voter pour vos favoris.",
+            title: "🎉 Inscription réussie !",
+            description: "C'est parti ! Votez pour vos favoris dans chaque catégorie. Votre voix compte !",
+            variant: "success",
           });
         }
         navigate("/categories");
@@ -82,8 +83,9 @@ export const VotingRegistrationDialog = ({
         localStorage.setItem('userEmail', formData.email);
         onOpenChange(false);
         toast({
-          title: "Inscription réussie",
-          description: "Vous pouvez maintenant voter pour vos favoris.",
+          title: "🎉 Inscription réussie !",
+          description: "C'est parti ! Votez pour vos favoris dans chaque catégorie. Votre voix compte !",
+          variant: "success",
         });
         navigate("/categories");
       }
