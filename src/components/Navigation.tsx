@@ -71,12 +71,14 @@ export const Navigation = () => {
         />
 
         {isMenuOpen && (
-          <NavigationLinks 
-            links={links} 
-            currentPath={location.pathname} 
-            isMobile={true}
-            onLinkClick={() => setIsMenuOpen(false)}
-          />
+          <div className="absolute top-16 left-0 right-0 z-[9999] bg-background/95 backdrop-blur-md backdrop-saturate-150 border-b border-white/10">
+            <NavigationLinks 
+              links={links} 
+              currentPath={location.pathname} 
+              isMobile={true}
+              onLinkClick={() => setIsMenuOpen(false)}
+            />
+          </div>
         )}
       </div>
     </nav>

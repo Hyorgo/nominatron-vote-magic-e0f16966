@@ -38,10 +38,8 @@ export const NavigationLinks = ({
 
   if (isMobile) {
     return (
-      <div className="absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-lg md:hidden border-b border-white/10">
-        <div className="container py-4 flex flex-col space-y-1">
-          {linksList}
-        </div>
+      <div className="py-4 flex flex-col space-y-1">
+        {linksList}
       </div>
     );
   }
