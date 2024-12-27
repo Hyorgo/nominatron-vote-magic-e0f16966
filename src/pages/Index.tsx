@@ -7,6 +7,11 @@ import "@/styles/bokeh.css";
 export const Index = () => {
   return (
     <div className="min-h-screen relative">
+      {/* Halos */}
+      <div className="fuchsia-halo" />
+      <div className="blue-halo" />
+      <div className="gold-halo" />
+      
       <Navigation />
       <div className="container px-4 md:px-6 py-4 md:py-6 space-y-8 md:space-y-16">
         <HomeHero />
