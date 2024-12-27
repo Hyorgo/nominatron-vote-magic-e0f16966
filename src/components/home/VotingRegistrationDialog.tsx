@@ -62,7 +62,6 @@ export const VotingRegistrationDialog = ({
           toast({
             title: "🎉 Inscription réussie !",
             description: "C'est parti ! Votez pour vos favoris dans chaque catégorie. Votre voix compte !",
-            variant: "success",
           });
         }
         navigate("/categories");
@@ -85,7 +84,6 @@ export const VotingRegistrationDialog = ({
         toast({
           title: "🎉 Inscription réussie !",
           description: "C'est parti ! Votez pour vos favoris dans chaque catégorie. Votre voix compte !",
-          variant: "success",
         });
         navigate("/categories");
       }

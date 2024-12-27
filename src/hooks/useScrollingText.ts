@@ -1,18 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryConfig } from "./useQueryConfig";
 
 export interface ScrollingText {
   id: string;
   content: string;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 const fetchScrollingTexts = async (): Promise<ScrollingText[]> => {
   const { data, error } = await supabase
-    .from('scrolling_text')
-    .select('*')
-    .eq('is_active', true);
+    .from("scrolling_text")
+    .select("*")
+    .eq("is_active", true)
+    .order("created_at", { ascending: true });
 
   if (error) {
     throw error;
@@ -22,11 +24,8 @@ const fetchScrollingTexts = async (): Promise<ScrollingText[]> => {
 };
 
 export const useScrollingText = () => {
-  const queryConfig = useQueryConfig("scrollingTexts");
-
   return useQuery<ScrollingText[], Error>({
-    queryKey: ["scrollingTexts"],
+    queryKey: ["scrollingText"],
     queryFn: fetchScrollingTexts,
-    ...queryConfig,
   });
 };
