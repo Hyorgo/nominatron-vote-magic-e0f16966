@@ -26,6 +26,7 @@ export const useAdminSession = () => {
 
       if (error || !adminUser) {
         logger.warn('Session invalide - Utilisateur non admin', { error });
+        await supabase.auth.signOut();
         return false;
       }
 

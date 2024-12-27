@@ -7,6 +7,7 @@ import { useAdminData } from "@/hooks/useAdminData";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminSession } from "@/hooks/useAdminSession";
 import { logger } from '@/services/monitoring/logger';
+import { supabase } from "@/integrations/supabase/client";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -25,10 +26,17 @@ export const AdminDashboard = () => {
     const verifySession = async () => {
       try {
         logger.info('Début de la vérification de session admin');
-        const isValid = await checkSession();
+        const { data: { session } } = await supabase.auth.getSession();
         
+        if (!session) {
+          logger.warn('Pas de session Supabase active');
+          navigate('/admin');
+          return;
+        }
+
+        const isValid = await checkSession();
         if (!isValid) {
-          logger.info('Session admin invalide, redirection vers la page de connexion');
+          logger.warn('Session admin invalide, redirection vers la page de connexion');
           toast({
             variant: "destructive",
             title: "Session invalide",
