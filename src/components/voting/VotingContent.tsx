@@ -25,13 +25,19 @@ export const VotingContent = ({
   const { toast } = useToast();
   const category = categories[currentCategory];
 
-  // Log l'état initial et les changements
+  // Log détaillé pour le débogage
   useEffect(() => {
     if (category) {
-      console.log("Catégorie actuelle:", {
-        id: category.id,
-        name: category.name,
-        selectedNomineeId: selectedNominees[category.id]
+      console.log("État actuel:", {
+        categoryId: category.id,
+        categoryName: category.name,
+        selectedNomineeId: selectedNominees[category.id],
+        allSelectedNominees: selectedNominees,
+        nominees: category.nominees.map(n => ({
+          id: n.id,
+          name: n.name,
+          isSelected: selectedNominees[category.id] === n.id
+        }))
       });
     }
   }, [category, selectedNominees]);

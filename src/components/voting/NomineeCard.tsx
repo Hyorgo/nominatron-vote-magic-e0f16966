@@ -28,6 +28,8 @@ interface NomineeCardProps {
 }
 
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
+  console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
+  
   return (
     <TooltipProvider>
       <Card 
