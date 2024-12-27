@@ -25,7 +25,6 @@ export const VotingContent = ({
   const { toast } = useToast();
   const category = categories[currentCategory];
 
-  // Log détaillé pour le débogage
   useEffect(() => {
     if (category) {
       console.log("État actuel:", {
@@ -53,19 +52,26 @@ export const VotingContent = ({
       
       await onVote(category.id, nomineeId);
       
-      // Passer à la catégorie suivante si ce n'est pas la dernière
       if (currentCategory < categories.length - 1) {
         setTimeout(() => {
           onCategoryChange(currentCategory + 1);
         }, 1500);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors du vote:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur lors du vote",
-        description: "Une erreur est survenue lors de l'enregistrement de votre vote. Veuillez réessayer."
-      });
+      if (error.message?.includes("not authenticated")) {
+        toast({
+          variant: "destructive",
+          title: "Non connecté",
+          description: "Vous devez être connecté avec un email validé pour voter.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur lors du vote",
+          description: "Une erreur est survenue lors de l'enregistrement de votre vote. Veuillez réessayer."
+        });
+      }
     }
   };
 
