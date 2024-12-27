@@ -21,15 +21,12 @@ serve(async (req) => {
 
   try {
     console.log('🚀 Début du traitement de la requête de contact')
-    console.log('📝 Vérification des clés Mailjet:', {
-      apiKeyExists: !!MAILJET_API_KEY,
-      secretKeyExists: !!MAILJET_SECRET_KEY,
-      apiKeyLength: MAILJET_API_KEY?.length,
-      secretKeyLength: MAILJET_SECRET_KEY?.length
-    })
     
     if (!MAILJET_API_KEY || !MAILJET_SECRET_KEY) {
-      console.error('❌ Clés Mailjet manquantes')
+      console.error('❌ Clés Mailjet manquantes:', {
+        apiKeyExists: !!MAILJET_API_KEY,
+        secretKeyExists: !!MAILJET_SECRET_KEY
+      })
       throw new Error('Configuration Mailjet manquante')
     }
 
@@ -84,7 +81,12 @@ serve(async (req) => {
       ]
     }
 
-    console.log('📤 Tentative d\'envoi via Mailjet')
+    console.log('📤 Tentative d\'envoi via Mailjet avec la configuration:', {
+      apiKeyLength: MAILJET_API_KEY?.length,
+      secretKeyLength: MAILJET_SECRET_KEY?.length,
+      fromEmail: "contact@ideai.fr"
+    })
+
     const response = await fetch('https://api.mailjet.com/v3.1/send', {
       method: 'POST',
       headers: {
@@ -95,10 +97,18 @@ serve(async (req) => {
     })
 
     const result = await response.json()
-    console.log('📬 Réponse Mailjet:', result)
+    console.log('📬 Réponse Mailjet:', {
+      status: response.status,
+      statusText: response.statusText,
+      result
+    })
 
     if (!response.ok) {
-      console.error('❌ Erreur Mailjet:', result)
+      console.error('❌ Erreur Mailjet:', {
+        status: response.status,
+        statusText: response.statusText,
+        result
+      })
       throw new Error(JSON.stringify(result))
     }
 
