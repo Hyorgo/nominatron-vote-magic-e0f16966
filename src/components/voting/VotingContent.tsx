@@ -42,6 +42,8 @@ export const VotingContent = ({
   }, [category, selectedNominees]);
 
   const handleVote = async (nomineeId: string) => {
+    if (!category) return;
+
     try {
       console.log("Tentative de vote pour:", { 
         categoryId: category.id, 

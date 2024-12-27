@@ -4,7 +4,7 @@ interface VotingHeaderProps {
   userEmail?: string;
 }
 
-export const VotingHeader = ({ isVotingOpen, userEmail }: VotingHeaderProps) => {
+export const VotingHeader = ({ isVotingOpen, onOpenDialog, userEmail }: VotingHeaderProps) => {
   return (
     <div className="flex flex-col items-center space-y-4 mb-8">
       <h1 className="text-3xl sm:text-4xl font-bold text-center">

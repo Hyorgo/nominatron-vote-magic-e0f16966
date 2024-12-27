@@ -44,10 +44,7 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
         }));
         
         onClose();
-        toast({
-          title: "Email déjà enregistré",
-          description: "Vos votes précédents ont été restaurés.",
-        });
+        if (onSuccess) onSuccess();
       } else {
         const { error } = await supabase
           .from("validated_emails")
