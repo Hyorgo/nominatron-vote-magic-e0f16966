@@ -46,12 +46,12 @@
     overflow-x: hidden;
   }
 
-  /* Halos masqués sur mobile */
+  /* Masquer les halos sur mobile */
   @media (max-width: 768px) {
     body::before,
     body::after,
     .gold-halo {
-      display: none;
+      display: none !important;
     }
   }
 
