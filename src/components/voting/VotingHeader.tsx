@@ -12,12 +12,28 @@ export const VotingHeader = ({ isVotingOpen, onOpenDialog, userEmail }: VotingHe
       </h1>
       
       {userEmail ? (
-        <div className="text-muted-foreground text-center">
-          Connecté avec : <span className="font-medium">{userEmail}</span>
+        <div className="text-center space-y-2">
+          <div className="text-muted-foreground">
+            Connecté avec : <span className="font-medium">{userEmail}</span>
+          </div>
+          {!isVotingOpen && (
+            <div className="text-yellow-500">
+              Les votes ne sont pas encore ouverts
+            </div>
+          )}
         </div>
       ) : (
-        <div className="text-destructive text-center">
-          Vous devez être connecté avec un email validé pour voter
+        <div className="text-center space-y-2">
+          <div className="text-destructive">
+            Vous devez être connecté avec un email validé pour voter
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={onOpenDialog}
+            className="mt-2"
+          >
+            S'inscrire pour voter
+          </Button>
         </div>
       )}
     </div>

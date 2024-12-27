@@ -45,35 +45,43 @@ export const VotingContent = ({
     if (!category) return;
 
     try {
-      console.log("Tentative de vote pour:", { 
-        categoryId: category.id, 
-        nomineeId,
-        currentCategory,
-        currentSelectedNominee: selectedNominees[category.id]
-      });
-      
-      await onVote(category.id, nomineeId);
-      
-      if (currentCategory < categories.length - 1) {
-        setTimeout(() => {
-          onCategoryChange(currentCategory + 1);
-        }, 1500);
-      }
-    } catch (error: any) {
-      console.error("Erreur lors du vote:", error);
-      if (error.message?.includes("not authenticated")) {
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) {
         toast({
           variant: "destructive",
           title: "Non connecté",
           description: "Vous devez être connecté avec un email validé pour voter.",
         });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur lors du vote",
-          description: "Une erreur est survenue lors de l'enregistrement de votre vote. Veuillez réessayer."
-        });
+        return;
       }
+
+      console.log("Tentative de vote pour:", { 
+        categoryId: category.id, 
+        nomineeId,
+        currentCategory,
+        userEmail,
+        currentSelectedNominee: selectedNominees[category.id]
+      });
+      
+      await onVote(category.id, nomineeId);
+      
+      toast({
+        title: "Vote enregistré",
+        description: "Votre vote a été enregistré avec succès.",
+      });
+
+      if (currentCategory < categories.length - 1) {
+        setTimeout(() => {
+          onCategoryChange(currentCategory + 1);
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.error("Erreur lors du vote:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur lors du vote",
+        description: "Une erreur est survenue lors de l'enregistrement de votre vote. Veuillez réessayer."
+      });
     }
   };
 

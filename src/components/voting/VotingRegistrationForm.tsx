@@ -23,22 +23,27 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
     email: "",
   });
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     
     try {
-      const { data: existingEmail } = await supabase
+      setIsSubmitting(true);
+      console.log("Tentative d'inscription avec:", formData);
+
+      const { data: existingEmail, error: checkError } = await supabase
         .from("validated_emails")
         .select("*")
         .eq("email", formData.email)
-        .single();
+        .maybeSingle();
+
+      if (checkError) throw checkError;
 
       if (existingEmail) {
-        // Store the email in localStorage for persistence
+        console.log("Email déjà validé:", formData.email);
         localStorage.setItem('userEmail', formData.email);
-        
-        // Emit a custom event to notify other components
         window.dispatchEvent(new CustomEvent('emailValidated', { 
           detail: { email: formData.email }
         }));
@@ -46,7 +51,8 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
         onClose();
         if (onSuccess) onSuccess();
       } else {
-        const { error } = await supabase
+        console.log("Nouvel email, création de l'entrée");
+        const { error: insertError } = await supabase
           .from("validated_emails")
           .insert([
             {
@@ -56,12 +62,9 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
             },
           ]);
 
-        if (error) throw error;
+        if (insertError) throw insertError;
         
-        // Store the email in localStorage for persistence
         localStorage.setItem('userEmail', formData.email);
-        
-        // Emit a custom event to notify other components
         window.dispatchEvent(new CustomEvent('emailValidated', { 
           detail: { email: formData.email }
         }));
@@ -78,8 +81,10 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la validation.",
+        description: "Une erreur est survenue lors de la validation. Veuillez réessayer.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -92,6 +97,7 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
           value={formData.firstName}
           onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
           required
+          disabled={isSubmitting}
         />
       </div>
       <div className="space-y-2">
@@ -101,6 +107,7 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
           value={formData.lastName}
           onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
           required
+          disabled={isSubmitting}
         />
       </div>
       <div className="space-y-2">
@@ -111,10 +118,11 @@ export const VotingRegistrationForm = ({ onClose, onSuccess }: VotingRegistratio
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
+          disabled={isSubmitting}
         />
       </div>
-      <Button type="submit" className="w-full">
-        Valider
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? "Validation en cours..." : "Valider"}
       </Button>
     </form>
   );
