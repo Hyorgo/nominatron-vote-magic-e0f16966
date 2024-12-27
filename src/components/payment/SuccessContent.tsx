@@ -1,4 +1,4 @@
-import { Heart, Home } from "lucide-react";
+import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -21,9 +21,6 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
   if (!bookingInfo) {
     return (
       <div className="text-center">
-        <div className="flex justify-center mb-6">
-          <Heart size={64} className="text-[#D946EF] fill-[#D946EF] animate-[bounce_2s_ease-in-out_infinite]" />
-        </div>
         <h1 className="mb-6 text-4xl font-bold golden-reflection">
           Paiement confirmé !
         </h1>
@@ -44,9 +41,6 @@ export const SuccessContent = ({ bookingInfo, onNavigateHome }: SuccessContentPr
 
   return (
     <div className="text-center">
-      <div className="flex justify-center mb-6">
-        <Heart size={64} className="text-[#D946EF] fill-[#D946EF] animate-[bounce_2s_ease-in-out_infinite]" />
-      </div>
       <h1 className="mb-6 text-4xl font-bold golden-reflection">
         Paiement confirmé !
       </h1>
