@@ -47,7 +47,7 @@ export const NavigationLinks = ({
   }
 
   return (
-    <div className={cn("flex gap-2", className)}>
+    <div className={cn("gap-2", className)}>
       {linksList}
     </div>
   );
