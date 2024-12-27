@@ -53,18 +53,21 @@
       hsl(230, 33%, 12%)
     ) fixed;
     overflow-x: hidden;
+    position: relative;
   }
 
   /* Masquer uniquement les halos sur mobile tout en gardant le fond sombre */
   @media (max-width: 768px) {
     .gold-halo,
+    .fuchsia-halo,
+    .blue-halo,
     [class*="bg-[radial-gradient"] {
       display: none !important;
     }
   }
 
   /* Halo fuchsia à gauche */
-  body::before {
+  .fuchsia-halo {
     content: '';
     position: fixed;
     top: -50%;
@@ -72,12 +75,12 @@
     width: 100%;
     height: 200%;
     background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 50%);
-    z-index: -3;
+    z-index: -1;
     pointer-events: none;
   }
 
   /* Halo bleu à droite */
-  body::after {
+  .blue-halo {
     content: '';
     position: fixed;
     top: -50%;
@@ -85,7 +88,7 @@
     width: 100%;
     height: 200%;
     background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 50%);
-    z-index: -3;
+    z-index: -1;
     pointer-events: none;
   }
 
@@ -98,7 +101,7 @@
     width: 150%;
     height: 150%;
     background: radial-gradient(circle, rgba(201, 165, 92, 0.25) 0%, transparent 60%);
-    z-index: -3;
+    z-index: -1;
     pointer-events: none;
   }
 }
