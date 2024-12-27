@@ -34,8 +34,9 @@ const Contact = () => {
       }
 
       toast({
-        title: "Message envoyé",
-        description: "Nous vous répondrons dans les plus brefs délais.",
+        title: "Message envoyé !",
+        description: "Nous avons bien reçu votre message et vous répondrons dans les plus brefs délais.",
+        variant: "default",
       });
 
       (e.target as HTMLFormElement).reset();
@@ -43,7 +44,7 @@ const Contact = () => {
       console.error('Error:', error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi du message.",
+        description: "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
