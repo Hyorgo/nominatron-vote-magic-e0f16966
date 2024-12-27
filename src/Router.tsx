@@ -13,6 +13,7 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/NotFound";
 import { ScrollingText } from "@/components/ScrollingText";
 import { Footer } from "@/components/Footer";
+import BackgroundHalos from "@/components/effects/BackgroundHalos";
 
 export const Router = () => {
   const location = useLocation();
@@ -22,9 +23,17 @@ export const Router = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-background">
+      {/* Grain Effect */}
+      <div className="fixed inset-0 opacity-20 z-[-2] pointer-events-none">
+        <div className="absolute inset-0 bg-[url('/noise.png')] bg-repeat opacity-50" />
+      </div>
+      
+      {/* Halos */}
+      <BackgroundHalos />
+      
       <ScrollingText />
-      <main className="flex-grow">
+      <main className="flex-grow relative z-[1]">
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/admin" element={<Admin />} />
