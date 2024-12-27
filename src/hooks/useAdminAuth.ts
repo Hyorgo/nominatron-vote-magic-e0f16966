@@ -39,7 +39,6 @@ export const useAdminAuth = () => {
     try {
       logger.info('Début de la vérification des droits admin', { email });
       
-      // Utilisation de la RLS policy pour vérifier les droits admin
       const { data: adminUser, error } = await supabase
         .from('admin_users')
         .select('email')
@@ -48,23 +47,17 @@ export const useAdminAuth = () => {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          logger.warn('Utilisateur non trouvé dans admin_users', { email, error });
+          logger.warn('Utilisateur non trouvé dans admin_users', { email });
           return false;
         }
-        logger.error('Erreur lors de la vérification admin', { error, email });
-        throw new Error('Erreur lors de la vérification des droits administrateur');
-      }
-
-      if (!adminUser) {
-        logger.warn('Utilisateur non trouvé dans admin_users', { email });
-        return false;
+        throw error;
       }
 
       logger.info('Droits admin vérifiés avec succès', { email, adminUser });
       return true;
     } catch (error) {
       logger.error('Exception lors de la vérification admin', { error, email });
-      return false;
+      throw error;
     }
   };
 
@@ -117,7 +110,7 @@ export const useAdminAuth = () => {
         title: "Connexion réussie",
         description: "Bienvenue dans l'interface d'administration",
       });
-      navigate('/admin/dashboard');
+      navigate('/admin/dashboard', { replace: true });
       
     } catch (error) {
       await recordAuthAttempt(email, false);

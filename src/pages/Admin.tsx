@@ -20,27 +20,30 @@ const Admin = () => {
           return;
         }
 
-        const { data: adminData, error: adminError } = await supabase
+        // Vérification directe avec la table admin_users
+        const { data: adminUser, error: adminError } = await supabase
           .from('admin_users')
-          .select()
+          .select('email')
           .eq('email', session.user.email)
-          .maybeSingle();
+          .single();
 
         if (adminError) {
-          throw new Error('Erreur lors de la vérification des droits admin');
+          logger.error('Erreur lors de la vérification des droits admin', adminError);
+          if (adminError.code === 'PGRST116') {
+            await supabase.auth.signOut();
+            toast({
+              variant: "destructive",
+              title: "Accès refusé",
+              description: "Vous n'avez pas les droits administrateur nécessaires",
+            });
+            return;
+          }
+          throw adminError;
         }
 
-        if (adminData) {
-          logger.info('Session admin valide, redirection');
-          navigate('/admin/dashboard');
-        } else {
-          logger.warn('Session existante mais pas de droits admin');
-          await supabase.auth.signOut();
-          toast({
-            variant: "destructive",
-            title: "Accès refusé",
-            description: "Vous n'avez pas les droits administrateur nécessaires",
-          });
+        if (adminUser) {
+          logger.info('Session admin valide, redirection vers le dashboard', { email: session.user.email });
+          navigate('/admin/dashboard', { replace: true });
         }
       } catch (error) {
         logger.error('Erreur lors de la vérification de session', error);
