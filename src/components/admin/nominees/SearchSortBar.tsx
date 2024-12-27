@@ -39,17 +39,22 @@ export const SearchSortBar = ({
             className="pl-9"
           />
         </div>
-        <Select value={sortOrder} onValueChange={onSortChange}>
+        <Tooltip>
           <TooltipTrigger asChild>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Trier par..." />
-            </SelectTrigger>
+            <Select value={sortOrder} onValueChange={onSortChange}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Trier par..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Trier par nom</SelectItem>
+                <SelectItem value="date">Trier par date</SelectItem>
+              </SelectContent>
+            </Select>
           </TooltipTrigger>
-          <SelectContent>
-            <SelectItem value="name">Trier par nom</SelectItem>
-            <SelectItem value="date">Trier par date</SelectItem>
-          </SelectContent>
-        </Select>
+          <TooltipContent>
+            <p>Sélectionnez un critère de tri</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </TooltipProvider>
   );
