@@ -20,7 +20,6 @@ export const supabase = createClient<Database>(
     global: {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
         'apikey': SUPABASE_PUBLISHABLE_KEY
       },
     },
@@ -30,32 +29,41 @@ export const supabase = createClient<Database>(
   }
 );
 
-// Ajout de logs pour le développement
+// Ajout de logs détaillés pour le développement
 if (import.meta.env.DEV) {
   console.log('Client Supabase initialisé avec URL:', SUPABASE_URL);
   
-  // Écoute des changements de votes
-  const channel = supabase.channel('votes-changes')
+  // Écoute des changements de configuration
+  const channel = supabase.channel('config-changes')
     .on(
       'postgres_changes',
       {
         event: '*',
         schema: 'public',
-        table: 'votes'
+        table: 'site_settings'
       },
       (payload) => {
-        console.log('Changement de vote détecté:', payload);
+        console.log('Changement de configuration détecté:', payload);
       }
     )
     .subscribe((status) => {
-      console.log('Statut de la souscription:', status);
+      console.log('Statut de la souscription aux changements:', status);
     });
 
   // Log de toutes les requêtes en développement
   const originalFrom = supabase.from.bind(supabase);
   supabase.from = (table: string) => {
     console.log(`Requête vers la table: ${table}`);
-    return originalFrom(table);
+    const client = originalFrom(table);
+    
+    // Ajout de logs pour les erreurs
+    const originalSelect = client.select.bind(client);
+    client.select = (...args: any[]) => {
+      console.log(`Sélection dans la table ${table} avec les arguments:`, args);
+      return originalSelect(...args);
+    };
+    
+    return client;
   };
 
   // Nettoyage lors de la fermeture de la fenêtre

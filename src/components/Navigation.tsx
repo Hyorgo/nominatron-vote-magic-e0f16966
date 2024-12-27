@@ -4,25 +4,48 @@ import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "./navigation/Logo";
 import { MobileMenuButton } from "./navigation/MobileMenuButton";
 import { NavigationLinks } from "./navigation/NavigationLinks";
+import { useToast } from "@/hooks/use-toast";
 
 export const Navigation = () => {
   const location = useLocation();
   const [logoUrl, setLogoUrl] = useState("/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadLogo();
   }, []);
 
   const loadLogo = async () => {
-    const { data } = await supabase
-      .from('site_settings')
-      .select('setting_value')
-      .eq('setting_name', 'header_logo')
-      .single();
-    
-    if (data) {
-      setLogoUrl(data.setting_value);
+    try {
+      console.log("Tentative de chargement du logo...");
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_value')
+        .eq('setting_name', 'header_logo')
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Erreur lors du chargement du logo:', error);
+        toast({
+          variant: "destructive",
+          title: "Erreur de chargement",
+          description: "Impossible de charger le logo. Utilisation du logo par défaut.",
+        });
+        return;
+      }
+      
+      if (data) {
+        console.log("Logo chargé avec succès:", data.setting_value);
+        setLogoUrl(data.setting_value);
+      }
+    } catch (error) {
+      console.error('Erreur inattendue lors du chargement du logo:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur inattendue",
+        description: "Une erreur est survenue lors du chargement du logo.",
+      });
     }
   };
 
