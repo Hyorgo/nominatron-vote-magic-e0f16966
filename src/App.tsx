@@ -1,7 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { Router } from "./Router";
 import { Navigation } from "./components/Navigation";
-import { Footer } from "./components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { useIsMobile } from "./hooks/use-mobile";
 import BokehEffect from "./components/effects/BokehEffect";
@@ -12,20 +11,17 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col relative">
         <BokehEffect />
-        {!isMobile && <div className="gold-halo" />}
         {!isMobile && (
           <>
+            <div className="gold-halo" />
             <div className="fuchsia-halo" />
             <div className="blue-halo" />
           </>
         )}
         <Navigation />
-        <main className="flex-1">
-          <Router />
-        </main>
-        <Footer />
+        <Router />
       </div>
       <Toaster />
     </BrowserRouter>
