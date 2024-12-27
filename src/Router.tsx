@@ -14,9 +14,11 @@ import NotFound from "@/pages/NotFound";
 import { ScrollingText } from "@/components/ScrollingText";
 import { Footer } from "@/components/Footer";
 import BackgroundHalos from "@/components/effects/BackgroundHalos";
+import { Navigation } from "@/components/Navigation";
 
 export const Router = () => {
   const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -31,6 +33,9 @@ export const Router = () => {
       
       {/* Halos */}
       <BackgroundHalos />
+      
+      {/* Navigation - Hidden for admin routes */}
+      {!isAdminRoute && <Navigation />}
       
       <ScrollingText />
       <main className="flex-grow relative z-[1]">
