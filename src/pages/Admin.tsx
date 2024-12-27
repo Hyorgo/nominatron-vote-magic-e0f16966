@@ -25,7 +25,7 @@ const Admin = () => {
         .from('admin_users')
         .select('*')
         .eq('email', session.user.email)
-        .single();
+        .maybeSingle();
 
       if (adminData) {
         navigate('/admin/dashboard');
@@ -59,7 +59,6 @@ const Admin = () => {
     setLoading(true);
 
     try {
-      // Vérifier les tentatives de connexion suspectes
       const response = await fetch('https://api.ipify.org?format=json');
       const { ip } = await response.json();
       
@@ -93,7 +92,7 @@ const Admin = () => {
           .from('admin_users')
           .select('*')
           .eq('email', session.user.email)
-          .single();
+          .maybeSingle();
 
         if (adminError || !adminData) {
           await supabase.auth.signOut();
