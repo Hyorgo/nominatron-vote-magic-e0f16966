@@ -50,7 +50,8 @@
   @media (max-width: 768px) {
     body::before,
     body::after,
-    .gold-halo {
+    .gold-halo,
+    [class*="bg-[radial-gradient"] {
       display: none !important;
     }
   }
