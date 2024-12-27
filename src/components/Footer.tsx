@@ -4,12 +4,12 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const services = [
-    "Création de site internet",
-    "Référencement naturel (SEO)",
-    "Référencement Local",
-    "Audit SEO",
-    "Automatisations",
-    "Intelligence artificielle (AI)"
+    { name: "Création de site internet", url: "https://ideai.fr/creation-de-site-internet" },
+    { name: "Référencement naturel (SEO)", url: "https://ideai.fr/referencement-naturel" },
+    { name: "Référencement Local", url: "https://ideai.fr/seo-local" },
+    { name: "Audit SEO", url: "https://ideai.fr/audit-seo" },
+    { name: "Automatisations", url: "https://ideai.fr/" },
+    { name: "Intelligence artificielle (AI)", url: "https://ideai.fr/" }
   ];
 
   return (
@@ -57,8 +57,15 @@ const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Nos services</h3>
             <ul className="text-center md:text-right text-white space-y-2">
               {services.map((service, index) => (
-                <li key={index} className="hover:text-gold transition-colors text-sm sm:text-base">
-                  {service}
+                <li key={index}>
+                  <a 
+                    href={service.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-gold transition-colors text-sm sm:text-base"
+                  >
+                    {service.name}
+                  </a>
                 </li>
               ))}
             </ul>
