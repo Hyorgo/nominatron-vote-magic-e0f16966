@@ -34,7 +34,7 @@ export const useVotingSession = () => {
         .from('validated_emails')
         .select('email')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Erreur lors de la vérification de l'email:", error);
