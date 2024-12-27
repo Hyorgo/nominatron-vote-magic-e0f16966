@@ -85,36 +85,6 @@ export const StripeSettingsForm = ({
         </Card>
       </div>
 
-      <Card>
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="stripe_success_url">URL de succès</Label>
-              <Input
-                id="stripe_success_url"
-                value={settings.stripe_success_url}
-                onChange={(e) =>
-                  onSettingsChange({ ...settings, stripe_success_url: e.target.value })
-                }
-                placeholder="https://..."
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="stripe_cancel_url">URL d'annulation</Label>
-              <Input
-                id="stripe_cancel_url"
-                value={settings.stripe_cancel_url}
-                onChange={(e) =>
-                  onSettingsChange({ ...settings, stripe_cancel_url: e.target.value })
-                }
-                placeholder="https://..."
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       <div className="flex justify-end">
         <Button onClick={onSave} disabled={saving}>
           {saving ? "Enregistrement..." : "Enregistrer"}
