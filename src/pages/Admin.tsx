@@ -19,17 +19,21 @@ const Admin = () => {
   }, []);
 
   const checkAdmin = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      const { data: adminData, error: adminError } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('email', session.user.email)
-        .maybeSingle();
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: adminData } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('email', session.user.email)
+          .maybeSingle();
 
-      if (adminData) {
-        navigate('/admin/dashboard');
+        if (adminData) {
+          navigate('/admin/dashboard');
+        }
       }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
     }
   };
 
@@ -41,14 +45,12 @@ const Admin = () => {
 
       await supabase
         .from('auth_attempts')
-        .insert([
-          {
-            email,
-            ip_address: ip,
-            success,
-            user_agent: userAgent
-          }
-        ]);
+        .insert([{
+          email,
+          ip_address: ip,
+          success,
+          user_agent: userAgent
+        }]);
     } catch (error) {
       console.error('Error recording auth attempt:', error);
     }
@@ -56,9 +58,13 @@ const Admin = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+    
     setLoading(true);
+    console.log("Tentative de connexion...");
 
     try {
+      // Vérification du rate limit
       const response = await fetch('https://api.ipify.org?format=json');
       const { ip } = await response.json();
       
@@ -78,12 +84,15 @@ const Admin = () => {
         return;
       }
 
-      const { data: { session }, error: authError } = await supabase.auth.signInWithPassword({
+      // Tentative de connexion
+      console.log("Authentification avec Supabase...");
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (authError) {
+        console.error("Erreur d'authentification:", authError);
         await recordAuthAttempt(email, false);
         toast({
           variant: "destructive",
@@ -94,14 +103,16 @@ const Admin = () => {
         return;
       }
 
-      if (session) {
+      if (data.session) {
+        console.log("Session créée, vérification des droits admin...");
         const { data: adminData, error: adminError } = await supabase
           .from('admin_users')
           .select('*')
-          .eq('email', session.user.email)
+          .eq('email', data.session.user.email)
           .maybeSingle();
 
         if (adminError || !adminData) {
+          console.error("Erreur ou pas de droits admin:", adminError);
           await supabase.auth.signOut();
           await recordAuthAttempt(email, false);
           toast({
@@ -113,6 +124,7 @@ const Admin = () => {
           return;
         }
 
+        console.log("Connexion réussie, redirection...");
         await recordAuthAttempt(email, true);
         toast({
           title: "Connexion réussie",
@@ -121,6 +133,7 @@ const Admin = () => {
         navigate('/admin/dashboard');
       }
     } catch (error) {
+      console.error("Erreur inattendue:", error);
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
