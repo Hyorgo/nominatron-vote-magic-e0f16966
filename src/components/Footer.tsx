@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Footer = () => {
+export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const services = [
@@ -94,5 +94,3 @@ const Footer = () => {
     </footer>
   );
 };
-
-export default Footer;
