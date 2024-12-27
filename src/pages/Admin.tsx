@@ -14,19 +14,35 @@ const Admin = () => {
   const checkAdmin = async () => {
     try {
       logger.info('Vérification de la session admin');
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      if (session) {
-        const { data: adminData } = await supabase
+      if (sessionError) {
+        logger.error('Erreur lors de la récupération de la session', sessionError);
+        return;
+      }
+      
+      if (session?.user?.email) {
+        logger.info('Session trouvée, vérification des droits admin');
+        const { data: adminData, error: adminError } = await supabase
           .from('admin_users')
           .select('*')
           .eq('email', session.user.email)
           .maybeSingle();
 
+        if (adminError) {
+          logger.error('Erreur lors de la vérification des droits admin', adminError);
+          return;
+        }
+
         if (adminData) {
           logger.info('Utilisateur admin déjà connecté, redirection');
           navigate('/admin/dashboard');
+        } else {
+          logger.info('Session existante mais pas de droits admin');
+          await supabase.auth.signOut();
         }
+      } else {
+        logger.info('Aucune session active');
       }
     } catch (error) {
       logger.error('Erreur lors de la vérification admin', error);
