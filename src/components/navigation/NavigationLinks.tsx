@@ -6,13 +6,15 @@ interface NavigationLinksProps {
   currentPath: string;
   isMobile?: boolean;
   onLinkClick?: () => void;
+  className?: string;
 }
 
 export const NavigationLinks = ({ 
   links, 
   currentPath, 
   isMobile = false,
-  onLinkClick 
+  onLinkClick,
+  className 
 }: NavigationLinksProps) => {
   const baseClasses = "transition-colors hover:text-primary px-3 py-2 rounded-lg";
   const activeClasses = "text-primary font-medium bg-white/10";
@@ -44,5 +46,9 @@ export const NavigationLinks = ({
     );
   }
 
-  return <div className="hidden md:flex gap-6 text-sm">{linksList}</div>;
+  return (
+    <div className={cn("gap-2", className)}>
+      {linksList}
+    </div>
+  );
 };
