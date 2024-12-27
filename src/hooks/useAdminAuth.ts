@@ -15,7 +15,7 @@ export const useAdminAuth = () => {
       const { ip } = await response.json();
       const userAgent = navigator.userAgent;
 
-      await supabase
+      const { error } = await supabase
         .from('auth_attempts')
         .insert([{
           email,
@@ -24,9 +24,14 @@ export const useAdminAuth = () => {
           user_agent: userAgent
         }]);
       
+      if (error) {
+        logger.error('Erreur lors de l\'enregistrement de la tentative', { error, email });
+        return;
+      }
+      
       logger.info('Tentative de connexion enregistrée', { email, success });
     } catch (error) {
-      logger.error('Erreur lors de l\'enregistrement de la tentative', error);
+      logger.error('Erreur lors de l\'enregistrement de la tentative', { error, email });
     }
   };
 
@@ -34,13 +39,18 @@ export const useAdminAuth = () => {
     try {
       logger.info('Début de la vérification des droits admin', { email });
       
+      // Utilisation de la RLS policy pour vérifier les droits admin
       const { data: adminUser, error } = await supabase
         .from('admin_users')
-        .select()
+        .select('email')
         .eq('email', email)
-        .maybeSingle();
+        .single();
 
       if (error) {
+        if (error.code === 'PGRST116') {
+          logger.warn('Utilisateur non trouvé dans admin_users', { email, error });
+          return false;
+        }
         logger.error('Erreur lors de la vérification admin', { error, email });
         throw new Error('Erreur lors de la vérification des droits administrateur');
       }
@@ -53,7 +63,7 @@ export const useAdminAuth = () => {
       logger.info('Droits admin vérifiés avec succès', { email, adminUser });
       return true;
     } catch (error) {
-      logger.error('Exception lors de la vérification admin', error);
+      logger.error('Exception lors de la vérification admin', { error, email });
       return false;
     }
   };
