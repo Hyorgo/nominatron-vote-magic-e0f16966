@@ -56,16 +56,14 @@ export const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-background/95 backdrop-blur-md backdrop-saturate-150">
+    <nav className="fixed top-0 left-0 right-0 z-[9999] border-b border-white/10 bg-background/95 backdrop-blur-md backdrop-saturate-150">
       <div className="container flex h-16 items-center justify-between px-4">
         <Logo logoUrl={logoUrl} />
         
-        <div className="md:hidden">
-          <MobileMenuButton 
-            isOpen={isMenuOpen} 
-            onClick={() => setIsMenuOpen(!isMenuOpen)} 
-          />
-        </div>
+        <MobileMenuButton 
+          isOpen={isMenuOpen} 
+          onClick={() => setIsMenuOpen(!isMenuOpen)} 
+        />
 
         <NavigationLinks 
           links={links} 
@@ -74,7 +72,7 @@ export const Navigation = () => {
         />
 
         {isMenuOpen && (
-          <div className="absolute top-16 left-0 right-0 w-full bg-background/95 backdrop-blur-md backdrop-saturate-150 border-b border-white/10 md:hidden">
+          <div className="absolute top-16 left-0 right-0 z-[9999] w-full bg-background/95 backdrop-blur-md backdrop-saturate-150 border-b border-white/10">
             <div className="container px-4">
               <NavigationLinks 
                 links={links} 
