@@ -53,7 +53,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="container max-w-2xl py-24 sm:py-32 px-4 sm:px-6 animate-fade-in relative">
+    <div className="container max-w-2xl py-24 sm:py-32 px-4 sm:px-6 animate-fade-in relative z-10">
       <div className="gold-halo" />
       
       <div className="text-center mb-8 sm:mb-12 relative z-20">
