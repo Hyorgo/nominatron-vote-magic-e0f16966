@@ -39,13 +39,16 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground relative;
+  html, body {
+    min-height: 100vh;
     background: linear-gradient(to bottom, 
       hsl(230, 33%, 8%),
       hsl(230, 33%, 12%)
-    );
-    min-height: 100vh;
+    ) fixed;
+  }
+
+  body {
+    @apply text-foreground relative;
     overflow-x: hidden;
   }
 
