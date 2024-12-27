@@ -32,18 +32,18 @@ export const useAdminAuth = () => {
 
   const verifyAdminRights = async (email: string): Promise<boolean> => {
     try {
-      const { data: adminData, error: adminError } = await supabase
+      const { data, error } = await supabase
         .from('admin_users')
         .select('*')
         .eq('email', email)
         .maybeSingle();
 
-      if (adminError) {
-        logger.error('Erreur lors de la vérification admin', adminError);
+      if (error) {
+        logger.error('Erreur lors de la vérification admin', error);
         return false;
       }
 
-      if (!adminData) {
+      if (!data) {
         logger.warn('Utilisateur non trouvé dans admin_users', { email });
         return false;
       }
