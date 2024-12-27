@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Book, MessageSquare } from "lucide-react";
+import { Menu, X, Ticket, MessageSquare } from "lucide-react";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,7 +24,7 @@ export const Navigation = () => {
               to="/reserver"
               className="flex items-center gap-2 px-4 py-2 text-foreground hover:text-primary transition-colors"
             >
-              <Book className="w-5 h-5" />
+              <Ticket className="w-5 h-5" />
               <span>Réserver ma place</span>
             </Link>
             <Link
@@ -59,7 +59,7 @@ export const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="flex items-center gap-2 px-4 py-2 text-foreground hover:text-primary transition-colors"
               >
-                <Book className="w-5 h-5" />
+                <Ticket className="w-5 h-5" />
                 <span>Réserver ma place</span>
               </Link>
               <Link
