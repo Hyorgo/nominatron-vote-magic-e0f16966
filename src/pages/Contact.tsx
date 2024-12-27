@@ -81,18 +81,18 @@ const Contact = () => {
       </div>
 
       {/* Main content with proper spacing for fixed header */}
-      <div className="container max-w-2xl pt-32 pb-24 px-4 sm:px-6 relative z-[1]">
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 golden-reflection">Contact</h1>
-          <p className="text-lg sm:text-xl text-gold/80">Une question ? N'hésitez pas à nous contacter</p>
+      <div className="container max-w-2xl pt-24 pb-8 px-4 sm:px-6 relative z-[1]">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 golden-reflection">Contact</h1>
+          <p className="text-lg text-gold/80">Une question ? N'hésitez pas à nous contacter</p>
         </div>
 
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-xl" />
           
-          <div className="relative bg-white/5 backdrop-blur-lg rounded-xl p-6 sm:p-8 shadow-2xl border border-white/10">
-            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
-              <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
+          <div className="relative bg-white/5 backdrop-blur-lg rounded-xl p-5 sm:p-6 shadow-2xl border border-white/10">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-gold/90 text-lg">Nom</Label>
                   <Input 
@@ -121,7 +121,7 @@ const Contact = () => {
                   id="message"
                   name="message"
                   placeholder="Votre message"
-                  className="min-h-[150px] sm:min-h-[200px] bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300 text-lg resize-none"
+                  className="min-h-[120px] bg-white/5 border-white/10 focus:border-gold/50 transition-all duration-300 text-lg resize-none"
                   required
                 />
               </div>
