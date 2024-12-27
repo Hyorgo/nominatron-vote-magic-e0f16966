@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { logger } from '@/services/monitoring/logger';
+import { useAuthAttempts } from "./useAuthAttempts";
 
 export const useAdminAuth = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { recordAuthAttempt } = useAuthAttempts();
 
   const verifyAdminRights = async (email: string): Promise<boolean> => {
     try {
-      logger.info('Début de la vérification des droits admin', { email });
+      logger.info('Vérification des droits admin', { email });
       
       const { data: adminUser, error } = await supabase
         .from('admin_users')
@@ -58,6 +60,7 @@ export const useAdminAuth = () => {
       const isAdmin = await verifyAdminRights(email);
       if (!isAdmin) {
         logger.warn('Tentative de connexion - Utilisateur non admin', { email });
+        await recordAuthAttempt(email, false);
         throw new Error('Accès non autorisé - Utilisateur non admin');
       }
 
@@ -69,16 +72,19 @@ export const useAdminAuth = () => {
 
       if (authError) {
         logger.error('Erreur d\'authentification Supabase', { error: authError, email });
+        await recordAuthAttempt(email, false);
         throw authError;
       }
 
       if (!data.session) {
         logger.error('Session invalide après authentification', { email });
+        await recordAuthAttempt(email, false);
         throw new Error('Session invalide');
       }
 
       // Succès
       logger.info('Connexion réussie', { email });
+      await recordAuthAttempt(email, true);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue dans l'interface d'administration",

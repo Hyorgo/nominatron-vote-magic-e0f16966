@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { logger } from '@/services/monitoring/logger';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -13,52 +12,51 @@ export const LoginForm = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    logger.info('Soumission du formulaire de connexion', { email });
     await handleLogin(email, password);
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">
-          Administration
-        </CardTitle>
-        <CardDescription className="text-center">
-          Connectez-vous à l'interface d'administration
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              placeholder="admin@example.com"
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Mot de passe</Label>
-            <Input
-              id="password"
-              required
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <Button
-            className="w-full"
-            type="submit"
-            disabled={loading}
-          >
-            {loading ? "Connexion..." : "Se connecter"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="container max-w-lg mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Administration</CardTitle>
+          <CardDescription>
+            Connectez-vous pour accéder à l'interface d'administration
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={onSubmit} className="space-y-4">
+            <div>
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <Input
+                type="password"
+                placeholder="Mot de passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connexion en cours...
+                </>
+              ) : (
+                "Se connecter"
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
