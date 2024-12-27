@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 interface VotingHeaderProps {
   isVotingOpen: boolean;
   onOpenDialog: () => void;

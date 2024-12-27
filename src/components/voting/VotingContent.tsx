@@ -1,10 +1,5 @@
-import { CategoryNavigation } from "./CategoryNavigation";
-import { NomineeCard } from "./NomineeCard";
-import { FinishVotingButton } from "./FinishVotingButton";
 import { Category } from "@/types/nominees";
-import { useToast } from "@/hooks/use-toast";
-import { Tabs } from "@/components/ui/tabs";
-import { CategoryTabs } from "./CategoryTabs";
+import { VotingContainer } from "./content/VotingContainer";
 import { useEffect } from "react";
 
 interface VotingContentProps {
@@ -22,7 +17,6 @@ export const VotingContent = ({
   onCategoryChange,
   onVote,
 }: VotingContentProps) => {
-  const { toast } = useToast();
   const category = categories[currentCategory];
 
   useEffect(() => {
@@ -41,54 +35,27 @@ export const VotingContent = ({
     }
   }, [category, selectedNominees]);
 
+  const handleTabChange = (categoryId: string) => {
+    const newIndex = categories.findIndex((cat) => cat.id === categoryId);
+    if (newIndex !== -1) {
+      onCategoryChange(newIndex);
+    }
+  };
+
   const handleVote = async (nomineeId: string) => {
     if (!category) return;
-
+    
     try {
-      const userEmail = localStorage.getItem('userEmail');
-      if (!userEmail) {
-        toast({
-          variant: "destructive",
-          title: "Non connecté",
-          description: "Vous devez être connecté avec un email validé pour voter.",
-        });
-        return;
-      }
-
-      console.log("Tentative de vote pour:", { 
-        categoryId: category.id, 
-        nomineeId,
-        currentCategory,
-        userEmail,
-        currentSelectedNominee: selectedNominees[category.id]
-      });
-      
       await onVote(category.id, nomineeId);
       
-      toast({
-        title: "Vote enregistré",
-        description: "Votre vote a été enregistré avec succès.",
-      });
-
       if (currentCategory < categories.length - 1) {
         setTimeout(() => {
           onCategoryChange(currentCategory + 1);
         }, 1000);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Erreur lors du vote:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur lors du vote",
-        description: "Une erreur est survenue lors de l'enregistrement de votre vote. Veuillez réessayer."
-      });
-    }
-  };
-
-  const handleTabChange = (categoryId: string) => {
-    const newIndex = categories.findIndex((cat) => cat.id === categoryId);
-    if (newIndex !== -1) {
-      onCategoryChange(newIndex);
+      throw error;
     }
   };
 
@@ -97,45 +64,12 @@ export const VotingContent = ({
   }
 
   return (
-    <div className="space-y-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="flex flex-col items-center space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center golden-reflection">
-          Votez pour vos établissements préférés
-        </h2>
-
-        <Tabs
-          value={category.id}
-          onValueChange={handleTabChange}
-          className="w-full"
-        >
-          <CategoryTabs 
-            categories={categories} 
-            currentCategory={category.id}
-            selectedNominees={selectedNominees}
-          />
-        </Tabs>
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {category.nominees.map((nominee) => {
-          const isSelected = selectedNominees[category.id] === nominee.id;
-          console.log(`Nominee ${nominee.id} selected:`, isSelected);
-          
-          return (
-            <NomineeCard
-              key={nominee.id}
-              nominee={nominee}
-              isSelected={isSelected}
-              onClick={() => handleVote(nominee.id)}
-            />
-          );
-        })}
-      </div>
-
-      <FinishVotingButton 
-        selectedNominees={selectedNominees}
-        categories={categories}
-      />
-    </div>
+    <VotingContainer
+      categories={categories}
+      currentCategory={category}
+      selectedNominees={selectedNominees}
+      onTabChange={handleTabChange}
+      onVote={handleVote}
+    />
   );
 };
