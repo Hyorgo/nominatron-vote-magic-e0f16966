@@ -74,6 +74,7 @@ const Admin = () => {
           title: "Trop de tentatives",
           description: "Veuillez réessayer dans quelques minutes",
         });
+        setLoading(false);
         return;
       }
 
@@ -97,7 +98,13 @@ const Admin = () => {
         if (adminError || !adminData) {
           await supabase.auth.signOut();
           await recordAuthAttempt(email, false);
-          throw new Error("Accès non autorisé");
+          toast({
+            variant: "destructive",
+            title: "Accès refusé",
+            description: "Vous n'avez pas les droits d'administration",
+          });
+          setLoading(false);
+          return;
         }
 
         await recordAuthAttempt(email, true);
