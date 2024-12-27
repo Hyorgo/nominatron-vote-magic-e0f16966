@@ -19,18 +19,37 @@ const Contact = () => {
     const message = formData.get('message') as string;
 
     try {
+      // Log contact attempt in Supabase
       const { error: contactError } = await supabase
         .from('contact_attempts')
         .insert([{ email, success: true }]);
 
       if (contactError) throw contactError;
 
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+      // Send email via Supabase Edge Function
+      const { data: emailData, error: emailError } = await supabase.functions.invoke('send-contact-email', {
         body: { name, email, message }
       });
 
-      if (error) {
-        throw error;
+      if (emailError) {
+        throw emailError;
+      }
+
+      // Send data to webhook
+      const webhookResponse = await fetch('https://hook.eu1.make.com/928slfvsbqrhwa6rqq8cqyr5p6pyv5g3', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          message
+        })
+      });
+
+      if (!webhookResponse.ok) {
+        throw new Error('Webhook request failed');
       }
 
       toast({
