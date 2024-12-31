@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Image } from "lucide-react";
+import { Image, Loader2 } from "lucide-react";
 import { logger } from "@/services/monitoring/logger";
 import LazyImage from "@/components/ui/lazy-image";
 
@@ -35,19 +35,10 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       setUploading(true);
       logger.info('Début du téléchargement du logo', { fileName: selectedFile.name });
 
-      // Vérifier si le bucket existe
-      const { data: buckets } = await supabase.storage.listBuckets();
-      const bucketExists = buckets?.some(bucket => bucket.name === 'logos');
-      
-      if (!bucketExists) {
-        const error = 'Le bucket logos n\'existe pas';
-        logger.error(error);
-        toast({
-          variant: "destructive",
-          title: "Erreur de configuration",
-          description: error,
-        });
-        return;
+      // Vérifier la session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        throw new Error('Session invalide. Veuillez vous reconnecter.');
       }
 
       // Upload to storage
@@ -62,13 +53,11 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
         });
 
       if (uploadError) {
-        logger.error('Erreur lors du téléchargement du logo', uploadError);
-        toast({
-          variant: "destructive",
-          title: "Erreur de téléchargement",
-          description: "Impossible de télécharger le logo. Veuillez réessayer.",
-        });
-        return;
+        throw new Error(`Erreur lors du téléchargement: ${uploadError.message}`);
+      }
+
+      if (!uploadData) {
+        throw new Error('Aucune donnée reçue après le téléchargement');
       }
 
       // Get public URL
@@ -88,13 +77,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
         });
 
       if (updateError) {
-        logger.error('Erreur lors de la mise à jour des paramètres', updateError);
-        toast({
-          variant: "destructive",
-          title: "Erreur de mise à jour",
-          description: "Impossible de mettre à jour le logo. Veuillez réessayer.",
-        });
-        return;
+        throw new Error(`Erreur lors de la mise à jour des paramètres: ${updateError.message}`);
       }
 
       toast({
@@ -109,7 +92,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la mise à jour du logo.",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la mise à jour du logo.",
       });
     } finally {
       setUploading(false);
@@ -145,12 +128,20 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
             accept="image/*"
             onChange={handleFileChange}
             className="max-w-xs"
+            disabled={uploading}
           />
           <Button 
             onClick={handleUpload} 
             disabled={!selectedFile || uploading}
           >
-            {uploading ? "Envoi en cours..." : "Mettre à jour"}
+            {uploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Envoi en cours...
+              </>
+            ) : (
+              "Mettre à jour"
+            )}
           </Button>
         </div>
       </CardContent>
