@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Image } from "lucide-react";
 import { logger } from "@/services/monitoring/logger";
+import LazyImage from "@/components/ui/lazy-image";
 
 export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, onUpdate: () => void }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -23,7 +24,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
     try {
       setUploading(true);
-      logger.info('Début du téléchargement du logo');
+      logger.info('Début du téléchargement du logo', { fileName: selectedFile.name });
 
       // Upload to storage
       const fileExt = selectedFile.name.split('.').pop();
@@ -87,7 +88,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
         <div className="flex items-center space-x-4 bg-muted/50 p-4 rounded-lg">
           <div className="h-24 w-48 relative flex items-center justify-center bg-background rounded border">
             {currentLogo ? (
-              <img 
+              <LazyImage 
                 src={currentLogo} 
                 alt="Logo actuel" 
                 className="max-h-full max-w-full object-contain p-2"

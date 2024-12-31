@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/services/monitoring/logger";
+import LazyImage from "@/components/ui/lazy-image";
 
 export const Logo = () => {
   const [headerLogo, setHeaderLogo] = useState("");
@@ -57,7 +58,7 @@ export const Logo = () => {
 
   return (
     <Link to="/" className="flex-shrink-0">
-      <img 
+      <LazyImage 
         src={headerLogo || "/placeholder.svg"}
         alt="Lyon d'Or" 
         className="h-16 w-auto object-contain" 
