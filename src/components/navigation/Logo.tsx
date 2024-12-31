@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/services/monitoring/logger";
 import LazyImage from "@/components/ui/lazy-image";
+import { Loader2 } from "lucide-react";
 
 export const Logo = () => {
   const [headerLogo, setHeaderLogo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadHeaderLogo();
@@ -16,15 +18,15 @@ export const Logo = () => {
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: '*',
           schema: 'public',
           table: 'site_settings',
           filter: 'setting_name=eq.header_logo'
         },
         (payload) => {
-          if (payload.new && payload.new.setting_value) {
+          if (payload.new && 'setting_value' in payload.new) {
             logger.info('Mise à jour du logo détectée:', payload.new.setting_value);
-            setHeaderLogo(payload.new.setting_value);
+            setHeaderLogo(payload.new.setting_value as string);
           }
         }
       )
@@ -38,6 +40,8 @@ export const Logo = () => {
   const loadHeaderLogo = async () => {
     try {
       setIsLoading(true);
+      setError(null);
+      
       const { data, error } = await supabase
         .from('site_settings')
         .select('setting_value')
@@ -46,6 +50,7 @@ export const Logo = () => {
       
       if (error) {
         logger.error('Erreur lors du chargement du logo:', error);
+        setError('Erreur lors du chargement du logo');
         return;
       }
       
@@ -55,10 +60,32 @@ export const Logo = () => {
       }
     } catch (error) {
       logger.error('Erreur inattendue lors du chargement du logo:', error);
+      setError('Erreur inattendue lors du chargement du logo');
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-16 w-16 flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    logger.error(error);
+    return (
+      <Link to="/" className="flex-shrink-0">
+        <LazyImage 
+          src="/placeholder.svg"
+          alt="Lyon d'Or" 
+          className="h-16 w-auto object-contain p-2" 
+        />
+      </Link>
+    );
+  }
 
   return (
     <Link to="/" className="flex-shrink-0">

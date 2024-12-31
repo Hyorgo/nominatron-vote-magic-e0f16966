@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Image } from "lucide-react";
 import { logger } from "@/services/monitoring/logger";
@@ -16,7 +16,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
         toast({
           variant: "destructive",
           title: "Fichier trop volumineux",
@@ -34,6 +34,13 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
     try {
       setUploading(true);
       logger.info('Début du téléchargement du logo', { fileName: selectedFile.name });
+
+      // Vérifier d'abord si le bucket existe
+      const { data: bucketExists } = await supabase.storage.getBucket('logos');
+      if (!bucketExists) {
+        logger.error('Le bucket logos n\'existe pas');
+        throw new Error('Le bucket logos n\'existe pas');
+      }
 
       // Upload to storage
       const fileExt = selectedFile.name.split('.').pop();
@@ -58,14 +65,26 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
       logger.info('Logo téléchargé avec succès, URL:', publicUrl);
 
-      // Update site settings
+      // Vérifier d'abord si le paramètre existe
+      const { data: existingSettings, error: settingsError } = await supabase
+        .from('site_settings')
+        .select('*')
+        .eq('setting_name', 'header_logo')
+        .single();
+
+      if (settingsError && settingsError.code !== 'PGRST116') { // PGRST116 = not found
+        logger.error('Erreur lors de la vérification des paramètres', settingsError);
+        throw settingsError;
+      }
+
+      // Update or insert site settings
       const { error: updateError } = await supabase
         .from('site_settings')
         .upsert({
           setting_name: 'header_logo',
-          setting_value: publicUrl
-        })
-        .eq('setting_name', 'header_logo');
+          setting_value: publicUrl,
+          updated_at: new Date().toISOString()
+        });
 
       if (updateError) {
         logger.error('Erreur lors de la mise à jour des paramètres', updateError);
