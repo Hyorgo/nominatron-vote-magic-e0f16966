@@ -24,9 +24,18 @@ export const useHeaderLogo = () => {
         return;
       }
       
-      if (data) {
-        logger.info('Logo chargé avec succès:', data.setting_value);
-        setHeaderLogo(data.setting_value);
+      if (data?.setting_value) {
+        // Validate the URL
+        try {
+          new URL(data.setting_value);
+          logger.info('Logo chargé avec succès:', data.setting_value);
+          setHeaderLogo(data.setting_value);
+        } catch (urlError) {
+          logger.error('URL du logo invalide:', data.setting_value);
+          setError('URL du logo invalide');
+        }
+      } else {
+        setHeaderLogo(null);
       }
     } catch (error) {
       logger.error('Erreur inattendue lors du chargement du logo:', error);

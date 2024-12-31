@@ -46,6 +46,7 @@ export const useLogoUpload = ({ onSuccess }: UseLogoUploadProps = {}) => {
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `logo-${Date.now()}.${fileExt}`;
       
+      // Upload the file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('logos')
         .upload(fileName, selectedFile, {
@@ -63,10 +64,12 @@ export const useLogoUpload = ({ onSuccess }: UseLogoUploadProps = {}) => {
 
       logger.info('File uploaded successfully:', { path: uploadData.path });
 
+      // Get the public URL using Supabase's getPublicUrl method
       const { data: { publicUrl } } = supabase.storage
         .from('logos')
         .getPublicUrl(fileName);
 
+      // Update the site settings with the new logo URL
       const { error: upsertError } = await supabase
         .from('site_settings')
         .upsert({
@@ -81,7 +84,7 @@ export const useLogoUpload = ({ onSuccess }: UseLogoUploadProps = {}) => {
         throw new Error(`Settings update error: ${upsertError.message}`);
       }
 
-      logger.info('Logo settings updated successfully');
+      logger.info('Logo settings updated successfully with URL:', publicUrl);
 
       toast({
         title: "Logo mis à jour",
