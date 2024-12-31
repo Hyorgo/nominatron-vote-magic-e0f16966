@@ -15,7 +15,7 @@ export const LogoPreview = ({ currentLogo }: LogoPreviewProps) => {
     toast({
       variant: "destructive",
       title: "Erreur de chargement",
-      description: "Impossible de charger l'image du logo",
+      description: "Impossible de charger l'image du logo. Vérifiez que l'URL est valide.",
     });
   };
 

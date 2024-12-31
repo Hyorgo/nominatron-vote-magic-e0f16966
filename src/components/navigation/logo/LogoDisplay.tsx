@@ -15,17 +15,27 @@ export const LogoDisplay = ({ logoUrl }: LogoDisplayProps) => {
     toast({
       variant: "destructive",
       title: "Erreur de chargement",
-      description: "Impossible de charger le logo",
+      description: "Impossible de charger le logo. Veuillez réessayer plus tard.",
     });
   };
+
+  const fallbackImage = "/placeholder.svg";
+  const imageUrl = logoUrl || fallbackImage;
 
   return (
     <Link to="/" className="flex-shrink-0">
       <LazyImage 
-        src={logoUrl || "/placeholder.svg"}
-        alt="Lyon d'Or" 
+        src={imageUrl}
+        alt="Lyon d'Or"
         className="h-16 w-auto object-contain p-2"
         onError={handleImageError}
+        fallback={
+          <img 
+            src={fallbackImage} 
+            alt="Lyon d'Or" 
+            className="h-16 w-auto object-contain p-2"
+          />
+        }
       />
     </Link>
   );

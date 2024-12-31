@@ -20,13 +20,24 @@ const LazyImage = ({
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState(src);
+  const [currentSrc, setCurrentSrc] = useState<string>("");
 
   useEffect(() => {
-    setIsLoaded(false);
-    setHasError(false);
-    setCurrentSrc(src);
-  }, [src]);
+    // Valider et nettoyer l'URL
+    try {
+      if (!src) {
+        throw new Error("Source URL is empty");
+      }
+      const url = new URL(src);
+      setCurrentSrc(url.toString());
+      setIsLoaded(false);
+      setHasError(false);
+    } catch (error) {
+      logger.error('Invalid image URL:', { src, error });
+      setHasError(true);
+      onError?.();
+    }
+  }, [src, onError]);
 
   const handleError = () => {
     setHasError(true);
@@ -41,7 +52,7 @@ const LazyImage = ({
     logger.info('Image loaded successfully:', { src: currentSrc });
   };
 
-  if (hasError) {
+  if (hasError || !currentSrc) {
     return fallback || <Skeleton className={className} />;
   }
 
