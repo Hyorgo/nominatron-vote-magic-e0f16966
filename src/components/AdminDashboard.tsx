@@ -82,9 +82,6 @@ export const AdminDashboard = () => {
         homeContent={homeContent}
         scrollingTexts={scrollingTexts}
         backgrounds={backgrounds}
-        headerLogo={settings?.headerLogo || ""}
-        homeLogo={settings?.homeLogo || ""}
-        homeYearText={settings?.homeYearText || ""}
         onUpdate={invalidateQueries}
       />
     </div>
