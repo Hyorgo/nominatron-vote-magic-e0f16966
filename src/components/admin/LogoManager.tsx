@@ -35,11 +35,19 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       setUploading(true);
       logger.info('Début du téléchargement du logo', { fileName: selectedFile.name });
 
-      // Vérifier d'abord si le bucket existe
-      const { data: bucketExists } = await supabase.storage.getBucket('logos');
+      // Vérifier si le bucket existe
+      const { data: buckets } = await supabase.storage.listBuckets();
+      const bucketExists = buckets?.some(bucket => bucket.name === 'logos');
+      
       if (!bucketExists) {
-        logger.error('Le bucket logos n\'existe pas');
-        throw new Error('Le bucket logos n\'existe pas');
+        const error = 'Le bucket logos n\'existe pas';
+        logger.error(error);
+        toast({
+          variant: "destructive",
+          title: "Erreur de configuration",
+          description: error,
+        });
+        return;
       }
 
       // Upload to storage
@@ -55,7 +63,12 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
       if (uploadError) {
         logger.error('Erreur lors du téléchargement du logo', uploadError);
-        throw uploadError;
+        toast({
+          variant: "destructive",
+          title: "Erreur de téléchargement",
+          description: "Impossible de télécharger le logo. Veuillez réessayer.",
+        });
+        return;
       }
 
       // Get public URL
@@ -65,19 +78,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
       logger.info('Logo téléchargé avec succès, URL:', publicUrl);
 
-      // Vérifier d'abord si le paramètre existe
-      const { data: existingSettings, error: settingsError } = await supabase
-        .from('site_settings')
-        .select('*')
-        .eq('setting_name', 'header_logo')
-        .single();
-
-      if (settingsError && settingsError.code !== 'PGRST116') { // PGRST116 = not found
-        logger.error('Erreur lors de la vérification des paramètres', settingsError);
-        throw settingsError;
-      }
-
-      // Update or insert site settings
+      // Update site settings
       const { error: updateError } = await supabase
         .from('site_settings')
         .upsert({
@@ -88,7 +89,12 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
       if (updateError) {
         logger.error('Erreur lors de la mise à jour des paramètres', updateError);
-        throw updateError;
+        toast({
+          variant: "destructive",
+          title: "Erreur de mise à jour",
+          description: "Impossible de mettre à jour le logo. Veuillez réessayer.",
+        });
+        return;
       }
 
       toast({
