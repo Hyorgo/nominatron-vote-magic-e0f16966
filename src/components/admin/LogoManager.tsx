@@ -3,7 +3,7 @@ import { Image } from "lucide-react";
 import { useLogoUpload } from "@/hooks/useLogoUpload";
 import { LogoPreview } from "./logo/LogoPreview";
 import { LogoUploadForm } from "./logo/LogoUploadForm";
-import { Skeleton } from "@/components/ui/skeleton";
+import { logger } from '@/services/monitoring/logger';
 
 interface LogoManagerProps {
   currentLogo: string;
@@ -11,25 +11,23 @@ interface LogoManagerProps {
 }
 
 export const LogoManager = ({ currentLogo, onUpdate }: LogoManagerProps) => {
-  const { selectedFile, uploading, handleFileChange, handleUpload } = useLogoUpload(onUpdate);
+  const { selectedFile, uploading, handleFileChange, handleUpload } = useLogoUpload({
+    onSuccess: () => {
+      logger.info('Logo updated successfully');
+      onUpdate();
+    }
+  });
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Image className="h-5 w-5" />
-          Logo du site
+          Gestion du logo
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {currentLogo ? (
-          <LogoPreview currentLogo={currentLogo} />
-        ) : (
-          <div className="flex items-center space-x-4 bg-muted/50 p-4 rounded-lg">
-            <Skeleton className="h-24 w-48" />
-            <span className="text-sm text-muted-foreground">Chargement du logo...</span>
-          </div>
-        )}
+      <CardContent className="space-y-6">
+        <LogoPreview currentLogo={currentLogo} />
         <LogoUploadForm
           uploading={uploading}
           onFileChange={handleFileChange}
