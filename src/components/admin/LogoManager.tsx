@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Image } from "lucide-react";
 
 export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, onUpdate: () => void }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -25,7 +26,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       // Upload to storage
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('backgrounds')
         .upload(fileName, selectedFile);
 
@@ -65,11 +66,24 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Logo du site</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Image className="h-5 w-5" />
+          Logo du site
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center space-x-4">
-          <img src={currentLogo} alt="Logo actuel" className="h-12" />
+        <div className="flex items-center space-x-4 bg-muted/50 p-4 rounded-lg">
+          <div className="h-20 w-40 relative flex items-center justify-center bg-background rounded border">
+            {currentLogo ? (
+              <img 
+                src={currentLogo} 
+                alt="Logo actuel" 
+                className="max-h-full max-w-full object-contain"
+              />
+            ) : (
+              <span className="text-sm text-muted-foreground">Aucun logo</span>
+            )}
+          </div>
           <span className="text-sm text-muted-foreground">Logo actuel</span>
         </div>
         <div className="flex items-center space-x-4">
