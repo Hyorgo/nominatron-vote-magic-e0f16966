@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import LazyImage from "@/components/ui/lazy-image";
 
 interface LogoPreviewProps {
@@ -13,6 +14,7 @@ export const LogoPreview = ({ currentLogo }: LogoPreviewProps) => {
             src={currentLogo} 
             alt="Logo actuel" 
             className="max-h-full max-w-full object-contain p-2"
+            fallback={<Skeleton className="h-full w-full" />}
           />
         ) : (
           <span className="text-sm text-muted-foreground">Aucun logo</span>

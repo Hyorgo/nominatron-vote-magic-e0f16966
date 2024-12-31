@@ -3,6 +3,7 @@ import { Image } from "lucide-react";
 import { useLogoUpload } from "@/hooks/useLogoUpload";
 import { LogoPreview } from "./logo/LogoPreview";
 import { LogoUploadForm } from "./logo/LogoUploadForm";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface LogoManagerProps {
   currentLogo: string;
@@ -21,7 +22,14 @@ export const LogoManager = ({ currentLogo, onUpdate }: LogoManagerProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <LogoPreview currentLogo={currentLogo} />
+        {currentLogo ? (
+          <LogoPreview currentLogo={currentLogo} />
+        ) : (
+          <div className="flex items-center space-x-4 bg-muted/50 p-4 rounded-lg">
+            <Skeleton className="h-24 w-48" />
+            <span className="text-sm text-muted-foreground">Chargement du logo...</span>
+          </div>
+        )}
         <LogoUploadForm
           uploading={uploading}
           onFileChange={handleFileChange}

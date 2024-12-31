@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { logger } from "@/services/monitoring/logger";
+import { logger } from '@/services/monitoring/logger';
 
 export const useLogoUpload = (onUpdate: () => void) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -30,11 +30,6 @@ export const useLogoUpload = (onUpdate: () => void) => {
       setUploading(true);
       logger.info('Début du téléchargement du logo', { fileName: selectedFile.name });
 
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !session) {
-        throw new Error('Session invalide. Veuillez vous reconnecter.');
-      }
-
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `logo-${Date.now()}.${fileExt}`;
       
@@ -59,7 +54,6 @@ export const useLogoUpload = (onUpdate: () => void) => {
 
       logger.info('Logo téléchargé avec succès, URL:', publicUrl);
 
-      // Utiliser upsert au lieu d'update
       const { error: upsertError } = await supabase
         .from('site_settings')
         .upsert({
