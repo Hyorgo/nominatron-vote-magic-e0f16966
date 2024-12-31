@@ -59,16 +59,19 @@ export const useLogoUpload = (onUpdate: () => void) => {
 
       logger.info('Logo téléchargé avec succès, URL:', publicUrl);
 
-      const { error: updateError } = await supabase
+      // Utiliser upsert au lieu d'update
+      const { error: upsertError } = await supabase
         .from('site_settings')
         .upsert({
           setting_name: 'header_logo',
           setting_value: publicUrl,
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'setting_name'
         });
 
-      if (updateError) {
-        throw new Error(`Erreur lors de la mise à jour des paramètres: ${updateError.message}`);
+      if (upsertError) {
+        throw new Error(`Erreur lors de la mise à jour des paramètres: ${upsertError.message}`);
       }
 
       toast({
