@@ -23,7 +23,6 @@ const LazyImage = ({
   const [currentSrc, setCurrentSrc] = useState<string>("");
 
   useEffect(() => {
-    // Réinitialisation des états quand la source change
     setIsLoaded(false);
     setHasError(false);
     
@@ -35,28 +34,24 @@ const LazyImage = ({
     }
 
     try {
-      // Validation de l'URL
       const url = new URL(src);
-      
-      // Vérification supplémentaire pour les URLs Supabase
-      if (url.hostname.includes('supabase') && !url.pathname.includes('storage/v1/object/public')) {
-        throw new Error('URL Supabase Storage invalide');
-      }
-      
       setCurrentSrc(url.toString());
       
-      // Pré-vérification de l'accessibilité de l'image
-      fetch(url.toString(), { method: 'HEAD' })
-        .then(response => {
+      // Vérification de l'accessibilité de l'image
+      const checkImage = async () => {
+        try {
+          const response = await fetch(url.toString(), { method: 'HEAD' });
           if (!response.ok) {
             throw new Error(`Image non accessible: ${response.status}`);
           }
-        })
-        .catch(error => {
+        } catch (error) {
           logger.error('Erreur lors de la vérification de l\'image:', { src: url.toString(), error });
           setHasError(true);
           onError?.();
-        });
+        }
+      };
+
+      checkImage();
     } catch (error) {
       logger.error('URL de l\'image invalide:', { src, error });
       setHasError(true);

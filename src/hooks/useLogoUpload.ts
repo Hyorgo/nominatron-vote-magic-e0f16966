@@ -62,26 +62,15 @@ export const useLogoUpload = ({ onSuccess }: UseLogoUploadProps = {}) => {
         throw new Error('Aucune donnée reçue de l\'upload');
       }
 
-      logger.info('Fichier uploadé avec succès:', { path: uploadData.path });
-
-      // Récupération de l'URL publique avec getPublicUrl
+      // Récupération de l'URL publique
       const { data: { publicUrl } } = supabase.storage
         .from('logos')
         .getPublicUrl(uploadData.path);
 
-      if (!publicUrl) {
-        throw new Error('Impossible de générer l\'URL publique');
-      }
-
-      // Test de l'URL avant de la sauvegarder
-      try {
-        const response = await fetch(publicUrl, { method: 'HEAD' });
-        if (!response.ok) {
-          throw new Error(`L'URL du logo n'est pas accessible: ${response.status}`);
-        }
-      } catch (error) {
-        logger.error('Erreur lors de la vérification de l\'URL:', error);
-        throw new Error('L\'URL du logo générée n\'est pas accessible');
+      // Vérification de l'accessibilité de l'image
+      const response = await fetch(publicUrl, { method: 'HEAD' });
+      if (!response.ok) {
+        throw new Error(`L'URL du logo n'est pas accessible: ${response.status}`);
       }
 
       // Mise à jour des paramètres du site avec la nouvelle URL
@@ -99,8 +88,7 @@ export const useLogoUpload = ({ onSuccess }: UseLogoUploadProps = {}) => {
         throw new Error(`Erreur de mise à jour des paramètres: ${upsertError.message}`);
       }
 
-      logger.info('Paramètres du logo mis à jour avec succès avec l\'URL:', publicUrl);
-
+      logger.info('Logo mis à jour avec succès:', { url: publicUrl });
       toast({
         title: "Logo mis à jour",
         description: "Le nouveau logo a été enregistré avec succès",
