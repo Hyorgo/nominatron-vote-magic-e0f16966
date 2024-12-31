@@ -23,23 +23,42 @@ const LazyImage = ({
   const [currentSrc, setCurrentSrc] = useState<string>("");
 
   useEffect(() => {
-    // Reset states when src changes
+    // Réinitialisation des états quand la source change
     setIsLoaded(false);
     setHasError(false);
     
     if (!src) {
       setHasError(true);
-      logger.error('Empty image source URL');
+      logger.error('URL source de l\'image vide');
       onError?.();
       return;
     }
 
     try {
-      // Try to create a URL object to validate the URL
+      // Validation de l'URL
       const url = new URL(src);
+      
+      // Vérification supplémentaire pour les URLs Supabase
+      if (url.hostname.includes('supabase') && !url.pathname.includes('storage/v1/object/public')) {
+        throw new Error('URL Supabase Storage invalide');
+      }
+      
       setCurrentSrc(url.toString());
+      
+      // Pré-vérification de l'accessibilité de l'image
+      fetch(url.toString(), { method: 'HEAD' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Image non accessible: ${response.status}`);
+          }
+        })
+        .catch(error => {
+          logger.error('Erreur lors de la vérification de l\'image:', { src: url.toString(), error });
+          setHasError(true);
+          onError?.();
+        });
     } catch (error) {
-      logger.error('Invalid image URL:', { src, error });
+      logger.error('URL de l\'image invalide:', { src, error });
       setHasError(true);
       onError?.();
     }
@@ -48,14 +67,14 @@ const LazyImage = ({
   const handleError = () => {
     setHasError(true);
     setIsLoaded(false);
-    logger.error('Image failed to load:', { src: currentSrc });
+    logger.error('Échec du chargement de l\'image:', { src: currentSrc });
     onError?.();
   };
 
   const handleLoad = () => {
     setIsLoaded(true);
     setHasError(false);
-    logger.info('Image loaded successfully:', { src: currentSrc });
+    logger.info('Image chargée avec succès:', { src: currentSrc });
   };
 
   if (hasError || !currentSrc) {
