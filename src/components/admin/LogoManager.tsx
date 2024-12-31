@@ -27,14 +27,14 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
-        .from('backgrounds')
+        .from('logos')
         .upload(fileName, selectedFile);
 
       if (uploadError) throw uploadError;
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
-        .from('backgrounds')
+        .from('logos')
         .getPublicUrl(fileName);
 
       // Update site settings
@@ -58,6 +58,7 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
         title: "Erreur",
         description: "Une erreur est survenue lors de la mise à jour du logo.",
       });
+      console.error('Error uploading logo:', error);
     } finally {
       setUploading(false);
     }
@@ -73,12 +74,12 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center space-x-4 bg-muted/50 p-4 rounded-lg">
-          <div className="h-20 w-40 relative flex items-center justify-center bg-background rounded border">
+          <div className="h-24 w-48 relative flex items-center justify-center bg-background rounded border">
             {currentLogo ? (
               <img 
                 src={currentLogo} 
                 alt="Logo actuel" 
-                className="max-h-full max-w-full object-contain"
+                className="max-h-full max-w-full object-contain p-2"
               />
             ) : (
               <span className="text-sm text-muted-foreground">Aucun logo</span>

@@ -1,9 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Ticket, MessageSquare } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [headerLogo, setHeaderLogo] = useState("/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png");
+
+  useEffect(() => {
+    loadHeaderLogo();
+    
+    // Écouter les changements en temps réel
+    const channel = supabase
+      .channel('site_settings_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'site_settings',
+          filter: 'setting_name=eq.header_logo'
+        },
+        (payload) => {
+          if (payload.new && payload.new.setting_value) {
+            setHeaderLogo(payload.new.setting_value);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const loadHeaderLogo = async () => {
+    const { data } = await supabase
+      .from('site_settings')
+      .select('setting_value')
+      .eq('setting_name', 'header_logo')
+      .single();
+    
+    if (data) {
+      setHeaderLogo(data.setting_value);
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] bg-background border-b border-border">
@@ -12,9 +53,9 @@ export const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <img 
-              src="/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png"
+              src={headerLogo}
               alt="Lyon d'Or" 
-              className="h-16 w-auto" // Modifié de h-12 à h-16 pour agrandir davantage le logo
+              className="h-16 w-auto object-contain" 
             />
           </Link>
 
