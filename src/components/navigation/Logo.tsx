@@ -10,12 +10,43 @@ export const Logo = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const loadHeaderLogo = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_value')
+        .eq('setting_name', 'header_logo')
+        .single();
+      
+      if (error) {
+        logger.error('Erreur lors du chargement du logo:', error);
+        setError('Erreur lors du chargement du logo');
+        return;
+      }
+      
+      if (data) {
+        logger.info('Logo chargé avec succès:', data.setting_value);
+        setHeaderLogo(data.setting_value);
+      }
+    } catch (error) {
+      logger.error('Erreur inattendue lors du chargement du logo:', error);
+      setError('Erreur inattendue lors du chargement du logo');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadHeaderLogo();
     
-    // Créer un canal avec un ID unique
+    const channelId = `site_settings_${Math.random().toString(36).substring(7)}`;
+    logger.info('Création du canal avec ID:', channelId);
+    
     const channel = supabase
-      .channel('site_settings_changes')
+      .channel(channelId)
       .on(
         'postgres_changes',
         {
@@ -46,42 +77,18 @@ export const Logo = () => {
 
     return () => {
       logger.info('Nettoyage du canal de communication');
-      supabase.removeChannel(channel).then(() => {
-        logger.info('Canal supprimé avec succès');
+      channel.unsubscribe().then(() => {
+        logger.info('Désinscription du canal réussie');
+        supabase.removeChannel(channel).then(() => {
+          logger.info('Canal supprimé avec succès');
+        }).catch((error) => {
+          logger.error('Erreur lors de la suppression du canal:', error);
+        });
       }).catch((error) => {
-        logger.error('Erreur lors de la suppression du canal:', error);
+        logger.error('Erreur lors de la désinscription du canal:', error);
       });
     };
   }, []);
-
-  const loadHeaderLogo = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const { data, error } = await supabase
-        .from('site_settings')
-        .select('setting_value')
-        .eq('setting_name', 'header_logo')
-        .single();
-      
-      if (error) {
-        logger.error('Erreur lors du chargement du logo:', error);
-        setError('Erreur lors du chargement du logo');
-        return;
-      }
-      
-      if (data) {
-        logger.info('Logo chargé avec succès:', data.setting_value);
-        setHeaderLogo(data.setting_value);
-      }
-    } catch (error) {
-      logger.error('Erreur inattendue lors du chargement du logo:', error);
-      setError('Erreur inattendue lors du chargement du logo');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (isLoading) {
     return (
