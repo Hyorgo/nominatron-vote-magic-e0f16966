@@ -17,7 +17,6 @@ export const AdminDashboard = () => {
     scrollingTexts, 
     backgrounds, 
     homeContent, 
-    settings, 
     isLoading,
     invalidateQueries 
   } = useAdminData();
