@@ -1,14 +1,22 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import LazyImage from "@/components/ui/lazy-image";
 import { logger } from '@/services/monitoring/logger';
+import { useToast } from "@/hooks/use-toast";
 
 interface LogoPreviewProps {
   currentLogo: string;
 }
 
 export const LogoPreview = ({ currentLogo }: LogoPreviewProps) => {
+  const { toast } = useToast();
+  
   const handleImageError = () => {
-    logger.error('Failed to load logo image:', currentLogo);
+    logger.error('Failed to load logo image:', { url: currentLogo });
+    toast({
+      variant: "destructive",
+      title: "Erreur de chargement",
+      description: "Impossible de charger l'image du logo",
+    });
   };
 
   return (

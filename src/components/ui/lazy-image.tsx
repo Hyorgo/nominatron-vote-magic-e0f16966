@@ -20,21 +20,25 @@ const LazyImage = ({
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(src);
 
   useEffect(() => {
     setIsLoaded(false);
     setHasError(false);
+    setCurrentSrc(src);
   }, [src]);
 
   const handleError = () => {
     setHasError(true);
-    logger.error('Image failed to load:', { src });
+    setIsLoaded(false);
+    logger.error('Image failed to load:', { src: currentSrc });
     onError?.();
   };
 
   const handleLoad = () => {
     setIsLoaded(true);
-    logger.info('Image loaded successfully:', { src });
+    setHasError(false);
+    logger.info('Image loaded successfully:', { src: currentSrc });
   };
 
   if (hasError) {
@@ -42,23 +46,23 @@ const LazyImage = ({
   }
 
   return (
-    <>
-      {!isLoaded && (fallback || <Skeleton className={className} />)}
+    <div className={cn("relative", className)}>
+      {!isLoaded && (fallback || <Skeleton className="absolute inset-0" />)}
       <img
-        src={src}
+        src={currentSrc}
         alt={alt}
         loading="lazy"
         onLoad={handleLoad}
         onError={handleError}
         className={cn(
           "transition-opacity duration-300",
-          !isLoaded && "opacity-0 absolute",
+          !isLoaded && "opacity-0",
           isLoaded && "opacity-100",
           className
         )}
         {...props}
       />
-    </>
+    </div>
   );
 };
 
