@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Image } from "lucide-react";
+import { logger } from "@/services/monitoring/logger";
 
 export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, onUpdate: () => void }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -22,20 +23,27 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
     try {
       setUploading(true);
+      logger.info('Début du téléchargement du logo');
 
       // Upload to storage
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('logos')
         .upload(fileName, selectedFile);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        logger.error('Erreur lors du téléchargement du logo', uploadError);
+        throw uploadError;
+      }
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('logos')
         .getPublicUrl(fileName);
+
+      logger.info('Logo téléchargé avec succès, URL:', publicUrl);
 
       // Update site settings
       const { error: updateError } = await supabase
@@ -43,7 +51,10 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
         .update({ setting_value: publicUrl })
         .eq('setting_name', 'header_logo');
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        logger.error('Erreur lors de la mise à jour des paramètres', updateError);
+        throw updateError;
+      }
 
       toast({
         title: "Logo mis à jour",
@@ -53,12 +64,12 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       onUpdate();
       setSelectedFile(null);
     } catch (error) {
+      logger.error('Erreur lors de la mise à jour du logo:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
         description: "Une erreur est survenue lors de la mise à jour du logo.",
       });
-      console.error('Error uploading logo:', error);
     } finally {
       setUploading(false);
     }

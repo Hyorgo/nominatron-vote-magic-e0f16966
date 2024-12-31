@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Ticket, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/services/monitoring/logger";
 
 export const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [headerLogo, setHeaderLogo] = useState("/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png");
+  const [headerLogo, setHeaderLogo] = useState("");
 
   useEffect(() => {
     loadHeaderLogo();
@@ -23,6 +24,7 @@ export const Navigation = () => {
         },
         (payload) => {
           if (payload.new && payload.new.setting_value) {
+            logger.info('Mise à jour du logo détectée:', payload.new.setting_value);
             setHeaderLogo(payload.new.setting_value);
           }
         }
@@ -35,14 +37,24 @@ export const Navigation = () => {
   }, []);
 
   const loadHeaderLogo = async () => {
-    const { data } = await supabase
-      .from('site_settings')
-      .select('setting_value')
-      .eq('setting_name', 'header_logo')
-      .single();
-    
-    if (data) {
-      setHeaderLogo(data.setting_value);
+    try {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('setting_value')
+        .eq('setting_name', 'header_logo')
+        .single();
+      
+      if (error) {
+        logger.error('Erreur lors du chargement du logo:', error);
+        return;
+      }
+      
+      if (data) {
+        logger.info('Logo chargé avec succès:', data.setting_value);
+        setHeaderLogo(data.setting_value);
+      }
+    } catch (error) {
+      logger.error('Erreur inattendue lors du chargement du logo:', error);
     }
   };
 
@@ -53,7 +65,7 @@ export const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <img 
-              src={headerLogo}
+              src={headerLogo || "/placeholder.svg"}
               alt="Lyon d'Or" 
               className="h-16 w-auto object-contain" 
             />
