@@ -10,7 +10,7 @@ export const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] bg-background border-b border-border">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-24 items-center justify-between">
           <Logo />
           <DesktopNav />
           
