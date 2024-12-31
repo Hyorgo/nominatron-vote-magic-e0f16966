@@ -13,6 +13,7 @@ export const Logo = () => {
   useEffect(() => {
     loadHeaderLogo();
     
+    // Créer un canal avec un ID unique
     const channel = supabase
       .channel('site_settings_changes')
       .on(
@@ -30,10 +31,26 @@ export const Logo = () => {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        logger.info('Statut de la souscription au canal:', status);
+        if (status === 'SUBSCRIBED') {
+          logger.info('Souscription au canal réussie');
+        }
+        if (status === 'CLOSED') {
+          logger.warn('Canal fermé');
+        }
+        if (status === 'CHANNEL_ERROR') {
+          logger.error('Erreur de canal');
+        }
+      });
 
     return () => {
-      supabase.removeChannel(channel);
+      logger.info('Nettoyage du canal de communication');
+      supabase.removeChannel(channel).then(() => {
+        logger.info('Canal supprimé avec succès');
+      }).catch((error) => {
+        logger.error('Erreur lors de la suppression du canal:', error);
+      });
     };
   }, []);
 
