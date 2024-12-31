@@ -15,7 +15,16 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          variant: "destructive",
+          title: "Fichier trop volumineux",
+          description: "Le fichier ne doit pas dépasser 5MB.",
+        });
+        return;
+      }
+      setSelectedFile(file);
     }
   };
 
@@ -28,11 +37,14 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
 
       // Upload to storage
       const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const fileName = `logo-${Date.now()}.${fileExt}`;
       
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('logos')
-        .upload(fileName, selectedFile);
+        .upload(fileName, selectedFile, {
+          cacheControl: '0',
+          upsert: true
+        });
 
       if (uploadError) {
         logger.error('Erreur lors du téléchargement du logo', uploadError);
@@ -49,7 +61,10 @@ export const LogoManager = ({ currentLogo, onUpdate }: { currentLogo: string, on
       // Update site settings
       const { error: updateError } = await supabase
         .from('site_settings')
-        .update({ setting_value: publicUrl })
+        .upsert({
+          setting_name: 'header_logo',
+          setting_value: publicUrl
+        })
         .eq('setting_name', 'header_logo');
 
       if (updateError) {

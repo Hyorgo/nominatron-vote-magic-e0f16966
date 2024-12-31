@@ -5,7 +5,8 @@ import { logger } from "@/services/monitoring/logger";
 import LazyImage from "@/components/ui/lazy-image";
 
 export const Logo = () => {
-  const [headerLogo, setHeaderLogo] = useState("");
+  const [headerLogo, setHeaderLogo] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadHeaderLogo();
@@ -36,6 +37,7 @@ export const Logo = () => {
 
   const loadHeaderLogo = async () => {
     try {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from('site_settings')
         .select('setting_value')
@@ -53,6 +55,8 @@ export const Logo = () => {
       }
     } catch (error) {
       logger.error('Erreur inattendue lors du chargement du logo:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,7 +65,7 @@ export const Logo = () => {
       <LazyImage 
         src={headerLogo || "/placeholder.svg"}
         alt="Lyon d'Or" 
-        className="h-16 w-auto object-contain" 
+        className="h-16 w-auto object-contain p-2" 
       />
     </Link>
   );
