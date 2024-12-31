@@ -23,15 +23,21 @@ const LazyImage = ({
   const [currentSrc, setCurrentSrc] = useState<string>("");
 
   useEffect(() => {
-    // Valider et nettoyer l'URL
+    // Reset states when src changes
+    setIsLoaded(false);
+    setHasError(false);
+    
+    if (!src) {
+      setHasError(true);
+      logger.error('Empty image source URL');
+      onError?.();
+      return;
+    }
+
     try {
-      if (!src) {
-        throw new Error("Source URL is empty");
-      }
+      // Try to create a URL object to validate the URL
       const url = new URL(src);
       setCurrentSrc(url.toString());
-      setIsLoaded(false);
-      setHasError(false);
     } catch (error) {
       logger.error('Invalid image URL:', { src, error });
       setHasError(true);
