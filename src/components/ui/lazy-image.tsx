@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { Skeleton } from "./skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { logger } from '@/services/monitoring/logger';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -10,13 +9,13 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   onError?: () => void;
 }
 
-const LazyImage = ({ 
-  src, 
-  alt, 
-  className, 
-  fallback, 
+const LazyImage = ({
+  src,
+  alt,
+  className,
+  fallback = <Skeleton className="w-full h-full" />,
   onError,
-  ...props 
+  ...props
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -27,73 +26,59 @@ const LazyImage = ({
     setHasError(false);
     
     if (!src) {
+      logger.warn('Source d\'image manquante');
       setHasError(true);
-      logger.error('URL source de l\'image vide');
       onError?.();
       return;
     }
 
-    try {
-      const url = new URL(src);
-      setCurrentSrc(url.toString());
-      
-      // Vérification de l'accessibilité de l'image
-      const checkImage = async () => {
-        try {
-          const response = await fetch(url.toString(), { method: 'HEAD' });
-          if (!response.ok) {
-            throw new Error(`Image non accessible: ${response.status}`);
+    const validateAndLoadImage = async () => {
+      try {
+        const url = new URL(src);
+        
+        // Validation spécifique pour les URLs Supabase Storage
+        if (url.hostname.includes('supabase')) {
+          if (!url.pathname.includes('storage/v1/object/public')) {
+            throw new Error('Format d\'URL Supabase Storage invalide');
           }
-        } catch (error) {
-          logger.error('Erreur lors de la vérification de l\'image:', { src: url.toString(), error });
-          setHasError(true);
-          onError?.();
         }
-      };
+        
+        setCurrentSrc(url.toString());
+        
+        // Vérification de l'accessibilité
+        const response = await fetch(url.toString(), { method: 'HEAD' });
+        if (!response.ok) {
+          throw new Error(`Image inaccessible: ${response.status}`);
+        }
+      } catch (error) {
+        logger.error('Erreur de validation d\'image:', { src, error });
+        setHasError(true);
+        onError?.();
+      }
+    };
 
-      checkImage();
-    } catch (error) {
-      logger.error('URL de l\'image invalide:', { src, error });
-      setHasError(true);
-      onError?.();
-    }
+    validateAndLoadImage();
   }, [src, onError]);
 
-  const handleError = () => {
-    setHasError(true);
-    setIsLoaded(false);
-    logger.error('Échec du chargement de l\'image:', { src: currentSrc });
-    onError?.();
-  };
-
-  const handleLoad = () => {
-    setIsLoaded(true);
-    setHasError(false);
-    logger.info('Image chargée avec succès:', { src: currentSrc });
-  };
-
-  if (hasError || !currentSrc) {
-    return fallback || <Skeleton className={className} />;
+  if (hasError) {
+    return <>{fallback}</>;
   }
 
   return (
-    <div className={cn("relative", className)}>
-      {!isLoaded && (fallback || <Skeleton className="absolute inset-0" />)}
+    <>
+      {!isLoaded && fallback}
       <img
         src={currentSrc}
         alt={alt}
-        loading="lazy"
-        onLoad={handleLoad}
-        onError={handleError}
-        className={cn(
-          "transition-opacity duration-300",
-          !isLoaded && "opacity-0",
-          isLoaded && "opacity-100",
-          className
-        )}
+        className={`${className} ${!isLoaded ? 'hidden' : ''}`}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => {
+          setHasError(true);
+          onError?.();
+        }}
         {...props}
       />
-    </div>
+    </>
   );
 };
 
