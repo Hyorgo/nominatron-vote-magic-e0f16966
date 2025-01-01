@@ -33,7 +33,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "justin": "/lovable-uploads/5477519f-5319-4d96-8c9a-04e5f7a98608.png",
   "biniou": "/lovable-uploads/2619c487-2026-42b6-8a14-c2d4c6585080.png",
   "faute aux ours": "/lovable-uploads/710bdecc-ac55-4766-b1b6-a7951dbc331e.png",
-  "espit chupitos": "/lovable-uploads/6882e33f-5fbb-4b92-8db3-0de73e306450.png"
+  "espit chupitos": "/lovable-uploads/6882e33f-5fbb-4b92-8db3-0de73e306450.png",
+  "le quai 19": "/lovable-uploads/8bc34934-e72d-4f40-b7ea-c5c9c4d1fbf0.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
