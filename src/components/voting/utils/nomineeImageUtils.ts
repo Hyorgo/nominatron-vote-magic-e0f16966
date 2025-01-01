@@ -25,6 +25,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "javoo": "/lovable-uploads/b629982b-e48e-44c0-a28e-407b800addab.png",
   "bar by la maison": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png",
   "bambi": "/lovable-uploads/0570d5b2-d774-4316-a6c5-9ff288a86131.png",
+  "bacchus": "/lovable-uploads/48dbdd27-9dc5-4a65-b1d3-a0ff1830a915.png",
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -33,5 +34,6 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 };
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
-  return !!nomineeImageMapping[nomineeName.toLowerCase()];
+  const normalizedName = nomineeName.toLowerCase();
+  return ["bacchus", "bambi"].includes(normalizedName);
 };
