@@ -73,6 +73,7 @@ export const ImageUploadField = ({
   };
 
   const handleDeleteImage = () => {
+    logger.info('Suppression de l\'image');
     onImageUploaded('');
     toast({
       title: "Succès",
