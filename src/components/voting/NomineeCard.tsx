@@ -30,6 +30,12 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
   
+  // Si le nominé est "MY", on utilise l'image spécifique
+  const isMyNominee = nominee.name.toLowerCase() === "my";
+  const imageUrl = isMyNominee 
+    ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
+    : nominee.image_url;
+  
   return (
     <TooltipProvider>
       <Card 
@@ -50,15 +56,16 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </div>
         )}
         
-        {nominee.image_url && (
+        {imageUrl && (
           <div className="relative h-48 sm:h-64 overflow-hidden rounded-t-lg">
             <img
-              src={nominee.image_url}
+              src={imageUrl}
               alt={nominee.name}
               className={cn(
-                "object-cover w-full h-full transition-transform duration-500",
+                "object-contain w-full h-full transition-transform duration-500",
                 "group-hover:scale-110",
-                isSelected && "brightness-110"
+                isSelected && "brightness-110",
+                isMyNominee && "bg-black p-4" // Ajout d'un fond noir et padding pour le logo MY
               )}
             />
             {isSelected && (
