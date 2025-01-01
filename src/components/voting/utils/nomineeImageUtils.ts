@@ -44,7 +44,9 @@ const nomineeImageMapping: NomineeImageMapping = {
   "les assembleurs": "/lovable-uploads/691fd4d5-094e-4c9d-816e-5cbedf786a67.png",
   "assembleurs": "/lovable-uploads/691fd4d5-094e-4c9d-816e-5cbedf786a67.png",
   "petit bleu": "/lovable-uploads/269aef47-5baf-46be-b0b0-de6e93daaf04.png",
-  "le petit bleu": "/lovable-uploads/269aef47-5baf-46be-b0b0-de6e93daaf04.png"
+  "le petit bleu": "/lovable-uploads/269aef47-5baf-46be-b0b0-de6e93daaf04.png",
+  "voxx": "/lovable-uploads/d232e803-234a-4525-bb52-6b57c6d414b4.png",
+  "le voxx": "/lovable-uploads/d232e803-234a-4525-bb52-6b57c6d414b4.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
