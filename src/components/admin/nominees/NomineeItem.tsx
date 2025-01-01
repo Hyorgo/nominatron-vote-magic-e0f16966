@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Nominee } from "@/types/nominees";
+import LazyImage from "@/components/ui/lazy-image";
 
 interface NomineeItemProps {
   nominee: Nominee;
@@ -27,30 +28,43 @@ interface NomineeItemProps {
 export const NomineeItem = ({ nominee, onDelete }: NomineeItemProps) => {
   return (
     <div className="flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary/50 transition-colors">
-      <div className="flex-1">
-        <h4 className="font-medium">{nominee.name}</h4>
-        <p className="text-sm text-muted-foreground">
-          {nominee.description}
-        </p>
+      <div className="flex items-center gap-4 flex-1">
+        {nominee.image_url && (
+          <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden">
+            <LazyImage
+              src={nominee.image_url}
+              alt={nominee.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+        <div>
+          <h4 className="font-medium">{nominee.name}</h4>
+          <p className="text-sm text-muted-foreground">
+            {nominee.description}
+          </p>
+        </div>
       </div>
 
       <AlertDialog>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="destructive"
-                size="icon"
-                className="ml-4 flex-shrink-0 hover:bg-red-700"
-              >
-                <Trash className="h-4 w-4" />
-              </Button>
-            </AlertDialogTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Supprimer ce nominé</p>
-          </TooltipContent>
-        </Tooltip>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="ml-4 flex-shrink-0 hover:bg-red-700"
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Supprimer ce nominé</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <AlertDialogContent>
           <AlertDialogHeader>

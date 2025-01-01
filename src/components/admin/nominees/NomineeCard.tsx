@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Trash2, Edit } from "lucide-react";
 import { Nominee } from "@/types/nominees";
+import LazyImage from "@/components/ui/lazy-image";
 
 interface NomineeCardProps {
   nominee: Nominee;
@@ -14,11 +15,11 @@ export const NomineeCard = ({ nominee, onDelete, onEdit }: NomineeCardProps) => 
     <Card className="p-4 space-y-2">
       <div className="flex justify-between items-start gap-4">
         {nominee.image_url && (
-          <div className="w-24 h-24 flex-shrink-0">
-            <img
+          <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+            <LazyImage
               src={nominee.image_url}
               alt={nominee.name}
-              className="w-full h-full object-cover rounded-lg"
+              className="w-full h-full object-cover"
             />
           </div>
         )}
