@@ -30,7 +30,7 @@ export const useNomineesFilters = () => {
         if (sortOrder === "name") {
           return a.name.localeCompare(b.name);
         }
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
       });
   };
 
