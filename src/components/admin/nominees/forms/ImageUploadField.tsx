@@ -69,11 +69,13 @@ export const ImageUploadField = ({
         bucket: 'nominees-images'
       });
 
-      const { error: uploadError, data } = await supabase.storage
+      // Ajout des options de cache et CORS
+      const { error: uploadError } = await supabase.storage
         .from('nominees-images')
         .upload(fileName, file, {
           cacheControl: '3600',
-          upsert: false
+          upsert: false,
+          contentType: file.type
         });
 
       if (uploadError) {
@@ -81,23 +83,30 @@ export const ImageUploadField = ({
         throw uploadError;
       }
 
+      // Récupération de l'URL avec les bons en-têtes CORS
       const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
-        .getPublicUrl(fileName);
+        .getPublicUrl(fileName, {
+          download: true, // Force le téléchargement avec les bons en-têtes
+        });
 
       logger.info('URL publique générée', { publicUrl });
 
-      // Vérifier que l'URL est accessible
-      const imageResponse = await fetch(publicUrl);
-      if (!imageResponse.ok) {
-        throw new Error(`Impossible d'accéder à l'image: ${imageResponse.statusText}`);
-      }
+      // Préchargement de l'image pour vérifier qu'elle est accessible
+      const img = new Image();
+      img.onload = () => {
+        onImageChange(publicUrl);
+        toast({
+          title: "Succès",
+          description: "Image téléchargée avec succès"
+        });
+      };
+      img.onerror = () => {
+        setImageError(true);
+        throw new Error("Impossible de charger l'image");
+      };
+      img.src = publicUrl;
 
-      onImageChange(publicUrl);
-      toast({
-        title: "Succès",
-        description: "Image téléchargée avec succès"
-      });
     } catch (error) {
       logger.error("Erreur lors du téléchargement:", error);
       setImageError(true);
