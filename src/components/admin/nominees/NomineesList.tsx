@@ -18,10 +18,12 @@ export const NomineesList = ({ categories, onDelete, onEdit }: NomineesListProps
     sortOrder,
     setSortOrder,
     filterAndSortNominees,
-  } = useNominees(() => {});
+  } = useNominees(() => {
+    console.log("Callback executed");
+  });
 
-  // Extraire tous les nominés de toutes les catégories
-  const allNominees = categories.flatMap(category => category.nominees);
+  // Extraire tous les nominés de toutes les catégories de manière sécurisée
+  const allNominees = categories?.flatMap(category => category.nominees || []) || [];
   const filteredNominees = filterAndSortNominees(allNominees);
 
   return (
