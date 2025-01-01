@@ -4,7 +4,7 @@ export const LogoDisplay = () => {
   return (
     <Link to="/" className="flex-shrink-0">
       <img 
-        src="/lovable-uploads/42443689-949d-4d8b-8c49-c12f23c454e5.png"
+        src="/lovable-uploads/93271aaf-9e62-4558-8749-1976277221ad.png"
         alt="Sortir Lyon"
         className="h-24 w-auto object-contain p-2"
       />
