@@ -24,58 +24,34 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Récupérer tous les nominés avec leurs informations de catégorie
-  const allNominees = categories.flatMap(category => {
-    logger.info(`Processing category ${category.name}:`, {
-      categoryId: category.id,
-      nomineesCount: category.nominees.length,
-      nominees: category.nominees.map(n => ({
-        id: n.id,
-        name: n.name,
-        categoryId: n.category_id
-      }))
-    });
-    
-    return category.nominees.map(nominee => ({
+  const allNominees = categories.flatMap(category => 
+    category.nominees.map(nominee => ({
       ...nominee,
       categoryName: category.name
-    }));
-  });
+    }))
+  );
 
   // Filtrer les nominés par catégorie
   const categoryFilteredNominees = selectedCategory === "all" 
     ? allNominees 
-    : allNominees.filter(nominee => {
-        const matches = nominee.category_id === selectedCategory;
-        logger.info(`Filtering nominee ${nominee.name}:`, {
-          nomineeId: nominee.id,
-          nomineeCategoryId: nominee.category_id,
-          selectedCategory,
-          matches
-        });
-        return matches;
-      });
+    : allNominees.filter(nominee => nominee.category_id === selectedCategory);
 
   // Appliquer les filtres de recherche et de tri
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
 
-  logger.info('Final filtering result:', {
-    selectedCategory,
+  logger.info('Filtered nominees:', {
     totalNominees: allNominees.length,
-    filteredCount: categoryFilteredNominees.length,
-    finalCount: filteredNominees.length,
+    selectedCategory,
+    filteredCount: filteredNominees.length,
     nominees: filteredNominees.map(n => ({
       id: n.id,
       name: n.name,
-      categoryId: n.category_id
+      categoryId: n.category_id,
+      matches: n.category_id === selectedCategory
     }))
   });
 
   const handleEdit = (nominee: Nominee) => {
-    logger.info('Editing nominee:', {
-      nomineeId: nominee.id,
-      nomineeName: nominee.name,
-      categoryId: nominee.category_id
-    });
     setSelectedNominee(nominee);
   };
 
