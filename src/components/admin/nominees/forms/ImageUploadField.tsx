@@ -1,15 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Upload, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { logger } from '@/services/monitoring/logger';
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { ImagePreviewField } from "./ImagePreviewField";
+import { ImageActions } from "./ImageActions";
 
 interface ImageUploadFieldProps {
   imageUrl: string;
   nomineeName: string;
-  onImageChange: (url: string) => void;
+  onImageUploaded: (url: string) => void;
   isUploading: boolean;
   setIsUploading: (value: boolean) => void;
 }
@@ -17,7 +14,7 @@ interface ImageUploadFieldProps {
 export const ImageUploadField = ({
   imageUrl,
   nomineeName,
-  onImageChange,
+  onImageUploaded,
   isUploading,
   setIsUploading
 }: ImageUploadFieldProps) => {
@@ -32,13 +29,7 @@ export const ImageUploadField = ({
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-      logger.info('Début du téléchargement', {
-        fileName,
-        fileSize: file.size,
-        fileType: file.type
-      });
-
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data } = await supabase.storage
         .from('nominees-images')
         .upload(fileName, file);
 
@@ -48,9 +39,7 @@ export const ImageUploadField = ({
         .from('nominees-images')
         .getPublicUrl(fileName);
 
-      logger.info('Image téléchargée avec succès', { publicUrl });
-      onImageChange(publicUrl);
-      
+      onImageUploaded(publicUrl);
       toast({
         title: "Succès",
         description: "Image téléchargée avec succès"
@@ -68,46 +57,24 @@ export const ImageUploadField = ({
   };
 
   return (
-    <div className="space-y-4">      
-      {imageUrl && (
-        <div className="relative h-32 w-full overflow-hidden rounded-lg">
-          <ImageWithFallback
-            src={imageUrl}
-            alt={nomineeName}
-            type="profile"
-            className="h-full w-full object-cover"
-          />
-        </div>
-      )}
-      
-      <div className="flex items-center gap-4">
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="hidden"
-          id="image-upload"
-        />
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          disabled={isUploading}
-          onClick={() => document.getElementById('image-upload')?.click()}
-        >
-          {isUploading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Téléchargement...
-            </>
-          ) : (
-            <>
-              <Upload className="mr-2 h-4 w-4" />
-              {imageUrl ? "Changer l'image" : "Ajouter une image"}
-            </>
-          )}
-        </Button>
-      </div>
+    <div className="space-y-4">
+      <ImagePreviewField
+        imageUrl={imageUrl}
+        altText={nomineeName}
+      />
+      <ImageActions
+        onUploadClick={() => document.getElementById('image-upload')?.click()}
+        hasImage={!!imageUrl}
+        uploadId="image-upload"
+        isUploading={isUploading}
+      />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="hidden"
+        id="image-upload"
+      />
     </div>
   );
 };

@@ -7,10 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Category, Nominee } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ImageIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
-import { ImageUploadHandler } from "./forms/ImageUploadHandler";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { ImageUploadField } from "./forms/ImageUploadField";
 
 interface EditNomineeFormProps {
   nominee: Nominee;
@@ -20,7 +19,13 @@ interface EditNomineeFormProps {
   onUpdate: () => void;
 }
 
-export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate }: EditNomineeFormProps) => {
+export const EditNomineeForm = ({
+  nominee,
+  categories,
+  isOpen,
+  onClose,
+  onUpdate
+}: EditNomineeFormProps) => {
   const [formData, setFormData] = useState({
     name: nominee.name,
     description: nominee.description,
@@ -28,6 +33,7 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
     image_url: nominee.image_url || ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async () => {
@@ -99,39 +105,18 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
             </SelectContent>
           </Select>
 
-          <div className="space-y-4">
-            {formData.image_url && (
-              <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
-                <ImageWithFallback
-                  src={formData.image_url}
-                  alt={formData.name}
-                  type="profile"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
-
-            <div className="flex items-center gap-4">
-              <ImageUploadHandler
-                currentImageUrl={formData.image_url}
-                onImageUploaded={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() => document.getElementById('image-upload-edit')?.click()}
-              >
-                <ImageIcon className="mr-2 h-4 w-4" />
-                {formData.image_url ? "Changer l'image" : "Ajouter une image"}
-              </Button>
-            </div>
-          </div>
+          <ImageUploadField
+            imageUrl={formData.image_url}
+            nomineeName={formData.name}
+            onImageUploaded={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+            isUploading={isUploading}
+            setIsUploading={setIsUploading}
+          />
 
           <Button 
             onClick={handleSubmit} 
             className="w-full"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploading}
           >
             {isSubmitting ? (
               <>
