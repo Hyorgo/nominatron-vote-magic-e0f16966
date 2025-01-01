@@ -8,6 +8,7 @@ interface NomineeImageMapping {
 
 const nomineeImageMapping: NomineeImageMapping = {
   "my": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png",
+  "MY": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png",
   "plan b": "/lovable-uploads/c9f7ee7f-7f01-4778-bf67-98c3af662375.png",
   "maze": "/lovable-uploads/04149b51-7312-46a4-82ce-d6b0828ffb18.png",
   "f&k": "/lovable-uploads/4cca2c41-ad59-4eb8-8768-d8acd38f6a85.png",
@@ -82,11 +83,13 @@ const nomineeImageMapping: NomineeImageMapping = {
   "flufy la maison": "/lovable-uploads/eefb7ecf-041e-4344-bc21-4d27314e214d.png",
   "micka l'horloge": "/lovable-uploads/9b7fc8ac-e5ac-4116-920b-16ae4daf2ee4.png",
   "tom": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png",
-  "jess": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png"
+  "TOM": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png",
+  "jess": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
+  "JESS": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
-  const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
+  const normalizedName = nomineeName.toLowerCase().trim();
   console.log('Normalized name:', normalizedName);
   console.log('Available mappings:', Object.keys(nomineeImageMapping));
   return nomineeImageMapping[normalizedName] || defaultImageUrl || "";
