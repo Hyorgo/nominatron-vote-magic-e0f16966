@@ -1,5 +1,6 @@
-import { Image } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
+import LazyImage from "@/components/ui/lazy-image";
 
 interface ImagePreviewProps {
   imageUrl: string;
@@ -12,7 +13,7 @@ export const ImagePreview = ({ imageUrl, nomineeName, onError }: ImagePreviewPro
     return (
       <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50">
         <div className="text-center">
-          <Image className="mx-auto h-8 w-8 text-gray-400" />
+          <ImageIcon className="mx-auto h-8 w-8 text-gray-400" />
           <p className="mt-2 text-sm text-gray-500">Aucune image</p>
         </div>
       </div>
@@ -21,17 +22,11 @@ export const ImagePreview = ({ imageUrl, nomineeName, onError }: ImagePreviewPro
 
   return (
     <div className="relative h-32 w-full overflow-hidden rounded-lg">
-      <img
+      <LazyImage
         src={imageUrl}
         alt={nomineeName}
         className="h-full w-full object-cover"
-        onError={(e) => {
-          logger.error('Erreur de chargement de l\'image', {
-            url: imageUrl
-          });
-          onError();
-          e.currentTarget.src = '/placeholder.svg';
-        }}
+        onError={onError}
       />
     </div>
   );

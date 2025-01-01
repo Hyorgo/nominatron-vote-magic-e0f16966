@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { logger } from '@/services/monitoring/logger';
+import { Image as ImageIcon } from "lucide-react";
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -19,59 +20,54 @@ const LazyImage = ({
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState<string>("");
 
   useEffect(() => {
     setIsLoaded(false);
     setHasError(false);
-    
+
     if (!src) {
-      logger.warn('Source d\'image manquante');
+      logger.warn('Missing image source');
       setHasError(true);
       onError?.();
       return;
     }
 
-    const validateAndLoadImage = async () => {
-      try {
-        const url = new URL(src);
-        
-        // Validation spécifique pour les URLs Supabase Storage
-        if (url.hostname.includes('supabase')) {
-          if (!url.pathname.includes('storage/v1/object/public')) {
-            throw new Error('Format d\'URL Supabase Storage invalide');
-          }
-        }
-        
-        setCurrentSrc(url.toString());
-        
-        // Vérification de l'accessibilité
-        const response = await fetch(url.toString(), { method: 'HEAD' });
-        if (!response.ok) {
-          throw new Error(`Image inaccessible: ${response.status}`);
-        }
-      } catch (error) {
-        logger.error('Erreur de validation d\'image:', { src, error });
-        setHasError(true);
-        onError?.();
-      }
+    const img = new Image();
+    img.src = src;
+    
+    img.onload = () => {
+      setIsLoaded(true);
+      setHasError(false);
     };
 
-    validateAndLoadImage();
+    img.onerror = () => {
+      logger.error('Image load error:', { src });
+      setHasError(true);
+      onError?.();
+    };
+
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
   }, [src, onError]);
 
   if (hasError) {
-    return <>{fallback}</>;
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 rounded-lg">
+        <ImageIcon className="w-8 h-8 text-gray-400" />
+        <p className="mt-2 text-sm text-gray-500">Image non disponible</p>
+      </div>
+    );
   }
 
   return (
     <>
       {!isLoaded && fallback}
       <img
-        src={currentSrc}
+        src={src}
         alt={alt}
         className={`${className} ${!isLoaded ? 'hidden' : ''}`}
-        onLoad={() => setIsLoaded(true)}
         onError={() => {
           setHasError(true);
           onError?.();
