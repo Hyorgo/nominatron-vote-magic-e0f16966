@@ -1,16 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from '@/services/monitoring/logger';
 
-export const getStorageFileName = (url: string): string | null => {
-  try {
-    const urlParts = url.split('/');
-    return urlParts[urlParts.length - 1];
-  } catch (error) {
-    logger.error('Erreur lors de l\'extraction du nom de fichier:', error);
-    return null;
-  }
-};
-
 export const uploadNomineeImage = async (file: File, nomineeName: string): Promise<string | null> => {
   try {
     const fileExt = file.name.split('.').pop();
@@ -41,7 +31,7 @@ export const uploadNomineeImage = async (file: File, nomineeName: string): Promi
 
 export const deleteNomineeImage = async (imageUrl: string): Promise<boolean> => {
   try {
-    const fileName = getStorageFileName(imageUrl);
+    const fileName = imageUrl.split('/').pop();
     if (!fileName) return false;
 
     const { error } = await supabase.storage
