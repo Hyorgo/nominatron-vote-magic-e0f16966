@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload, Loader2 } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ImageUploadFieldProps {
   imageUrl: string;
@@ -19,6 +21,8 @@ export const ImageUploadField = ({
   isUploading,
   setIsUploading
 }: ImageUploadFieldProps) => {
+  const { toast } = useToast();
+
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
