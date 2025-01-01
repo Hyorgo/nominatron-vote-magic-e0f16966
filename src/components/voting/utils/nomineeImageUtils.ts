@@ -71,7 +71,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "pool beach": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
   "pool beach club": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
   "pool beach club lyon": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
-  "pool beach party": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png"
+  "pool beach party": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
+  "clubbing revival": "/lovable-uploads/6f21c914-775b-42ed-9737-8e8375c8ed4b.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
