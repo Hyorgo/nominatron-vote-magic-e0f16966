@@ -13,7 +13,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "bus paradise": "/lovable-uploads/e86ac02b-b1f9-4ba7-b2fe-6c0b71a57d1a.png",
   "kaia": "/lovable-uploads/822f2109-e39c-49bc-9d49-a0caff61ca93.png",
   "nel's club": "/lovable-uploads/25203221-e2c4-47ba-9bca-3268e1a91e12.png",
-  "la maison bleue": "/lovable-uploads/b7e6bd80-2442-4cd2-ab7c-d9844d394308.png",
+  "maison bleue": "/lovable-uploads/0cc1b90b-3287-43ee-b754-cce61a14aab8.png",
   "la feria": "/lovable-uploads/6f664826-df3a-424d-8c6d-ccad72240ba6.png",
   "mademoiselle simone": "/lovable-uploads/60548362-6418-4f6c-a954-712bc12f6149.png",
   "you": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
