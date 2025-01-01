@@ -51,7 +51,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "cactu bar": "/lovable-uploads/41892430-8fc7-4881-aef5-11cb3075bf72.png",
   "cactus bar": "/lovable-uploads/41892430-8fc7-4881-aef5-11cb3075bf72.png",
   "voiles du grand large": "/lovable-uploads/90f85e0d-77bc-4f82-92ab-c571db50e3ca.png",
-  "bistrot brigitte": "/lovable-uploads/93ff9fb3-8967-49d7-a277-5c18863ea880.png"
+  "bistrot brigitte": "/lovable-uploads/93ff9fb3-8967-49d7-a277-5c18863ea880.png",
+  "red garden": "/lovable-uploads/fcf81da7-edaf-48be-9466-4f8951634e10.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
