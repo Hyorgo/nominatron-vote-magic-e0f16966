@@ -64,7 +64,10 @@ const nomineeImageMapping: NomineeImageMapping = {
   "club la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
   "le club": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
   "le club by la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
-  "club by la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png"
+  "club by la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
+  "matinale brigitte": "/lovable-uploads/6cef5d7d-a653-40a7-aca3-0073db1371c5.png",
+  "la matinale brigitte": "/lovable-uploads/6cef5d7d-a653-40a7-aca3-0073db1371c5.png",
+  "la matinale de folie": "/lovable-uploads/6cef5d7d-a653-40a7-aca3-0073db1371c5.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
