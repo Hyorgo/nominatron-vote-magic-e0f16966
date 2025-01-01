@@ -1,19 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { Nominee } from "@/types/nominees";
-import { SearchSortBar } from "./SearchSortBar";
 import { NomineeCard } from "./NomineeCard";
-import { useNominees } from "@/hooks/useNominees";
+import { EditNomineeForm } from "./EditNomineeForm";
 import { Category } from "@/types/nominees";
 import { useState } from "react";
-import { EditNomineeForm } from "./EditNomineeForm";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Trophy } from "lucide-react";
+import { useNominees } from "@/hooks/useNominees";
+import { FilterBar } from "./filters/FilterBar";
 
 interface NomineesListProps {
   categories: Category[];
@@ -32,29 +24,18 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   const [selectedNominee, setSelectedNominee] = useState<Nominee | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  // Extraire tous les nominés de toutes les catégories
   const allNominees = categories.flatMap(category => 
     category.nominees.map(nominee => ({
       ...nominee,
       categoryName: category.name,
-      category_id: category.id // Utiliser l'ID de la catégorie parente
+      category_id: category.id
     }))
   );
 
-  // Filtrer par catégorie
   const categoryFilteredNominees = selectedCategory === "all" 
     ? allNominees 
-    : allNominees.filter(nominee => {
-        console.log('Filtering nominee:', {
-          nomineeId: nominee.category_id,
-          selectedCategory,
-          isMatch: nominee.category_id === selectedCategory,
-          nominee
-        });
-        return nominee.category_id === selectedCategory;
-      });
+    : allNominees.filter(nominee => nominee.category_id === selectedCategory);
 
-  // Appliquer les autres filtres (recherche et tri)
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
 
   const handleEdit = (nominee: Nominee) => {
@@ -67,45 +48,15 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
 
   return (
     <Card className="p-4 space-y-4">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="w-full md:w-1/3">
-          <Select
-            value={selectedCategory}
-            onValueChange={(value) => {
-              console.log('Selected category:', value);
-              setSelectedCategory(value);
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Filtrer par catégorie" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">
-                <div className="flex items-center gap-2">
-                  <Trophy className="h-4 w-4 text-muted-foreground" />
-                  Toutes les catégories
-                </div>
-              </SelectItem>
-              {categories.map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  <div className="flex items-center gap-2">
-                    <Trophy className="h-4 w-4 text-gold" />
-                    {category.name}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex-1">
-          <SearchSortBar
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            sortOrder={sortOrder}
-            onSortChange={setSortOrder}
-          />
-        </div>
-      </div>
+      <FilterBar
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        sortOrder={sortOrder}
+        onSortChange={setSortOrder}
+      />
 
       <div className="space-y-2">
         {filteredNominees.length === 0 ? (
