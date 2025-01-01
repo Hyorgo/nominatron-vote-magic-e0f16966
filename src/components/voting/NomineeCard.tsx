@@ -30,7 +30,7 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
   
-  // Gestion des images spécifiques pour MY, PLAN B, THE MAZE, F&K, L'ILE, BUS PARADISE, KAIA, NEL'S CLUB, LA MAISON BLEUE, LA FERIA, MADEMOISELLE SIMONE, YOU, LA CIGALE et AU BON SECOURS
+  // Gestion des images spécifiques pour MY, PLAN B, THE MAZE, F&K, L'ILE, BUS PARADISE, KAIA, NEL'S CLUB, LA MAISON BLEUE, LA FERIA, MADEMOISELLE SIMONE, YOU, LA CIGALE, AU BON SECOURS et CASA JAGUAR
   const nomineeName = nominee.name.toLowerCase();
   const isMyNominee = nomineeName === "my";
   const isPlanBNominee = nomineeName === "plan b";
@@ -46,6 +46,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
   const isYouNominee = nomineeName === "you";
   const isCigaleNominee = nomineeName === "la cigale";
   const isBonSecoursNominee = nomineeName === "au bon secours";
+  const isCasaJaguarNominee = nomineeName === "casa jaguar";
   
   const imageUrl = isMyNominee 
     ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
@@ -75,6 +76,8 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
     ? "/lovable-uploads/f44edba2-f449-423f-911e-7f49b4ec1867.png"
     : isBonSecoursNominee
     ? "/lovable-uploads/8a3e3f29-5841-400e-8127-47159cf04eca.png"
+    : isCasaJaguarNominee
+    ? "/lovable-uploads/2bfb7476-b837-47c0-a820-109983e47ae8.png"
     : nominee.image_url;
   
   return (
@@ -106,7 +109,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                 "object-contain w-full h-full transition-transform duration-500",
                 "group-hover:scale-110",
                 isSelected && "brightness-110",
-                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee || isNelsClubNominee || isMaisonBleueNominee || isFeriaNominee || isSimoneNominee || isYouNominee || isCigaleNominee || isBonSecoursNominee) && "bg-black p-4"
+                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee || isNelsClubNominee || isMaisonBleueNominee || isFeriaNominee || isSimoneNominee || isYouNominee || isCigaleNominee || isBonSecoursNominee || isCasaJaguarNominee) && "bg-black p-4"
               )}
             />
             {isSelected && (
