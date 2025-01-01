@@ -1,5 +1,6 @@
 import { useToast } from "@/hooks/use-toast";
 import { logger } from '@/services/monitoring/logger';
+import { supabase } from "@/integrations/supabase/client";
 import { ImagePreviewField } from "./ImagePreviewField";
 import { ImageActions } from "./ImageActions";
 

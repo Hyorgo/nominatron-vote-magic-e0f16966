@@ -46,7 +46,7 @@ export const EditNomineeForm = ({
           <ImageUploadField
             imageUrl={formData.image_url}
             nomineeName={formData.name}
-            onImageChange={(url) => handleFormChange('image_url', url)}
+            onImageUploaded={(url) => handleFormChange('image_url', url)}
             isUploading={isUploading}
             setIsUploading={setIsUploading}
           />
