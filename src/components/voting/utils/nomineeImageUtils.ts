@@ -28,7 +28,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "bacchus": "/lovable-uploads/48dbdd27-9dc5-4a65-b1d3-a0ff1830a915.png",
   "18&10 apero club": "/lovable-uploads/1cba0d7a-ab4e-49d3-a7e2-8dabeecb3154.png",
   "glam club": "/lovable-uploads/91f3dc0f-6788-4088-b142-dbd53765c5b6.png",
-  "klub": "/lovable-uploads/6f0ac234-85f6-4e73-a80e-b30f116ce8f6.png"
+  "klub": "/lovable-uploads/6f0ac234-85f6-4e73-a80e-b30f116ce8f6.png",
+  "club 400": "/lovable-uploads/f1975a5f-f249-44e4-a1fc-c1b9812249e1.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
