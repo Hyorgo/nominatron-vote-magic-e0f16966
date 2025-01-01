@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Category, Nominee } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Image, Upload } from "lucide-react";
+import { Image, Upload, Loader2 } from "lucide-react";
+import { logger } from '@/services/monitoring/logger';
 
 interface EditNomineeFormProps {
   nominee: Nominee;
@@ -25,11 +26,21 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
     image_url: nominee.image_url || ""
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      logger.warn('Aucun fichier sélectionné');
+      return;
+    }
+
+    logger.info('Début du téléchargement de l\'image', {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type
+    });
 
     setIsUploading(true);
     try {
@@ -37,15 +48,27 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      logger.info('Téléchargement vers Supabase Storage', {
+        filePath,
+        bucket: 'nominees-images'
+      });
+
+      const { error: uploadError, data } = await supabase.storage
         .from('nominees-images')
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        logger.error('Erreur lors du téléchargement', uploadError);
+        throw uploadError;
+      }
+
+      logger.info('Image téléchargée avec succès', { data });
 
       const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
         .getPublicUrl(filePath);
+
+      logger.info('URL publique générée', { publicUrl });
 
       setFormData(prev => ({ ...prev, image_url: publicUrl }));
       toast({
@@ -53,7 +76,7 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
         description: "Image téléchargée avec succès"
       });
     } catch (error) {
-      console.error("Erreur lors du téléchargement:", error);
+      logger.error("Erreur lors du téléchargement:", error);
       toast({
         title: "Erreur",
         description: "Impossible de télécharger l'image",
@@ -65,31 +88,45 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
   };
 
   const handleSubmit = async () => {
-    const { error } = await supabase
-      .from('nominees')
-      .update({
-        name: formData.name,
-        description: formData.description,
-        category_id: formData.category_id,
-        image_url: formData.image_url
-      })
-      .eq('id', nominee.id);
+    logger.info('Début de la mise à jour du nominé', {
+      nomineeId: nominee.id,
+      formData
+    });
 
-    if (error) {
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('nominees')
+        .update({
+          name: formData.name,
+          description: formData.description,
+          category_id: formData.category_id,
+          image_url: formData.image_url
+        })
+        .eq('id', nominee.id);
+
+      if (error) {
+        logger.error('Erreur lors de la mise à jour', error);
+        throw error;
+      }
+
+      logger.info('Nominé mis à jour avec succès');
+      toast({
+        title: "Succès",
+        description: "Nominé mis à jour avec succès"
+      });
+      onUpdate();
+      onClose();
+    } catch (error) {
+      logger.error('Erreur lors de la mise à jour du nominé:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le nominé",
         variant: "destructive"
       });
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast({
-      title: "Succès",
-      description: "Nominé mis à jour avec succès"
-    });
-    onUpdate();
-    onClose();
   };
 
   return (
@@ -138,6 +175,12 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
                   src={formData.image_url}
                   alt={formData.name}
                   className="h-full w-full object-cover"
+                  onError={(e) => {
+                    logger.error('Erreur de chargement de l\'image', {
+                      url: formData.image_url
+                    });
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
                 />
               </div>
             )}
@@ -158,7 +201,10 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
                 onClick={() => document.getElementById('image-upload')?.click()}
               >
                 {isUploading ? (
-                  "Téléchargement..."
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Téléchargement...
+                  </>
                 ) : (
                   <>
                     <Upload className="mr-2 h-4 w-4" />
@@ -169,8 +215,19 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
             </div>
           </div>
 
-          <Button onClick={handleSubmit} className="w-full">
-            Sauvegarder les modifications
+          <Button 
+            onClick={handleSubmit} 
+            className="w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sauvegarde en cours...
+              </>
+            ) : (
+              "Sauvegarder les modifications"
+            )}
           </Button>
         </div>
       </DialogContent>
