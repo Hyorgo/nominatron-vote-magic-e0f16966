@@ -70,7 +70,7 @@ export const ImageUploadField = ({
         bucket: 'nominees-images'
       });
 
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('nominees-images')
         .upload(filePath, file);
 
@@ -78,8 +78,6 @@ export const ImageUploadField = ({
         logger.error('Erreur lors du téléchargement', uploadError);
         throw uploadError;
       }
-
-      logger.info('Image téléchargée avec succès', { data });
 
       const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
