@@ -26,7 +26,7 @@ export const FilteredNominees = ({
     nominees: nominees.map(n => ({
       id: n.id,
       name: n.name,
-      categoryName: n.categoryName
+      categoryName: n.categoryName || 'Non catégorisé'
     }))
   });
 

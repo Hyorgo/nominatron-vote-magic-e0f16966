@@ -5,6 +5,7 @@ export interface Nominee {
   image_url: string | null;
   category_id: string | null;
   created_at?: string;
+  categoryName?: string; // Ajout de la propriété optionnelle
 }
 
 export interface Category {
