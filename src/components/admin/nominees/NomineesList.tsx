@@ -30,27 +30,14 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
     logger.info(`Traitement de la catégorie ${category.name}:`, {
       categoryId: category.id,
       nomineesCount: category.nominees.length,
-      nominees: category.nominees.map(n => ({
-        id: n.id,
-        name: n.name,
-        categoryId: n.category_id
-      }))
+      nominees: category.nominees
     });
     
-    return category.nominees.map(nominee => {
-      logger.info(`Nominé trouvé dans ${category.name}:`, {
-        nomineeName: nominee.name,
-        nomineeId: nominee.id,
-        categoryId: category.id,
-        nomineeCategoryId: nominee.category_id
-      });
-      
-      return {
-        ...nominee,
-        categoryName: category.name,
-        category_id: category.id
-      };
-    });
+    return category.nominees.map(nominee => ({
+      ...nominee,
+      categoryName: category.name
+      // Ne pas écraser category_id qui existe déjà dans nominee
+    }));
   });
 
   // Filtrer les nominés par catégorie
@@ -62,9 +49,7 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
           nomineeId: nominee.id,
           nomineeCategoryId: nominee.category_id,
           selectedCategory,
-          matches,
-          categoryName: nominee.categoryName,
-          comparison: `${nominee.category_id} === ${selectedCategory}`
+          matches
         });
         return matches;
       });
