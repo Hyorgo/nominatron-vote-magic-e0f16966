@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/select";
 import { Trophy } from "lucide-react";
 import { Category } from "@/types/nominees";
+import { logger } from '@/services/monitoring/logger';
 
 interface CategoryFilterProps {
   categories: Category[];
@@ -19,13 +20,15 @@ export const CategoryFilter = ({
   selectedCategory,
   onCategoryChange,
 }: CategoryFilterProps) => {
+  const handleCategoryChange = (value: string) => {
+    logger.info('Sélection de catégorie:', value);
+    onCategoryChange(value);
+  };
+
   return (
     <Select
       value={selectedCategory}
-      onValueChange={(value) => {
-        console.log('Selected category:', value);
-        onCategoryChange(value);
-      }}
+      onValueChange={handleCategoryChange}
     >
       <SelectTrigger>
         <SelectValue placeholder="Filtrer par catégorie" />

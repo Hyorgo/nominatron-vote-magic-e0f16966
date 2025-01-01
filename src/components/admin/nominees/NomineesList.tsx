@@ -6,6 +6,7 @@ import { Category } from "@/types/nominees";
 import { useState } from "react";
 import { useNominees } from "@/hooks/useNominees";
 import { FilterBar } from "./filters/FilterBar";
+import { logger } from '@/services/monitoring/logger';
 
 interface NomineesListProps {
   categories: Category[];
@@ -24,6 +25,7 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   const [selectedNominee, setSelectedNominee] = useState<Nominee | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+  // Récupérer tous les nominés avec leurs informations de catégorie
   const allNominees = categories.flatMap(category => 
     category.nominees.map(nominee => ({
       ...nominee,
@@ -32,11 +34,29 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
     }))
   );
 
+  logger.info('Catégorie sélectionnée:', selectedCategory);
+  logger.info('Nominés disponibles:', allNominees);
+
+  // Filtrer les nominés par catégorie
   const categoryFilteredNominees = selectedCategory === "all" 
     ? allNominees 
-    : allNominees.filter(nominee => nominee.category_id === selectedCategory);
+    : allNominees.filter(nominee => {
+        const matches = nominee.category_id === selectedCategory;
+        logger.info(`Vérification du nominé ${nominee.name}:`, {
+          nomineeId: nominee.id,
+          nomineeCategoryId: nominee.category_id,
+          selectedCategory,
+          matches
+        });
+        return matches;
+      });
 
+  logger.info('Nominés filtrés par catégorie:', categoryFilteredNominees);
+
+  // Appliquer les filtres de recherche et de tri
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
+
+  logger.info('Nominés filtrés et triés:', filteredNominees);
 
   const handleEdit = (nominee: Nominee) => {
     setSelectedNominee(nominee);
@@ -46,12 +66,17 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
     setSelectedNominee(null);
   };
 
+  const handleCategoryChange = (categoryId: string) => {
+    logger.info('Changement de catégorie:', categoryId);
+    setSelectedCategory(categoryId);
+  };
+
   return (
     <Card className="p-4 space-y-4">
       <FilterBar
         categories={categories}
         selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
+        onCategoryChange={handleCategoryChange}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         sortOrder={sortOrder}
