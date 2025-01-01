@@ -21,48 +21,48 @@ const LazyImage = ({
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [imageSrc, setImageSrc] = useState(src);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
     setIsLoaded(false);
     setHasError(false);
-
-    if (!src) {
-      logger.warn('Missing image source');
-      setHasError(true);
-      onError?.();
-      return;
-    }
+    setImageSrc(null);
 
     const loadImage = async () => {
       try {
-        // Si c'est déjà une URL complète, on l'utilise directement
+        if (!src) {
+          logger.warn('No image source provided');
+          throw new Error('No image source');
+        }
+
+        logger.info('Loading image:', { originalSrc: src });
+
+        // Si c'est une URL complète, on l'utilise directement
         if (src.startsWith('http')) {
-          logger.info('Using direct URL:', { src });
+          logger.info('Using complete URL:', { src });
           setImageSrc(src);
           return;
         }
 
-        // Sinon, on considère que c'est un nom de fichier
+        // Sinon, on génère l'URL publique via Supabase
         const fileName = src.split('/').pop();
         if (!fileName) {
           throw new Error('Invalid file name');
         }
 
-        logger.info('Getting public URL for file:', { fileName });
-        
+        logger.info('Generating public URL for:', { fileName });
         const { data } = supabase.storage
           .from('nominees-images')
           .getPublicUrl(fileName);
 
         if (!data?.publicUrl) {
-          throw new Error('Failed to get public URL');
+          throw new Error('Failed to generate public URL');
         }
 
-        logger.info('Generated public URL:', { publicUrl: data.publicUrl });
+        logger.info('Successfully generated public URL:', { publicUrl: data.publicUrl });
         setImageSrc(data.publicUrl);
       } catch (error) {
-        logger.error('Error processing image URL:', { error, originalSrc: src });
+        logger.error('Error processing image:', { error, src });
         setHasError(true);
         onError?.();
       }
@@ -74,18 +74,17 @@ const LazyImage = ({
   const handleLoad = () => {
     logger.info('Image loaded successfully:', { src: imageSrc });
     setIsLoaded(true);
-    setHasError(false);
   };
 
   const handleError = () => {
-    logger.error('Image load error:', { src: imageSrc });
+    logger.error('Image failed to load:', { src: imageSrc });
     setHasError(true);
     onError?.();
   };
 
   if (hasError) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 rounded-lg">
+      <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 rounded-lg p-4">
         <ImageIcon className="w-8 h-8 text-gray-400" />
         <p className="mt-2 text-sm text-gray-500">Image non disponible</p>
       </div>
@@ -95,14 +94,16 @@ const LazyImage = ({
   return (
     <>
       {!isLoaded && fallback}
-      <img
-        src={imageSrc}
-        alt={alt}
-        className={`${className} ${!isLoaded ? 'hidden' : ''}`}
-        onLoad={handleLoad}
-        onError={handleError}
-        {...props}
-      />
+      {imageSrc && (
+        <img
+          src={imageSrc}
+          alt={alt}
+          className={`${className} ${!isLoaded ? 'hidden' : ''}`}
+          onLoad={handleLoad}
+          onError={handleError}
+          {...props}
+        />
+      )}
     </>
   );
 };
