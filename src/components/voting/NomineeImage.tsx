@@ -33,6 +33,7 @@ export const NomineeImage = ({ nomineeName, imageUrl, isSelected }: NomineeImage
         onError={(e) => {
           console.error('Erreur de chargement de l\'image:', finalImageUrl);
           console.error('Pour le nominé:', nomineeName);
+          console.error('Erreur complète:', e);
         }}
       />
       {isSelected && (

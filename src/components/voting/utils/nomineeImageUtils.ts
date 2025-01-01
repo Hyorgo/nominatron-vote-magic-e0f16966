@@ -97,7 +97,13 @@ const nomineeImageMapping: NomineeImageMapping = {
   "Quai 22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
   "QUAI22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
   "quai22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
-  "Quai22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png"
+  "Quai22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
+  "rambler": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
+  "RAMBLER": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
+  "Rambler": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
+  "rambler cocktail club": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
+  "RAMBLER COCKTAIL CLUB": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
+  "Rambler Cocktail Club": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -125,5 +131,8 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
-  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", "le club by la maison", "club by la maison", "rambler", "quai 22"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", 
+    "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", 
+    "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", 
+    "le club by la maison", "club by la maison", "rambler", "rambler cocktail club", "quai 22"].includes(normalizedName);
 };
