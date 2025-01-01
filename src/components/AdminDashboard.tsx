@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { AdminTabs } from "./admin/navigation/AdminTabs";
-import { Loader2 } from "lucide-react";
-import { useAdminData } from "@/hooks/useAdminData";
+import { LoadingState } from "./admin/states/LoadingState";
+import { ErrorState } from "./admin/states/ErrorState";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminSession } from "@/hooks/useAdminSession";
+import { useAdminData } from "@/hooks/useAdminData";
 import { logger } from '@/services/monitoring/logger';
 
 export const AdminDashboard = () => {
@@ -17,6 +18,7 @@ export const AdminDashboard = () => {
     backgrounds, 
     homeContent, 
     isLoading,
+    error,
     invalidateQueries 
   } = useAdminData();
 
@@ -52,9 +54,17 @@ export const AdminDashboard = () => {
   }, [checkSession, navigate, toast]);
 
   if (isLoading) {
+    return <LoadingState message="Chargement du tableau de bord..." />;
+  }
+
+  if (error) {
     return (
-      <div className="container mx-auto p-4 md:p-6 flex items-center justify-center min-h-[200px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="container mx-auto p-4 md:p-6">
+        <ErrorState 
+          title="Erreur de chargement" 
+          message="Impossible de charger les données du tableau de bord" 
+          onRetry={invalidateQueries}
+        />
       </div>
     );
   }
