@@ -1,12 +1,11 @@
 import { Card } from "@/components/ui/card";
-import { Nominee } from "@/types/nominees";
-import { NomineeCard } from "./NomineeCard";
-import { EditNomineeForm } from "./EditNomineeForm";
-import { Category } from "@/types/nominees";
+import { Nominee, Category } from "@/types/nominees";
 import { useState } from "react";
 import { useNominees } from "@/hooks/useNominees";
-import { FilterBar } from "./filters/FilterBar";
+import { EditNomineeForm } from "./EditNomineeForm";
 import { logger } from '@/services/monitoring/logger';
+import { NomineeFilters } from "./filters/NomineeFilters";
+import { FilteredNominees } from "./filters/FilteredNominees";
 
 interface NomineesListProps {
   categories: Category[];
@@ -36,7 +35,6 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
     return category.nominees.map(nominee => ({
       ...nominee,
       categoryName: category.name
-      // Ne pas écraser category_id qui existe déjà dans nominee
     }));
   });
 
@@ -54,21 +52,6 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
         return matches;
       });
 
-  logger.info('Résultats du filtrage:', {
-    selectedCategory,
-    filteredCount: categoryFilteredNominees.length,
-    availableCategories: categories.map(c => ({
-      id: c.id,
-      name: c.name,
-      nomineesCount: c.nominees.length
-    })),
-    nominees: categoryFilteredNominees.map(n => ({
-      name: n.name,
-      category: n.categoryName,
-      categoryId: n.category_id
-    }))
-  });
-
   // Appliquer les filtres de recherche et de tri
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
 
@@ -80,46 +63,23 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
     setSelectedNominee(null);
   };
 
-  const handleCategoryChange = (categoryId: string) => {
-    logger.info('Changement de catégorie:', {
-      previousCategory: selectedCategory,
-      newCategory: categoryId,
-      availableCategories: categories.map(c => ({
-        id: c.id,
-        name: c.name
-      }))
-    });
-    setSelectedCategory(categoryId);
-  };
-
   return (
     <Card className="p-4 space-y-4">
-      <FilterBar
+      <NomineeFilters
         categories={categories}
         selectedCategory={selectedCategory}
-        onCategoryChange={handleCategoryChange}
+        onCategoryChange={setSelectedCategory}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         sortOrder={sortOrder}
         onSortChange={setSortOrder}
       />
 
-      <div className="space-y-2">
-        {filteredNominees.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">
-            Aucun nominé ne correspond aux critères de recherche
-          </p>
-        ) : (
-          filteredNominees.map((nominee) => (
-            <NomineeCard
-              key={nominee.id}
-              nominee={nominee}
-              onDelete={onDelete}
-              onEdit={handleEdit}
-            />
-          ))
-        )}
-      </div>
+      <FilteredNominees
+        nominees={filteredNominees}
+        onDelete={onDelete}
+        onEdit={handleEdit}
+      />
 
       {selectedNominee && (
         <EditNomineeForm
