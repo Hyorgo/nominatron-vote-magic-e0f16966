@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { AddNomineeForm } from "./nominees/AddNomineeForm";
 import { NomineesList } from "./nominees/NomineesList";
 import { PaginationControls } from "../ui/pagination-controls";
 import { Category } from "@/types/nominees";
+import { logger } from '@/services/monitoring/logger';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -23,35 +24,64 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
 
   const fetchData = async () => {
     try {
+      logger.info('Début du chargement des catégories et nominés');
       const start = (currentPage - 1) * ITEMS_PER_PAGE;
       const end = start + ITEMS_PER_PAGE - 1;
 
-      const [categoriesResponse, nomineesResponse, totalCount] = await Promise.all([
-        supabase.from("categories").select("*").order("display_order"),
-        supabase
-          .from("nominees")
-          .select("*")
-          .range(start, end)
-          .order("created_at", { ascending: false }),
-        supabase.from("nominees").select("*", { count: "exact", head: true }),
-      ]);
+      // Récupérer d'abord toutes les catégories
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from("categories")
+        .select("*")
+        .order("display_order");
 
-      if (categoriesResponse.error) throw categoriesResponse.error;
-      if (nomineesResponse.error) throw nomineesResponse.error;
+      if (categoriesError) {
+        logger.error('Erreur lors du chargement des catégories:', categoriesError);
+        throw categoriesError;
+      }
 
-      const total = totalCount.count || 0;
+      // Ensuite, récupérer les nominés avec pagination
+      const { data: nomineesData, error: nomineesError } = await supabase
+        .from("nominees")
+        .select("*")
+        .range(start, end)
+        .order("created_at", { ascending: false });
+
+      if (nomineesError) {
+        logger.error('Erreur lors du chargement des nominés:', nomineesError);
+        throw nomineesError;
+      }
+
+      // Récupérer le nombre total de nominés pour la pagination
+      const { count: totalCount, error: countError } = await supabase
+        .from("nominees")
+        .select("*", { count: "exact", head: true });
+
+      if (countError) {
+        logger.error('Erreur lors du comptage des nominés:', countError);
+        throw countError;
+      }
+
+      // Calculer le nombre total de pages
+      const total = totalCount || 0;
       setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
 
-      const categoriesWithNominees = categoriesResponse.data.map((category) => ({
+      // Associer les nominés à leurs catégories respectives
+      const categoriesWithNominees = categoriesData.map((category) => ({
         ...category,
-        nominees: nomineesResponse.data.filter(
+        nominees: nomineesData.filter(
           (nominee) => nominee.category_id === category.id
         ),
       }));
 
+      logger.info('Données chargées avec succès:', {
+        categoriesCount: categoriesData.length,
+        nomineesCount: nomineesData.length,
+        totalPages: Math.ceil(total / ITEMS_PER_PAGE)
+      });
+
       setCategories(categoriesWithNominees);
     } catch (error) {
-      console.error("Erreur lors du chargement des données:", error);
+      logger.error('Erreur lors du chargement des données:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -68,9 +98,13 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     category_id: string;
   }) => {
     try {
+      logger.info('Tentative d\'ajout d\'un nominé:', nominee);
       const { error } = await supabase.from("nominees").insert([nominee]);
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Erreur lors de l\'ajout du nominé:', error);
+        throw error;
+      }
 
       toast({
         title: "Succès",
@@ -80,7 +114,7 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
       onUpdate();
       await fetchData();
     } catch (error) {
-      console.error("Erreur lors de l'ajout du nominé:", error);
+      logger.error('Erreur lors de l\'ajout du nominé:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -91,9 +125,13 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
 
   const deleteNominee = async (id: string) => {
     try {
+      logger.info('Tentative de suppression du nominé:', id);
       const { error } = await supabase.from("nominees").delete().eq("id", id);
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Erreur lors de la suppression du nominé:', error);
+        throw error;
+      }
 
       toast({
         title: "Succès",
@@ -103,7 +141,7 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
       onUpdate();
       await fetchData();
     } catch (error) {
-      console.error("Erreur lors de la suppression du nominé:", error);
+      logger.error('Erreur lors de la suppression du nominé:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
