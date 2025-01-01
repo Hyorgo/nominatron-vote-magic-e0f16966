@@ -26,7 +26,7 @@ export const useNomineeForm = ({ nominee, onUpdate, onClose }: UseNomineeFormPro
   };
 
   const handleSubmit = async () => {
-    logger.info('Début de la mise à jour du nominé', {
+    logger.info('Starting nominee update', {
       nomineeId: nominee.id,
       formData
     });
@@ -44,11 +44,11 @@ export const useNomineeForm = ({ nominee, onUpdate, onClose }: UseNomineeFormPro
         .eq('id', nominee.id);
 
       if (error) {
-        logger.error('Erreur lors de la mise à jour', error);
+        logger.error('Update error:', error);
         throw error;
       }
 
-      logger.info('Nominé mis à jour avec succès');
+      logger.info('Nominee updated successfully');
       toast({
         title: "Succès",
         description: "Nominé mis à jour avec succès"
@@ -56,7 +56,7 @@ export const useNomineeForm = ({ nominee, onUpdate, onClose }: UseNomineeFormPro
       onUpdate();
       onClose();
     } catch (error) {
-      logger.error('Erreur lors de la mise à jour du nominé:', error);
+      logger.error('Update failed:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le nominé",

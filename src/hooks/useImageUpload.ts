@@ -9,29 +9,19 @@ interface UseImageUploadOptions {
 }
 
 export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions) => {
-  const [imageError, setImageError] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
-
-  const validateImageUrl = async (url: string): Promise<boolean> => {
-    try {
-      const response = await fetch(url, { method: 'HEAD' });
-      return response.ok;
-    } catch (error) {
-      logger.error('Error validating image URL:', error);
-      return false;
-    }
-  };
 
   const uploadImage = async (file: File) => {
     if (!file) {
-      logger.warn('No file selected');
+      logger.warn('No file selected for upload');
       return;
     }
 
+    setIsUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      const filePath = fileName;
 
       logger.info('Starting image upload', {
         fileName,
@@ -40,12 +30,11 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
         bucket: bucketName
       });
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data } = await supabase.storage
         .from(bucketName)
-        .upload(filePath, file, {
+        .upload(fileName, file, {
           cacheControl: '3600',
-          upsert: false,
-          contentType: file.type
+          upsert: false
         });
 
       if (uploadError) {
@@ -53,17 +42,19 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
         throw uploadError;
       }
 
+      // Get the full public URL
       const { data: { publicUrl } } = supabase.storage
         .from(bucketName)
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
 
-      // Validate the public URL is accessible
-      const isValid = await validateImageUrl(publicUrl);
-      if (!isValid) {
+      logger.info('Image uploaded successfully', { publicUrl });
+
+      // Verify the URL is accessible
+      const response = await fetch(publicUrl, { method: 'HEAD' });
+      if (!response.ok) {
         throw new Error('Generated URL is not accessible');
       }
 
-      logger.info('Image uploaded successfully', { publicUrl });
       onSuccess(publicUrl);
       toast({
         title: "Succès",
@@ -71,19 +62,19 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
       });
     } catch (error) {
       logger.error('Image upload failed:', error);
-      setImageError(true);
       toast({
         title: "Erreur",
         description: "Impossible de télécharger l'image",
         variant: "destructive"
       });
       throw error;
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return {
     uploadImage,
-    imageError,
-    setImageError
+    isUploading
   };
 };

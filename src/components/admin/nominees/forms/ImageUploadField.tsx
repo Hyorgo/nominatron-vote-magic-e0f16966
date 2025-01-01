@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Loader2, ImageIcon } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
+import { ImagePreview } from "./ImagePreview";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 interface ImageUploadFieldProps {
@@ -18,7 +19,7 @@ export const ImageUploadField = ({
   isUploading,
   setIsUploading
 }: ImageUploadFieldProps) => {
-  const { uploadImage, imageError, setImageError } = useImageUpload({
+  const { uploadImage } = useImageUpload({
     bucketName: 'nominees-images',
     onSuccess: onImageChange
   });
@@ -27,32 +28,21 @@ export const ImageUploadField = ({
     const file = event.target.files?.[0];
     if (file) {
       setIsUploading(true);
-      await uploadImage(file);
-      setIsUploading(false);
+      try {
+        await uploadImage(file);
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
   return (
     <div className="space-y-4">
-      {imageUrl && !imageError ? (
-        <div className="relative h-32 w-full overflow-hidden rounded-lg border border-gray-200">
-          <img
-            src={imageUrl}
-            alt={nomineeName}
-            className="h-full w-full object-cover"
-            onError={() => setImageError(true)}
-          />
-        </div>
-      ) : (
-        <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50">
-          <div className="text-center">
-            <ImageIcon className="mx-auto h-8 w-8 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-500">
-              {imageError ? "Erreur de chargement de l'image" : "Aucune image"}
-            </p>
-          </div>
-        </div>
-      )}
+      <ImagePreview
+        imageUrl={imageUrl}
+        nomineeName={nomineeName}
+        onError={() => onImageChange("")}
+      />
       
       <div className="flex items-center gap-4">
         <Input
@@ -77,7 +67,7 @@ export const ImageUploadField = ({
           ) : (
             <>
               <Upload className="mr-2 h-4 w-4" />
-              {imageUrl && !imageError ? "Changer l'image" : "Ajouter une image"}
+              {imageUrl ? "Changer l'image" : "Ajouter une image"}
             </>
           )}
         </Button>

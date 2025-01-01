@@ -3,13 +3,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Category } from "@/types/nominees";
 
+interface NomineeFormFields {
+  name: string;
+  description: string;
+  category_id: string;
+}
+
 interface NomineeFormFieldsProps {
-  formData: {
-    name: string;
-    description: string;
-    category_id: string;
-  };
-  onFormChange: (field: string, value: string) => void;
+  formData: NomineeFormFields;
+  onFormChange: (field: keyof NomineeFormFields, value: string) => void;
   categories: Category[];
 }
 
