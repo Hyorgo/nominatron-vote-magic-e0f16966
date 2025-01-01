@@ -10,12 +10,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Plus, Upload, Loader2 } from "lucide-react";
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Plus, Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { Category } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -58,6 +58,7 @@ export const AddNomineeForm = ({ categories, onSubmit }: AddNomineeFormProps) =>
         description: "Image téléchargée avec succès"
       });
     } catch (error) {
+      console.error('Erreur lors du téléchargement:', error);
       toast({
         title: "Erreur",
         description: "Impossible de télécharger l'image",
@@ -87,92 +88,96 @@ export const AddNomineeForm = ({ categories, onSubmit }: AddNomineeFormProps) =>
   };
 
   return (
-    <TooltipProvider>
-      <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            placeholder="Nom du nominé"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+    <Card>
+      <CardHeader>
+        <CardTitle>Ajouter un nouveau nominé</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              placeholder="Nom du nominé"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <Select value={categoryId} onValueChange={setCategoryId} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner une catégorie" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Textarea
+            placeholder="Description du nominé"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             required
           />
-          <Select value={categoryId} onValueChange={setCategoryId} required>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <SelectTrigger>
-                  <SelectValue placeholder="Sélectionner une catégorie" />
-                </SelectTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Choisissez la catégorie du nominé</p>
-              </TooltipContent>
-            </Tooltip>
-            <SelectContent>
-              {categories.map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Textarea
-          placeholder="Description du nominé"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <div className="space-y-4">
-          {imageUrl && (
-            <div className="relative h-32 w-full overflow-hidden rounded-lg">
-              <img
-                src={imageUrl}
-                alt={name}
-                className="h-full w-full object-cover"
+
+          <div className="space-y-4">
+            {imageUrl && (
+              <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
+                <img
+                  src={imageUrl}
+                  alt={name}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+
+            <div className="flex items-center gap-4">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="image-upload"
               />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-32 border-dashed"
+                disabled={isUploading}
+                onClick={() => document.getElementById('image-upload')?.click()}
+              >
+                {isUploading ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <span>Téléchargement en cours...</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    {imageUrl ? (
+                      <>
+                        <ImageIcon className="h-6 w-6" />
+                        <span>Changer l'image</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-6 w-6" />
+                        <span>Cliquez ou déposez une image ici</span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </Button>
             </div>
-          )}
-          <div className="flex items-center gap-4">
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-              id="image-upload"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              disabled={isUploading}
-              onClick={() => document.getElementById('image-upload')?.click()}
-            >
-              {isUploading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Téléchargement...
-                </>
-              ) : (
-                <>
-                  <Upload className="mr-2 h-4 w-4" />
-                  {imageUrl ? "Changer l'image" : "Ajouter une image"}
-                </>
-              )}
-            </Button>
           </div>
-        </div>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button type="submit" className="w-full" disabled={isUploading}>
-              <Plus className="h-4 w-4 mr-2" />
-              Ajouter un nominé
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Cliquez pour ajouter un nouveau nominé</p>
-          </TooltipContent>
-        </Tooltip>
-      </form>
-    </TooltipProvider>
+
+          <Button type="submit" className="w-full" disabled={isUploading}>
+            <Plus className="h-4 w-4 mr-2" />
+            Ajouter le nominé
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
