@@ -49,7 +49,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "le voxx": "/lovable-uploads/d232e803-234a-4525-bb52-6b57c6d414b4.png",
   "casa soho": "/lovable-uploads/24058066-c9a6-40ed-a1f6-6ba620ea36ab.png",
   "cactu bar": "/lovable-uploads/41892430-8fc7-4881-aef5-11cb3075bf72.png",
-  "cactus bar": "/lovable-uploads/41892430-8fc7-4881-aef5-11cb3075bf72.png"
+  "cactus bar": "/lovable-uploads/41892430-8fc7-4881-aef5-11cb3075bf72.png",
+  "voiles du grand large": "/lovable-uploads/90f85e0d-77bc-4f82-92ab-c571db50e3ca.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
