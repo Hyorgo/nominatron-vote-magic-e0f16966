@@ -60,7 +60,11 @@ const nomineeImageMapping: NomineeImageMapping = {
   "loft club": "/lovable-uploads/3d3940b2-b035-4645-88d7-9c0b7b605aa3.png",
   "avenue 45": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
   "l'avenue 45": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
-  "drungly": "/lovable-uploads/e1df94b2-d88b-4f72-9c4e-d57872fbc1bf.png"
+  "drungly": "/lovable-uploads/e1df94b2-d88b-4f72-9c4e-d57872fbc1bf.png",
+  "club la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
+  "le club": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
+  "le club by la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
+  "club by la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -72,5 +76,5 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
-  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", "le club by la maison", "club by la maison"].includes(normalizedName);
 };
