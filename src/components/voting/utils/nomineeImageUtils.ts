@@ -36,7 +36,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "espit chupitos": "/lovable-uploads/6882e33f-5fbb-4b92-8db3-0de73e306450.png",
   "quai 19": "/lovable-uploads/8bc34934-e72d-4f40-b7ea-c5c9c4d1fbf0.png",
   "el sombrero": "/lovable-uploads/2abbb4c6-6d35-47d3-b1a1-b073181b3fe9.png",
-  "l'excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png"
+  "l'excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
+  "le ted": "/lovable-uploads/9d47d1ed-ebc9-4819-b481-5e9870d7a8dc.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
