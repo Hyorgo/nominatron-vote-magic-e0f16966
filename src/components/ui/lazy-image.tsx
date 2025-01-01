@@ -35,7 +35,7 @@ const LazyImage = ({
           throw new Error('No image source');
         }
 
-        logger.info('Loading image:', { originalSrc: src });
+        logger.info('Loading image:', { src });
 
         // Si c'est une URL complète, on l'utilise directement
         if (src.startsWith('http')) {
@@ -44,23 +44,31 @@ const LazyImage = ({
           return;
         }
 
-        // Sinon, on génère l'URL publique via Supabase
+        // Si c'est un chemin de stockage Supabase, on extrait le nom du fichier
         const fileName = src.split('/').pop();
         if (!fileName) {
+          logger.error('Invalid file name from path:', { src });
           throw new Error('Invalid file name');
         }
 
-        logger.info('Generating public URL for:', { fileName });
-        const { data } = supabase.storage
+        logger.info('Getting public URL for file:', { fileName });
+        
+        // Obtenir l'URL publique via Supabase
+        const { data: publicUrlData } = supabase.storage
           .from('nominees-images')
           .getPublicUrl(fileName);
 
-        if (!data?.publicUrl) {
+        if (!publicUrlData?.publicUrl) {
+          logger.error('Failed to get public URL for:', { fileName });
           throw new Error('Failed to generate public URL');
         }
 
-        logger.info('Successfully generated public URL:', { publicUrl: data.publicUrl });
-        setImageSrc(data.publicUrl);
+        logger.info('Successfully generated public URL:', { 
+          fileName,
+          publicUrl: publicUrlData.publicUrl 
+        });
+        
+        setImageSrc(publicUrlData.publicUrl);
       } catch (error) {
         logger.error('Error processing image:', { error, src });
         setHasError(true);
