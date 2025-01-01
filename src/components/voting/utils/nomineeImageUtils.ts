@@ -133,7 +133,12 @@ const nomineeImageMapping: NomineeImageMapping = {
   "LE SIX": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
   "Le Six": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
   "six": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
-  "SIX": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png"
+  "SIX": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
+  "l'horloge": "/lovable-uploads/bbda7949-4c58-4d20-b1ce-dc590eaaca8e.png",
+  "L'HORLOGE": "/lovable-uploads/bbda7949-4c58-4d20-b1ce-dc590eaaca8e.png",
+  "L'Horloge": "/lovable-uploads/bbda7949-4c58-4d20-b1ce-dc590eaaca8e.png",
+  "horloge": "/lovable-uploads/bbda7949-4c58-4d20-b1ce-dc590eaaca8e.png",
+  "HORLOGE": "/lovable-uploads/bbda7949-4c58-4d20-b1ce-dc590eaaca8e.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -165,5 +170,5 @@ export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
     "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", 
     "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", 
     "le club by la maison", "club by la maison", "rambler", "rambler cocktail club", "quai 22",
-    "six", "le six"].includes(normalizedName);
+    "six", "le six", "horloge", "l'horloge"].includes(normalizedName);
 };
