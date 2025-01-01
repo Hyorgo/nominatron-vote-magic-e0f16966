@@ -70,14 +70,39 @@ export const EditNomineeForm = ({
     }
   };
 
-  const handleImageChange = (url: string | null) => {
+  const handleImageChange = async (url: string | null) => {
     logger.info('Mise à jour de l\'image:', { url });
-    setFormData(prev => ({ ...prev, image_url: url || '' }));
-    if (!url) {
+    
+    // Si l'URL est null, cela signifie qu'on veut supprimer l'image
+    if (url === null) {
+      // Si il y avait une ancienne image, on la supprime du storage
+      if (formData.image_url) {
+        const fileName = formData.image_url.split('/').pop();
+        if (fileName) {
+          const { error } = await supabase.storage
+            .from('nominees-images')
+            .remove([fileName]);
+          
+          if (error) {
+            logger.error('Erreur lors de la suppression de l\'image:', error);
+            toast({
+              title: "Erreur",
+              description: "Impossible de supprimer l'image",
+              variant: "destructive"
+            });
+            return;
+          }
+        }
+      }
+      
+      setFormData(prev => ({ ...prev, image_url: '' }));
       toast({
         title: "Succès",
         description: "Image supprimée avec succès"
       });
+    } else {
+      // Mise à jour avec la nouvelle URL
+      setFormData(prev => ({ ...prev, image_url: url }));
     }
   };
 

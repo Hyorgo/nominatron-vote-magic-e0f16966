@@ -27,6 +27,16 @@ export const ImageUploadField = ({
 
     setIsUploading(true);
     try {
+      // Si une image existe déjà, on la supprime d'abord
+      if (imageUrl) {
+        const oldFileName = imageUrl.split('/').pop();
+        if (oldFileName) {
+          await supabase.storage
+            .from('nominees-images')
+            .remove([oldFileName]);
+        }
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
@@ -36,7 +46,7 @@ export const ImageUploadField = ({
         fileType: file.type
       });
 
-      const { data, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('nominees-images')
         .upload(fileName, file, {
           contentType: file.type,
@@ -71,9 +81,35 @@ export const ImageUploadField = ({
     }
   };
 
-  const handleDeleteImage = () => {
+  const handleDeleteImage = async () => {
     logger.info('Suppression de l\'image');
-    onImageUploaded(null);
+    
+    if (imageUrl) {
+      const fileName = imageUrl.split('/').pop();
+      if (fileName) {
+        setIsUploading(true);
+        try {
+          const { error } = await supabase.storage
+            .from('nominees-images')
+            .remove([fileName]);
+
+          if (error) {
+            throw error;
+          }
+
+          onImageUploaded(null);
+        } catch (error) {
+          logger.error('Erreur lors de la suppression:', error);
+          toast({
+            title: "Erreur",
+            description: "Impossible de supprimer l'image",
+            variant: "destructive"
+          });
+        } finally {
+          setIsUploading(false);
+        }
+      }
+    }
   };
 
   return (
