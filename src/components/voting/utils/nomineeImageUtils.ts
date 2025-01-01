@@ -74,7 +74,9 @@ const nomineeImageMapping: NomineeImageMapping = {
   "pool beach party": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
   "clubbing revival": "/lovable-uploads/6f21c914-775b-42ed-9737-8e8375c8ed4b.png",
   "open air": "/lovable-uploads/5f304ae1-555c-438e-9c56-2e75305bffda.png",
-  "open air party": "/lovable-uploads/5f304ae1-555c-438e-9c56-2e75305bffda.png"
+  "open air party": "/lovable-uploads/5f304ae1-555c-438e-9c56-2e75305bffda.png",
+  "grand machon du lou": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
+  "le grand machon du lou": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
