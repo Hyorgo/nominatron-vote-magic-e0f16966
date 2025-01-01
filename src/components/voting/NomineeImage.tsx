@@ -8,10 +8,16 @@ interface NomineeImageProps {
 }
 
 export const NomineeImage = ({ nomineeName, imageUrl, isSelected }: NomineeImageProps) => {
+  console.log('NomineeImage - Nom reçu:', nomineeName);
   const finalImageUrl = getNomineeImageUrl(nomineeName, imageUrl);
+  console.log('NomineeImage - URL finale:', finalImageUrl);
   const useBlackBg = shouldUseBlackBackground(nomineeName);
+  console.log('NomineeImage - Fond noir:', useBlackBg);
 
-  if (!finalImageUrl) return null;
+  if (!finalImageUrl) {
+    console.log('NomineeImage - Pas d\'URL d\'image, ne rien afficher');
+    return null;
+  }
 
   return (
     <div className="relative h-48 sm:h-64 overflow-hidden rounded-t-lg">
@@ -24,6 +30,10 @@ export const NomineeImage = ({ nomineeName, imageUrl, isSelected }: NomineeImage
           isSelected && "brightness-110",
           useBlackBg && "bg-black p-4"
         )}
+        onError={(e) => {
+          console.error('Erreur de chargement de l\'image:', finalImageUrl);
+          console.error('Pour le nominé:', nomineeName);
+        }}
       />
       {isSelected && (
         <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />
