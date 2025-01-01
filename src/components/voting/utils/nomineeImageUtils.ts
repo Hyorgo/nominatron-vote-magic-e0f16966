@@ -56,7 +56,6 @@ const nomineeImageMapping: NomineeImageMapping = {
   "plouf": "/lovable-uploads/885cd64e-defa-4c83-9cda-bffa32aa6e8b.png",
   "bistrot des celestins": "/lovable-uploads/896d1dda-2de1-4715-9329-cff5fc98886a.png",
   "bdc": "/lovable-uploads/896d1dda-2de1-4715-9329-cff5fc98886a.png",
-  "tilt": "/lovable-uploads/d6ae541c-f1fb-497e-858a-61b011a835bc.png",
   "loft club": "/lovable-uploads/3d3940b2-b035-4645-88d7-9c0b7b605aa3.png",
   "avenue 45": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
   "l'avenue 45": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
@@ -78,7 +77,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "grand machon du lou": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
   "le grand machon du lou": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
   "loic tilt": "/lovable-uploads/5c4eab83-df2e-4602-8c2b-65ecd465097a.png",
-  "tilt": "/lovable-uploads/5c4eab83-df2e-4602-8c2b-65ecd465097a.png"
+  "flufy la maison": "/lovable-uploads/eefb7ecf-041e-4344-bc21-4d27314e214d.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
