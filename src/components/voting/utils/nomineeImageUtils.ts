@@ -40,7 +40,9 @@ const nomineeImageMapping: NomineeImageMapping = {
   "excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
   "ted": "/lovable-uploads/9d47d1ed-ebc9-4819-b481-5e9870d7a8dc.png",
   "addict": "/lovable-uploads/0307341d-08e8-4b10-afe9-59804d2bbc08.png",
-  "bambolo": "/lovable-uploads/b41ac4da-fdbd-4f16-9d17-f2694c647080.png"
+  "bambolo": "/lovable-uploads/b41ac4da-fdbd-4f16-9d17-f2694c647080.png",
+  "les assembleurs": "/lovable-uploads/691fd4d5-094e-4c9d-816e-5cbedf786a67.png",
+  "assembleurs": "/lovable-uploads/691fd4d5-094e-4c9d-816e-5cbedf786a67.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -52,5 +54,5 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
-  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs"].includes(normalizedName);
 };
