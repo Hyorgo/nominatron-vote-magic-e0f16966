@@ -22,6 +22,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "casa jaguar": "/lovable-uploads/2bfb7476-b837-47c0-a820-109983e47ae8.png",
   "poisson chat": "/lovable-uploads/83b8592f-a31c-4432-a949-5cecf2f8fe29.png",
   "lockers": "/lovable-uploads/c6245aa1-5be4-4779-b999-54dd43ac850f.png",
+  "javoo": "/lovable-uploads/b629982b-e48e-44c0-a28e-407b800addab.png",
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
