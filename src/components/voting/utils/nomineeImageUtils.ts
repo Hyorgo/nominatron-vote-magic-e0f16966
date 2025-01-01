@@ -122,7 +122,24 @@ const nomineeImageMapping: NomineeImageMapping = {
   "cactus bar": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
   "CACTUS BAR": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
   "Cactus Bar": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
-  "cactus": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png"
+  "cactus": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
+  "voiles du grand large": "/lovable-uploads/f44edba2-f449-423f-911e-7f49b4ec1867.png",
+  "VOILES DU GRAND LARGE": "/lovable-uploads/f44edba2-f449-423f-911e-7f49b4ec1867.png",
+  "Voiles du Grand Large": "/lovable-uploads/f44edba2-f449-423f-911e-7f49b4ec1867.png",
+  "bistrot brigitte": "/lovable-uploads/93ff9fb3-8967-49d7-a277-5c18863ea880.png",
+  "BISTROT BRIGITTE": "/lovable-uploads/93ff9fb3-8967-49d7-a277-5c18863ea880.png",
+  "Bistrot Brigitte": "/lovable-uploads/93ff9fb3-8967-49d7-a277-5c18863ea880.png",
+  "red garden": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
+  "RED GARDEN": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
+  "Red Garden": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
+  "plouf": "/lovable-uploads/885cd64e-defa-4c83-9cda-bffa32aa6e8b.png",
+  "PLOUF": "/lovable-uploads/885cd64e-defa-4c83-9cda-bffa32aa6e8b.png",
+  "Plouf": "/lovable-uploads/885cd64e-defa-4c83-9cda-bffa32aa6e8b.png",
+  "bistrot des celestins": "/lovable-uploads/24058066-c9a6-40ed-a1f6-6ba620ea36ab.png",
+  "BISTROT DES CELESTINS": "/lovable-uploads/24058066-c9a6-40ed-a1f6-6ba620ea36ab.png",
+  "Bistrot des Celestins": "/lovable-uploads/24058066-c9a6-40ed-a1f6-6ba620ea36ab.png",
+  "bdc": "/lovable-uploads/24058066-c9a6-40ed-a1f6-6ba620ea36ab.png",
+  "BDC": "/lovable-uploads/24058066-c9a6-40ed-a1f6-6ba620ea36ab.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
