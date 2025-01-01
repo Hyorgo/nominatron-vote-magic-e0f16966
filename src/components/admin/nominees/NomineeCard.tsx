@@ -15,17 +15,12 @@ export const NomineeCard = ({ nominee, onDelete, onEdit }: NomineeCardProps) => 
     <Card className="p-4 space-y-2">
       <div className="flex justify-between items-start gap-4">
         <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 relative">
-          {nominee.image_url ? (
-            <ImageWithFallback
-              src={nominee.image_url}
-              alt={nominee.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-sm text-gray-400">Pas d'image</span>
-            </div>
-          )}
+          <ImageWithFallback
+            src={nominee.image_url}
+            alt={nominee.name}
+            type="profile"
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="flex-1">
           <h3 className="font-semibold">{nominee.name}</h3>

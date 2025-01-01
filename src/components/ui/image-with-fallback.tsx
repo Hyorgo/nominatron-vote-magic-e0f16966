@@ -8,24 +8,29 @@ interface ImageWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElemen
   fallback?: React.ReactNode;
   showLoadingState?: boolean;
   bucket?: string;
+  type?: 'profile' | 'tech' | 'work' | 'default';
 }
+
+const FALLBACK_IMAGES = {
+  profile: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
+  tech: 'https://images.unsplash.com/photo-1518770660439-4636190af475',
+  work: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d',
+  default: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b'
+};
 
 export const ImageWithFallback = ({
   src,
   alt,
   className,
   bucket = 'nominees-images',
-  fallback = (
-    <div className="flex flex-col items-center justify-center w-full h-full bg-gray-100 rounded-lg p-4">
-      <ImageIcon className="w-8 h-8 text-gray-400" />
-      <p className="mt-2 text-sm text-gray-500">Image non disponible</p>
-    </div>
-  ),
+  type = 'default',
+  fallback,
   showLoadingState = true,
   ...props
 }: ImageWithFallbackProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
 
   // Construire l'URL de l'image en utilisant la fonction utilitaire
   const imageUrl = getStorageImageUrl(bucket, src);
@@ -38,12 +43,15 @@ export const ImageWithFallback = ({
   const handleError = () => {
     logger.error('Erreur de chargement de l\'image:', { src: imageUrl });
     setHasError(true);
+    setUseFallback(true);
     setIsLoading(false);
   };
 
-  if (hasError) {
+  if (hasError && fallback) {
     return <>{fallback}</>;
   }
+
+  const finalSrc = useFallback ? FALLBACK_IMAGES[type] : imageUrl;
 
   return (
     <>
@@ -51,7 +59,7 @@ export const ImageWithFallback = ({
         <Skeleton className="w-full h-full absolute inset-0" />
       )}
       <img
-        src={imageUrl}
+        src={finalSrc}
         alt={alt}
         className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'}`}
         onLoad={handleLoad}
