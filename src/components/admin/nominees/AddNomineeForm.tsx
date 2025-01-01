@@ -19,6 +19,7 @@ import { Plus, Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { Category } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 interface AddNomineeFormProps {
   categories: Category[];
@@ -125,9 +126,10 @@ export const AddNomineeForm = ({ categories, onSubmit }: AddNomineeFormProps) =>
           <div className="space-y-4">
             {imageUrl && (
               <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
-                <img
+                <ImageWithFallback
                   src={imageUrl}
                   alt={name}
+                  type="profile"
                   className="h-full w-full object-cover"
                 />
               </div>

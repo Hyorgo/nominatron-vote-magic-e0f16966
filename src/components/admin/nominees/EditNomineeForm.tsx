@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, ImageIcon } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
 import { ImageUploadHandler } from "./forms/ImageUploadHandler";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 interface EditNomineeFormProps {
   nominee: Nominee;
@@ -101,17 +102,11 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
           <div className="space-y-4">
             {formData.image_url && (
               <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
-                <img
+                <ImageWithFallback
                   src={formData.image_url}
                   alt={formData.name}
+                  type="profile"
                   className="h-full w-full object-cover"
-                  onError={(e) => {
-                    logger.error('Erreur de chargement de l\'image:', {
-                      imageUrl: formData.image_url
-                    });
-                    e.currentTarget.src = '/placeholder.svg';
-                    e.currentTarget.className = 'h-full w-full object-contain p-4';
-                  }}
                 />
               </div>
             )}

@@ -4,6 +4,7 @@ import { Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { logger } from '@/services/monitoring/logger';
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 interface ImageUploadFieldProps {
   imageUrl: string;
@@ -70,9 +71,10 @@ export const ImageUploadField = ({
     <div className="space-y-4">      
       {imageUrl && (
         <div className="relative h-32 w-full overflow-hidden rounded-lg">
-          <img
+          <ImageWithFallback
             src={imageUrl}
             alt={nomineeName}
+            type="profile"
             className="h-full w-full object-cover"
           />
         </div>
