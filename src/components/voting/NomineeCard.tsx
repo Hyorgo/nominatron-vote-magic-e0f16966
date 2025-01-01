@@ -30,15 +30,18 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
   
-  // Gestion des images spécifiques pour MY et PLAN B
+  // Gestion des images spécifiques pour MY, PLAN B et THE MAZE
   const nomineeName = nominee.name.toLowerCase();
   const isMyNominee = nomineeName === "my";
   const isPlanBNominee = nomineeName === "plan b";
+  const isMazeNominee = nomineeName === "the maze";
   
   const imageUrl = isMyNominee 
     ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
     : isPlanBNominee
     ? "/lovable-uploads/c9f7ee7f-7f01-4778-bf67-98c3af662375.png"
+    : isMazeNominee
+    ? "/lovable-uploads/58e4d1a2-4dfb-4c0d-a74d-edf7b9133d2e.png"
     : nominee.image_url;
   
   return (
@@ -70,7 +73,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                 "object-contain w-full h-full transition-transform duration-500",
                 "group-hover:scale-110",
                 isSelected && "brightness-110",
-                (isMyNominee || isPlanBNominee) && "bg-black p-4" // Ajout d'un fond noir et padding pour MY et PLAN B
+                (isMyNominee || isPlanBNominee || isMazeNominee) && "bg-black p-4" // Ajout d'un fond noir et padding pour MY, PLAN B et THE MAZE
               )}
             />
             {isSelected && (
