@@ -38,7 +38,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "el sombrero": "/lovable-uploads/2abbb4c6-6d35-47d3-b1a1-b073181b3fe9.png",
   "l'excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
   "le ted": "/lovable-uploads/9d47d1ed-ebc9-4819-b481-5e9870d7a8dc.png",
-  "l'addict": "/lovable-uploads/0307341d-08e8-4b10-afe9-59804d2bbc08.png"
+  "l'addict": "/lovable-uploads/0307341d-08e8-4b10-afe9-59804d2bbc08.png",
+  "bambolo": "/lovable-uploads/b41ac4da-fdbd-4f16-9d17-f2694c647080.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -48,5 +49,5 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase();
-  return ["bacchus", "bambi", "18&10 apero club"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo"].includes(normalizedName);
 };
