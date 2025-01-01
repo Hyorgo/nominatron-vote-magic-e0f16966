@@ -30,7 +30,7 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
   
-  // Gestion des images spécifiques pour MY, PLAN B, THE MAZE, F&K, L'ILE, BUS PARADISE, KAIA et NEL'S CLUB
+  // Gestion des images spécifiques pour MY, PLAN B, THE MAZE, F&K, L'ILE, BUS PARADISE, KAIA, NEL'S CLUB et LA MAISON BLEUE
   const nomineeName = nominee.name.toLowerCase();
   const isMyNominee = nomineeName === "my";
   const isPlanBNominee = nomineeName === "plan b";
@@ -40,6 +40,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
   const isParadiseNominee = nomineeName === "bus paradise";
   const isKaiaNominee = nomineeName === "kaia";
   const isNelsClubNominee = nomineeName === "nel's club";
+  const isMaisonBleueNominee = nomineeName === "la maison bleue";
   
   const imageUrl = isMyNominee 
     ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
@@ -57,6 +58,8 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
     ? "/lovable-uploads/822f2109-e39c-49bc-9d49-a0caff61ca93.png"
     : isNelsClubNominee
     ? "/lovable-uploads/25203221-e2c4-47ba-9bca-3268e1a91e12.png"
+    : isMaisonBleueNominee
+    ? "/lovable-uploads/b7e6bd80-2442-4cd2-ab7c-d9844d394308.png"
     : nominee.image_url;
   
   return (
@@ -88,7 +91,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                 "object-contain w-full h-full transition-transform duration-500",
                 "group-hover:scale-110",
                 isSelected && "brightness-110",
-                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee || isNelsClubNominee) && "bg-black p-4" // Ajout d'un fond noir et padding pour tous les logos
+                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee || isNelsClubNominee || isMaisonBleueNominee) && "bg-black p-4" // Ajout d'un fond noir et padding pour tous les logos
               )}
             />
             {isSelected && (
