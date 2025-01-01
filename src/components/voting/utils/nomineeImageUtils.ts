@@ -81,7 +81,12 @@ const nomineeImageMapping: NomineeImageMapping = {
   "open air party": "/lovable-uploads/5f304ae1-555c-438e-9c56-2e75305bffda.png",
   "grand machon du lou": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
   "le grand machon du lou": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
-  "loic tilt": "/lovable-uploads/5c4eab83-df2e-4602-8c2b-65ecd465097a.png",
+  "tilt": "/lovable-uploads/f9d1ba3f-73fa-49a1-9591-aa644c5fbbab.png",
+  "TILT": "/lovable-uploads/f9d1ba3f-73fa-49a1-9591-aa644c5fbbab.png",
+  "Tilt": "/lovable-uploads/f9d1ba3f-73fa-49a1-9591-aa644c5fbbab.png",
+  "loic tilt": "/lovable-uploads/f9d1ba3f-73fa-49a1-9591-aa644c5fbbab.png",
+  "LOIC TILT": "/lovable-uploads/f9d1ba3f-73fa-49a1-9591-aa644c5fbbab.png",
+  "Loic Tilt": "/lovable-uploads/f9d1ba3f-73fa-49a1-9591-aa644c5fbbab.png",
   "flufy la maison": "/lovable-uploads/eefb7ecf-041e-4344-bc21-4d27314e214d.png",
   "micka l'horloge": "/lovable-uploads/9b7fc8ac-e5ac-4116-920b-16ae4daf2ee4.png",
   "tom": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png",
@@ -123,5 +128,5 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
-  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", "le club by la maison", "club by la maison"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loic tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", "le club by la maison", "club by la maison"].includes(normalizedName);
 };
