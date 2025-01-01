@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Category, Nominee } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
 
 interface EditNomineeFormProps {
@@ -29,9 +29,56 @@ export const EditNomineeForm = ({
     name: nominee.name,
     description: nominee.description,
     category_id: nominee.category_id || "",
+    image_url: nominee.image_url || ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+
+      logger.info('Début du téléchargement de l\'image', {
+        fileName,
+        fileSize: file.size,
+        fileType: file.type
+      });
+
+      const { error: uploadError } = await supabase.storage
+        .from('nominees-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('nominees-images')
+        .getPublicUrl(fileName);
+
+      setFormData(prev => ({ ...prev, image_url: publicUrl }));
+      
+      toast({
+        title: "Succès",
+        description: "Image téléchargée avec succès"
+      });
+      
+      logger.info('Image téléchargée avec succès', { publicUrl });
+    } catch (error) {
+      logger.error('Erreur lors du téléchargement:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de télécharger l'image",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     logger.info('Début de la mise à jour du nominé', {
@@ -47,6 +94,7 @@ export const EditNomineeForm = ({
           name: formData.name,
           description: formData.description,
           category_id: formData.category_id,
+          image_url: formData.image_url
         })
         .eq('id', nominee.id);
 
@@ -113,10 +161,60 @@ export const EditNomineeForm = ({
             </SelectContent>
           </Select>
 
+          <div className="space-y-4">
+            {formData.image_url && (
+              <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
+                <img
+                  src={formData.image_url}
+                  alt={formData.name}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+
+            <div className="flex items-center gap-4">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="image-upload-edit"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-32 border-dashed"
+                disabled={isUploading}
+                onClick={() => document.getElementById('image-upload-edit')?.click()}
+              >
+                {isUploading ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <span>Téléchargement en cours...</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    {formData.image_url ? (
+                      <>
+                        <ImageIcon className="h-6 w-6" />
+                        <span>Changer l'image</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-6 w-6" />
+                        <span>Cliquez ou déposez une image ici</span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </Button>
+            </div>
+          </div>
+
           <Button 
             onClick={handleSubmit} 
             className="w-full"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploading}
           >
             {isSubmitting ? (
               <>
