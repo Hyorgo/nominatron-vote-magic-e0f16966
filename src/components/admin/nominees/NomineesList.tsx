@@ -29,14 +29,20 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   const allNominees = categories.flatMap(category => {
     logger.info(`Traitement de la catégorie ${category.name}:`, {
       categoryId: category.id,
-      nomineesCount: category.nominees.length
+      nomineesCount: category.nominees.length,
+      nominees: category.nominees.map(n => ({
+        id: n.id,
+        name: n.name,
+        categoryId: n.category_id
+      }))
     });
     
     return category.nominees.map(nominee => {
       logger.info(`Nominé trouvé dans ${category.name}:`, {
         nomineeName: nominee.name,
         nomineeId: nominee.id,
-        categoryId: category.id
+        categoryId: category.id,
+        nomineeCategoryId: nominee.category_id
       });
       
       return {
@@ -45,16 +51,6 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
         category_id: category.id
       };
     });
-  });
-
-  logger.info('État actuel:', {
-    selectedCategory,
-    totalNominees: allNominees.length,
-    categories: categories.map(c => ({
-      id: c.id,
-      name: c.name,
-      nomineesCount: c.nominees.length
-    }))
   });
 
   // Filtrer les nominés par catégorie
@@ -67,7 +63,8 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
           nomineeCategoryId: nominee.category_id,
           selectedCategory,
           matches,
-          categoryName: nominee.categoryName
+          categoryName: nominee.categoryName,
+          comparison: `${nominee.category_id} === ${selectedCategory}`
         });
         return matches;
       });
@@ -75,9 +72,15 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   logger.info('Résultats du filtrage:', {
     selectedCategory,
     filteredCount: categoryFilteredNominees.length,
+    availableCategories: categories.map(c => ({
+      id: c.id,
+      name: c.name,
+      nomineesCount: c.nominees.length
+    })),
     nominees: categoryFilteredNominees.map(n => ({
       name: n.name,
-      category: n.categoryName
+      category: n.categoryName,
+      categoryId: n.category_id
     }))
   });
 
