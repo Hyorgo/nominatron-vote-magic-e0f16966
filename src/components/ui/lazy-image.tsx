@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { logger } from '@/services/monitoring/logger';
 import { Image as ImageIcon } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -20,6 +21,7 @@ const LazyImage = ({
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(src);
 
   useEffect(() => {
     setIsLoaded(false);
@@ -32,28 +34,46 @@ const LazyImage = ({
       return;
     }
 
-    logger.info('Loading image:', { src });
+    const loadImage = async () => {
+      try {
+        // Si l'URL est déjà une URL publique Supabase complète, l'utiliser directement
+        if (src.includes('storage.googleapis.com') || src.includes('supabase.co/storage/v1/object/public')) {
+          setImageSrc(src);
+        } else {
+          // Sinon, essayer de construire l'URL publique
+          const { data } = supabase.storage
+            .from('nominees-images')
+            .getPublicUrl(src.split('/').pop() || src);
+          
+          if (data?.publicUrl) {
+            setImageSrc(data.publicUrl);
+          } else {
+            throw new Error('Unable to get public URL');
+          }
+        }
 
-    const img = new Image();
-    img.src = src;
-    
-    img.onload = () => {
-      logger.info('Image loaded successfully:', { src });
-      setIsLoaded(true);
-      setHasError(false);
+        logger.info('Image source set:', { src: imageSrc });
+      } catch (error) {
+        logger.error('Error processing image URL:', error);
+        setHasError(true);
+        onError?.();
+      }
     };
 
-    img.onerror = () => {
-      logger.error('Image load error:', { src });
-      setHasError(true);
-      onError?.();
-    };
-
-    return () => {
-      img.onload = null;
-      img.onerror = null;
-    };
+    loadImage();
   }, [src, onError]);
+
+  const handleLoad = () => {
+    logger.info('Image loaded successfully:', { src: imageSrc });
+    setIsLoaded(true);
+    setHasError(false);
+  };
+
+  const handleError = () => {
+    logger.error('Image load error:', { src: imageSrc });
+    setHasError(true);
+    onError?.();
+  };
 
   if (hasError) {
     return (
@@ -68,14 +88,11 @@ const LazyImage = ({
     <>
       {!isLoaded && fallback}
       <img
-        src={src}
+        src={imageSrc}
         alt={alt}
         className={`${className} ${!isLoaded ? 'hidden' : ''}`}
-        onError={() => {
-          logger.error('Image load error in img element:', { src });
-          setHasError(true);
-          onError?.();
-        }}
+        onLoad={handleLoad}
+        onError={handleError}
         {...props}
       />
     </>
