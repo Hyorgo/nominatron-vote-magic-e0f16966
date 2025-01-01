@@ -24,10 +24,7 @@ export const ImageUploadField = ({
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) {
-      logger.warn('Aucun fichier sélectionné');
-      return;
-    }
+    if (!file) return;
 
     setIsUploading(true);
     try {
@@ -44,9 +41,7 @@ export const ImageUploadField = ({
         .from('nominees-images')
         .upload(fileName, file);
 
-      if (uploadError) {
-        throw uploadError;
-      }
+      if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
