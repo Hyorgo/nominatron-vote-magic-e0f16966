@@ -30,7 +30,7 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
   
-  // Gestion des images spécifiques pour MY, PLAN B, THE MAZE, F&K, L'ILE et BUS PARADISE
+  // Gestion des images spécifiques pour MY, PLAN B, THE MAZE, F&K, L'ILE, BUS PARADISE et KAIA
   const nomineeName = nominee.name.toLowerCase();
   const isMyNominee = nomineeName === "my";
   const isPlanBNominee = nomineeName === "plan b";
@@ -38,6 +38,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
   const isFKNominee = nomineeName === "f&k";
   const isIleNominee = nomineeName === "l'ile";
   const isParadiseNominee = nomineeName === "bus paradise";
+  const isKaiaNominee = nomineeName === "kaia";
   
   const imageUrl = isMyNominee 
     ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
@@ -51,6 +52,8 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
     ? "/lovable-uploads/e2bb2732-4867-4199-9d7c-93f850f4e8b2.png"
     : isParadiseNominee
     ? "/lovable-uploads/e86ac02b-b1f9-4ba7-b2fe-6c0b71a57d1a.png"
+    : isKaiaNominee
+    ? "/lovable-uploads/822f2109-e39c-49bc-9d49-a0caff61ca93.png"
     : nominee.image_url;
   
   return (
@@ -82,7 +85,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                 "object-contain w-full h-full transition-transform duration-500",
                 "group-hover:scale-110",
                 isSelected && "brightness-110",
-                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee) && "bg-black p-4" // Ajout d'un fond noir et padding pour tous les logos
+                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee) && "bg-black p-4" // Ajout d'un fond noir et padding pour tous les logos
               )}
             />
             {isSelected && (
