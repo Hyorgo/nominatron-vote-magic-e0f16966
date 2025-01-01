@@ -30,10 +30,15 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
   
-  // Si le nominé est "MY", on utilise l'image spécifique
-  const isMyNominee = nominee.name.toLowerCase() === "my";
+  // Gestion des images spécifiques pour MY et PLAN B
+  const nomineeName = nominee.name.toLowerCase();
+  const isMyNominee = nomineeName === "my";
+  const isPlanBNominee = nomineeName === "plan b";
+  
   const imageUrl = isMyNominee 
     ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
+    : isPlanBNominee
+    ? "/lovable-uploads/c9f7ee7f-7f01-4778-bf67-98c3af662375.png"
     : nominee.image_url;
   
   return (
@@ -65,7 +70,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                 "object-contain w-full h-full transition-transform duration-500",
                 "group-hover:scale-110",
                 isSelected && "brightness-110",
-                isMyNominee && "bg-black p-4" // Ajout d'un fond noir et padding pour le logo MY
+                (isMyNominee || isPlanBNominee) && "bg-black p-4" // Ajout d'un fond noir et padding pour MY et PLAN B
               )}
             />
             {isSelected && (
