@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { SocialShare } from "./SocialShare";
+import { NomineeImage } from "./NomineeImage";
 
 interface NomineeCardProps {
   nominee: {
@@ -29,59 +30,6 @@ interface NomineeCardProps {
 
 export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) => {
   console.log(`NomineeCard ${nominee.id} - isSelected:`, isSelected);
-  
-  // Gestion des images spécifiques pour MY, PLAN B, THE MAZE, F&K, L'ILE, BUS PARADISE, KAIA, NEL'S CLUB, LA MAISON BLEUE, LA FERIA, MADEMOISELLE SIMONE, YOU, LA CIGALE, AU BON SECOURS et CASA JAGUAR
-  const nomineeName = nominee.name.toLowerCase();
-  const isMyNominee = nomineeName === "my";
-  const isPlanBNominee = nomineeName === "plan b";
-  const isMazeNominee = nomineeName === "the maze";
-  const isFKNominee = nomineeName === "f&k";
-  const isIleNominee = nomineeName === "l'ile";
-  const isParadiseNominee = nomineeName === "bus paradise";
-  const isKaiaNominee = nomineeName === "kaia";
-  const isNelsClubNominee = nomineeName === "nel's club";
-  const isMaisonBleueNominee = nomineeName === "la maison bleue";
-  const isFeriaNominee = nomineeName === "la feria";
-  const isSimoneNominee = nomineeName === "mademoiselle simone";
-  const isYouNominee = nomineeName === "you";
-  const isCigaleNominee = nomineeName === "la cigale";
-  const isBonSecoursNominee = nomineeName === "au bon secours";
-  const isCasaJaguarNominee = nomineeName === "casa jaguar";
-  const isPoissonChatNominee = nomineeName === "poisson chat";
-  
-  const imageUrl = isMyNominee 
-    ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
-    : isPlanBNominee
-    ? "/lovable-uploads/c9f7ee7f-7f01-4778-bf67-98c3af662375.png"
-    : isMazeNominee
-    ? "/lovable-uploads/58e4d1a2-4dfb-4c0d-a74d-edf7b9133d2e.png"
-    : isFKNominee
-    ? "/lovable-uploads/4cca2c41-ad59-4eb8-8768-d8acd38f6a85.png"
-    : isIleNominee
-    ? "/lovable-uploads/e2bb2732-4867-4199-9d7c-93f850f4e8b2.png"
-    : isParadiseNominee
-    ? "/lovable-uploads/e86ac02b-b1f9-4ba7-b2fe-6c0b71a57d1a.png"
-    : isKaiaNominee
-    ? "/lovable-uploads/822f2109-e39c-49bc-9d49-a0caff61ca93.png"
-    : isNelsClubNominee
-    ? "/lovable-uploads/25203221-e2c4-47ba-9bca-3268e1a91e12.png"
-    : isMaisonBleueNominee
-    ? "/lovable-uploads/b7e6bd80-2442-4cd2-ab7c-d9844d394308.png"
-    : isFeriaNominee
-    ? "/lovable-uploads/6f664826-df3a-424d-8c6d-ccad72240ba6.png"
-    : isSimoneNominee
-    ? "/lovable-uploads/60548362-6418-4f6c-a954-712bc12f6149.png"
-    : isYouNominee
-    ? "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png"
-    : isCigaleNominee
-    ? "/lovable-uploads/f44edba2-f449-423f-911e-7f49b4ec1867.png"
-    : isBonSecoursNominee
-    ? "/lovable-uploads/8a3e3f29-5841-400e-8127-47159cf04eca.png"
-    : isCasaJaguarNominee
-    ? "/lovable-uploads/2bfb7476-b837-47c0-a820-109983e47ae8.png"
-    : isPoissonChatNominee
-    ? "/lovable-uploads/83b8592f-a31c-4432-a949-5cecf2f8fe29.png"
-    : nominee.image_url;
   
   return (
     <TooltipProvider>
@@ -103,23 +51,11 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
           </div>
         )}
         
-        {imageUrl && (
-          <div className="relative h-48 sm:h-64 overflow-hidden rounded-t-lg">
-            <img
-              src={imageUrl}
-              alt={nominee.name}
-              className={cn(
-                "object-contain w-full h-full transition-transform duration-500",
-                "group-hover:scale-110",
-                isSelected && "brightness-110",
-                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee || isNelsClubNominee || isMaisonBleueNominee || isFeriaNominee || isSimoneNominee || isYouNominee || isCigaleNominee || isBonSecoursNominee || isCasaJaguarNominee || isPoissonChatNominee) && "bg-black p-4"
-              )}
-            />
-            {isSelected && (
-              <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />
-            )}
-          </div>
-        )}
+        <NomineeImage
+          nomineeName={nominee.name}
+          imageUrl={nominee.image_url}
+          isSelected={isSelected}
+        />
         
         <CardHeader className="space-y-2 p-5 sm:p-6 flex-grow">
           <CardTitle 
