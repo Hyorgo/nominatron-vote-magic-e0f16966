@@ -33,12 +33,21 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Extraire tous les nominés de toutes les catégories
-  const allNominees = categories.flatMap(category => category.nominees);
+  const allNominees = categories.flatMap(category => {
+    // Ajouter l'information de la catégorie à chaque nominé
+    return category.nominees.map(nominee => ({
+      ...nominee,
+      categoryName: category.name // Ajouter le nom de la catégorie pour l'affichage
+    }));
+  });
   
   // Filtrer d'abord par catégorie si une catégorie est sélectionnée
   const categoryFilteredNominees = selectedCategory === "all" 
     ? allNominees 
-    : allNominees.filter(nominee => nominee.category_id === selectedCategory);
+    : allNominees.filter(nominee => {
+        console.log('Nominee category:', nominee.category_id, 'Selected category:', selectedCategory);
+        return nominee.category_id === selectedCategory;
+      });
 
   // Ensuite appliquer les autres filtres (recherche et tri)
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
