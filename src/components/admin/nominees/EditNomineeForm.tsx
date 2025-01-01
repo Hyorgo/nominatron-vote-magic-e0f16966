@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
 import { ImageUploadField } from "./forms/ImageUploadField";
-import { getStorageFileName } from "@/lib/storage-utils";
 
 interface EditNomineeFormProps {
   nominee: Nominee;
@@ -71,43 +70,6 @@ export const EditNomineeForm = ({
     }
   };
 
-  const handleImageChange = async (url: string | null) => {
-    logger.info('Mise à jour de l\'image:', { url });
-    
-    // Si l'URL est null, cela signifie qu'on veut supprimer l'image
-    if (url === null) {
-      // Si il y avait une ancienne image, on la supprime du storage
-      if (formData.image_url) {
-        const fileName = getStorageFileName(formData.image_url);
-        if (fileName) {
-          logger.info('Suppression de l\'ancienne image:', fileName);
-          const { error } = await supabase.storage
-            .from('nominees-images')
-            .remove([fileName]);
-          
-          if (error) {
-            logger.error('Erreur lors de la suppression de l\'image:', error);
-            toast({
-              title: "Erreur",
-              description: "Impossible de supprimer l'image",
-              variant: "destructive"
-            });
-            return;
-          }
-        }
-      }
-      
-      setFormData(prev => ({ ...prev, image_url: '' }));
-      toast({
-        title: "Succès",
-        description: "Image supprimée avec succès"
-      });
-    } else {
-      // Mise à jour avec la nouvelle URL
-      setFormData(prev => ({ ...prev, image_url: url }));
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -146,7 +108,7 @@ export const EditNomineeForm = ({
           <ImageUploadField
             imageUrl={formData.image_url}
             nomineeName={formData.name}
-            onImageUploaded={handleImageChange}
+            onImageUploaded={(url) => setFormData(prev => ({ ...prev, image_url: url || '' }))}
             isUploading={isUploading}
             setIsUploading={setIsUploading}
           />

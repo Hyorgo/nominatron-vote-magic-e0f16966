@@ -1,8 +1,10 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ImageIcon, Loader2, Trash2 } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { uploadNomineeImage, deleteNomineeImage } from "@/lib/storage-utils";
 import { useToast } from "@/hooks/use-toast";
 import { logger } from '@/services/monitoring/logger';
-import { ImagePreviewField } from "./ImagePreviewField";
-import { ImageActions } from "./ImageActions";
-import { deleteStorageImage, uploadStorageImage } from "@/lib/storage-utils";
 
 interface ImageUploadFieldProps {
   imageUrl: string;
@@ -20,6 +22,7 @@ export const ImageUploadField = ({
   setIsUploading
 }: ImageUploadFieldProps) => {
   const { toast } = useToast();
+  const [previewUrl, setPreviewUrl] = useState(imageUrl);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -27,20 +30,11 @@ export const ImageUploadField = ({
 
     setIsUploading(true);
     try {
-      // Si une image existe déjà, la supprimer d'abord
-      if (imageUrl) {
-        const success = await deleteStorageImage('nominees-images', imageUrl);
-        if (!success) {
-          logger.warn('Impossible de supprimer l\'ancienne image, on continue avec le téléchargement');
-        }
-      }
+      const url = await uploadNomineeImage(file, nomineeName);
+      if (!url) throw new Error("Échec du téléchargement de l'image");
 
-      const publicUrl = await uploadStorageImage('nominees-images', file);
-      if (!publicUrl) {
-        throw new Error('Échec du téléchargement de l\'image');
-      }
-
-      onImageUploaded(publicUrl);
+      setPreviewUrl(url);
+      onImageUploaded(url);
       toast({
         title: "Succès",
         description: "Image téléchargée avec succès"
@@ -49,7 +43,7 @@ export const ImageUploadField = ({
       logger.error('Erreur lors du téléchargement:', error);
       toast({
         title: "Erreur",
-        description: error.message || "Impossible de télécharger l'image",
+        description: "Impossible de télécharger l'image",
         variant: "destructive"
       });
     } finally {
@@ -58,15 +52,14 @@ export const ImageUploadField = ({
   };
 
   const handleDeleteImage = async () => {
-    if (!imageUrl) return;
+    if (!previewUrl) return;
 
     setIsUploading(true);
     try {
-      const success = await deleteStorageImage('nominees-images', imageUrl);
-      if (!success) {
-        throw new Error('Impossible de supprimer l\'image');
-      }
+      const success = await deleteNomineeImage(previewUrl);
+      if (!success) throw new Error("Échec de la suppression de l'image");
 
+      setPreviewUrl('');
       onImageUploaded(null);
       toast({
         title: "Succès",
@@ -76,7 +69,7 @@ export const ImageUploadField = ({
       logger.error('Erreur lors de la suppression:', error);
       toast({
         title: "Erreur",
-        description: error.message || "Impossible de supprimer l'image",
+        description: "Impossible de supprimer l'image",
         variant: "destructive"
       });
     } finally {
@@ -86,26 +79,56 @@ export const ImageUploadField = ({
 
   return (
     <div className="space-y-4">
-      {imageUrl && (
-        <ImagePreviewField
-          imageUrl={imageUrl}
-          altText={nomineeName}
-          onDelete={handleDeleteImage}
-        />
+      {previewUrl && (
+        <div className="relative w-32 h-32 mx-auto">
+          <ImageWithFallback
+            src={previewUrl}
+            alt={nomineeName || 'Image du nominé'}
+            type="profile"
+            className="w-full h-full object-cover rounded-lg"
+          />
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon"
+            className="absolute -top-2 -right-2"
+            onClick={handleDeleteImage}
+            disabled={isUploading}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       )}
-      <ImageActions
-        onUploadClick={() => document.getElementById('image-upload')?.click()}
-        hasImage={!!imageUrl}
-        uploadId="image-upload"
-        isUploading={isUploading}
-      />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        className="hidden"
-        id="image-upload"
-      />
+
+      <div className="flex items-center gap-4">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+          id="image-upload"
+          disabled={isUploading}
+        />
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          disabled={isUploading}
+          onClick={() => document.getElementById('image-upload')?.click()}
+        >
+          {isUploading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span>Téléchargement en cours...</span>
+            </>
+          ) : (
+            <>
+              <ImageIcon className="mr-2 h-4 w-4" />
+              <span>{previewUrl ? "Changer l'image" : "Ajouter une image"}</span>
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
