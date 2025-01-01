@@ -108,6 +108,9 @@ const nomineeImageMapping: NomineeImageMapping = {
   "DJ VAL DC": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
   "Dj Val Dc": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
   "DJ Val DC": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
+  "dj ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+  "DJ ILY": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+  "Dj Ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
