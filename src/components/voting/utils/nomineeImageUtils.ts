@@ -9,7 +9,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "plan b": "/lovable-uploads/c9f7ee7f-7f01-4778-bf67-98c3af662375.png",
   "maze": "/lovable-uploads/04149b51-7312-46a4-82ce-d6b0828ffb18.png",
   "f&k": "/lovable-uploads/4cca2c41-ad59-4eb8-8768-d8acd38f6a85.png",
-  "l'ile": "/lovable-uploads/e2bb2732-4867-4199-9d7c-93f850f4e8b2.png",
+  "l'ile": "/lovable-uploads/60449031-bfd2-405e-9afe-f5525cfbb9ec.png",
   "bus paradise": "/lovable-uploads/e86ac02b-b1f9-4ba7-b2fe-6c0b71a57d1a.png",
   "kaia": "/lovable-uploads/822f2109-e39c-49bc-9d49-a0caff61ca93.png",
   "nel's club": "/lovable-uploads/25203221-e2c4-47ba-9bca-3268e1a91e12.png",
