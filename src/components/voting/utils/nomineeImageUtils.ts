@@ -14,7 +14,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "kaia": "/lovable-uploads/822f2109-e39c-49bc-9d49-a0caff61ca93.png",
   "nel's club": "/lovable-uploads/25203221-e2c4-47ba-9bca-3268e1a91e12.png",
   "maison bleue": "/lovable-uploads/0cc1b90b-3287-43ee-b754-cce61a14aab8.png",
-  "la feria": "/lovable-uploads/6f664826-df3a-424d-8c6d-ccad72240ba6.png",
+  "feria": "/lovable-uploads/3bf95b68-9bb0-45da-9a27-ecf3257f50a1.png",
   "mademoiselle simone": "/lovable-uploads/60548362-6418-4f6c-a954-712bc12f6149.png",
   "you": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
   "la cigale": "/lovable-uploads/f44edba2-f449-423f-911e-7f49b4ec1867.png",
