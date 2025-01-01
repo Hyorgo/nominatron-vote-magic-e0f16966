@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Papa from "papaparse";
 import { supabase } from "@/integrations/supabase/client";
@@ -118,6 +118,41 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
     }
   };
 
+  const downloadExample = () => {
+    const exampleData = [
+      {
+        category_name: "Meilleur Film",
+        nominee_name: "Inception",
+        nominee_description: "Un film sur les rêves et la réalité",
+      },
+      {
+        category_name: "Meilleur Film",
+        nominee_name: "The Dark Knight",
+        nominee_description: "L'histoire du Chevalier Noir de Gotham",
+      },
+      {
+        category_name: "Meilleur Acteur",
+        nominee_name: "Leonardo DiCaprio",
+        nominee_description: "Pour son rôle dans Inception",
+      },
+      {
+        category_name: "Meilleur Acteur",
+        nominee_name: "Christian Bale",
+        nominee_description: "Pour son rôle dans The Dark Knight",
+      },
+    ];
+
+    const csv = Papa.unparse(exampleData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "exemple_categories_nomines.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <input
@@ -141,6 +176,14 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
           </span>
         </Button>
       </label>
+      <Button
+        variant="outline"
+        onClick={downloadExample}
+        className="cursor-pointer"
+      >
+        <Download className="h-4 w-4 mr-2" />
+        Télécharger un exemple
+      </Button>
     </div>
   );
 };
