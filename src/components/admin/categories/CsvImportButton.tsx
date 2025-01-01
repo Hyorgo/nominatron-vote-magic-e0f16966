@@ -25,14 +25,16 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
+          console.log("Résultats du parsing CSV:", results);
           const rows = results.data as CsvRow[];
           if (validateCsvData(rows)) {
             resolve(rows);
           } else {
-            reject(new Error("Format CSV invalide"));
+            reject(new Error("Format CSV invalide - Assurez-vous d'avoir les colonnes category_name, nominee_name, et nominee_description"));
           }
         },
         error: (error) => {
+          console.error("Erreur lors du parsing CSV:", error);
           reject(error);
         },
       });
@@ -40,21 +42,36 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
   };
 
   const validateCsvData = (rows: CsvRow[]): boolean => {
-    return rows.every(
-      (row) =>
-        row.category_name &&
-        row.nominee_name &&
-        row.nominee_description
-    );
+    if (!Array.isArray(rows) || rows.length === 0) {
+      console.error("Le fichier CSV est vide ou n'est pas un tableau");
+      return false;
+    }
+
+    return rows.every((row) => {
+      const hasRequiredFields = 
+        row.category_name?.trim() &&
+        row.nominee_name?.trim() &&
+        row.nominee_description?.trim();
+      
+      if (!hasRequiredFields) {
+        console.error("Ligne invalide:", row);
+      }
+      return hasRequiredFields;
+    });
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.error("Aucun fichier sélectionné");
+      return;
+    }
 
     setIsLoading(true);
     try {
+      console.log("Début du traitement du fichier CSV");
       const rows = await processFile(file);
+      console.log("Données CSV validées:", rows);
       
       // Créer un Map pour stocker les catégories uniques et leur ordre
       const categories = new Map<string, number>();
@@ -64,8 +81,11 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
         }
       });
 
+      console.log("Catégories uniques:", Array.from(categories.entries()));
+
       // Insérer les catégories
       for (const [categoryName, displayOrder] of categories) {
+        console.log(`Insertion de la catégorie: ${categoryName}`);
         const { data: categoryData, error: categoryError } = await supabase
           .from("categories")
           .insert([
@@ -77,7 +97,12 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
           .select()
           .single();
 
-        if (categoryError) throw categoryError;
+        if (categoryError) {
+          console.error("Erreur lors de l'insertion de la catégorie:", categoryError);
+          throw categoryError;
+        }
+
+        console.log("Catégorie insérée avec succès:", categoryData);
 
         // Insérer les nominés pour cette catégorie
         const nomineesForCategory = rows.filter(
@@ -85,6 +110,7 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
         );
 
         for (const nominee of nomineesForCategory) {
+          console.log(`Insertion du nominé: ${nominee.nominee_name}`);
           const { error: nomineeError } = await supabase
             .from("nominees")
             .insert([
@@ -95,7 +121,10 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
               },
             ]);
 
-          if (nomineeError) throw nomineeError;
+          if (nomineeError) {
+            console.error("Erreur lors de l'insertion du nominé:", nomineeError);
+            throw nomineeError;
+          }
         }
       }
 
@@ -105,11 +134,13 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
       });
       onSuccess();
     } catch (error) {
-      console.error("Erreur lors de l'import:", error);
+      console.error("Erreur détaillée lors de l'import:", error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'import du fichier CSV.",
+        description: error instanceof Error 
+          ? error.message 
+          : "Une erreur est survenue lors de l'import du fichier CSV.",
       });
     } finally {
       setIsLoading(false);
