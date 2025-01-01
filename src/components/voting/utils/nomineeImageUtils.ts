@@ -23,6 +23,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "poisson chat": "/lovable-uploads/83b8592f-a31c-4432-a949-5cecf2f8fe29.png",
   "lockers": "/lovable-uploads/c6245aa1-5be4-4779-b999-54dd43ac850f.png",
   "javoo": "/lovable-uploads/b629982b-e48e-44c0-a28e-407b800addab.png",
+  "le bar by la maison": "/lovable-uploads/2af3e902-77df-40e0-a8d3-1fc822833119.png",
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
