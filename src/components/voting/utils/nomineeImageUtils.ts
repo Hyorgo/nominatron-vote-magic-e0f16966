@@ -32,7 +32,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "club 400": "/lovable-uploads/f1975a5f-f249-44e4-a1fc-c1b9812249e1.png",
   "justin": "/lovable-uploads/5477519f-5319-4d96-8c9a-04e5f7a98608.png",
   "biniou": "/lovable-uploads/2619c487-2026-42b6-8a14-c2d4c6585080.png",
-  "la faute aux ours": "/lovable-uploads/7fb96da5-23fb-4581-a04e-568bb9b51f19.png",
+  "la faute aux ours": "/lovable-uploads/710bdecc-ac55-4766-b1b6-a7951dbc331e.png",
   "espit chupitos": "/lovable-uploads/6882e33f-5fbb-4b92-8db3-0de73e306450.png"
 };
 
