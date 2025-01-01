@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload, Loader2, Image } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -22,11 +22,32 @@ export const ImageUploadField = ({
   setIsUploading
 }: ImageUploadFieldProps) => {
   const { toast } = useToast();
+  const [imageError, setImageError] = useState(false);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
       logger.warn('Aucun fichier sélectionné');
+      return;
+    }
+
+    // Vérification de la taille du fichier (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Erreur",
+        description: "L'image ne doit pas dépasser 5MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Vérification du type de fichier
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Erreur",
+        description: "Le fichier doit être une image",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -37,6 +58,8 @@ export const ImageUploadField = ({
     });
 
     setIsUploading(true);
+    setImageError(false);
+
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
@@ -71,6 +94,7 @@ export const ImageUploadField = ({
       });
     } catch (error) {
       logger.error("Erreur lors du téléchargement:", error);
+      setImageError(true);
       toast({
         title: "Erreur",
         description: "Impossible de télécharger l'image",
@@ -83,19 +107,28 @@ export const ImageUploadField = ({
 
   return (
     <div className="space-y-4">
-      {imageUrl && (
-        <div className="relative h-32 w-full overflow-hidden rounded-lg">
+      {imageUrl && !imageError && (
+        <div className="relative h-32 w-full overflow-hidden rounded-lg border border-gray-200">
           <img
             src={imageUrl}
             alt={nomineeName}
             className="h-full w-full object-cover"
-            onError={(e) => {
+            onError={() => {
               logger.error('Erreur de chargement de l\'image', {
                 url: imageUrl
               });
-              e.currentTarget.src = '/placeholder.svg';
+              setImageError(true);
             }}
           />
+        </div>
+      )}
+      
+      {imageError && (
+        <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50">
+          <div className="text-center">
+            <Image className="mx-auto h-8 w-8 text-gray-400" />
+            <p className="mt-2 text-sm text-gray-500">Erreur de chargement de l'image</p>
+          </div>
         </div>
       )}
       
@@ -122,7 +155,7 @@ export const ImageUploadField = ({
           ) : (
             <>
               <Upload className="mr-2 h-4 w-4" />
-              {imageUrl ? "Changer l'image" : "Ajouter une image"}
+              {imageUrl && !imageError ? "Changer l'image" : "Ajouter une image"}
             </>
           )}
         </Button>
