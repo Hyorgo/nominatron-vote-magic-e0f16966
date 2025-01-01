@@ -7,23 +7,32 @@ import { NomineesManager } from "../NomineesManager";
 import { EventConfigManager } from "../EventConfigManager";
 import { VoteStatistics } from "../statistics/VoteStatistics";
 import { VoteParticipants } from "../statistics/components/VoteParticipants";
+import { LogoManager } from "../LogoManager";
 import { StripeSettingsManager } from "../StripeSettingsManager";
 
 interface TabContentProps {
   homeContent: any[];
   backgrounds: any[];
+  headerLogo: string;
+  homeLogo: string;
+  homeYearText: string;
   onUpdate: () => void;
 }
 
 export const TabContent = ({
   homeContent,
   backgrounds,
+  headerLogo,
+  homeLogo,
+  homeYearText,
   onUpdate,
 }: TabContentProps) => {
   return (
     <>
       <TabsContent value="home" className="space-y-4">
         <HomeSettingsManager 
+          currentLogo={homeLogo}
+          currentYear={homeYearText}
           onUpdate={onUpdate}
         />
         <HomeContentManager 
@@ -54,6 +63,10 @@ export const TabContent = ({
       </TabsContent>
 
       <TabsContent value="settings" className="space-y-4">
+        <LogoManager
+          currentLogo={headerLogo}
+          onUpdate={onUpdate}
+        />
         <StripeSettingsManager />
       </TabsContent>
     </>

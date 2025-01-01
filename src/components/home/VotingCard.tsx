@@ -83,7 +83,7 @@ export const VotingCard = ({ votingStatus }: VotingCardProps) => {
         buttonText={hasVoted ? undefined : "Voter maintenant"}
         onClick={hasVoted ? undefined : () => setDialogOpen(true)}
       >
-        {hasVoted && isVotingOpen && (
+        {hasVoted && (
           <Button 
             onClick={handleModifyVotes}
             className="w-full mt-4"

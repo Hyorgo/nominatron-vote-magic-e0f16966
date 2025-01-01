@@ -2,8 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Trash2, Edit } from "lucide-react";
 import { Nominee } from "@/types/nominees";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
-import { logger } from '@/services/monitoring/logger';
+import { lazy, Suspense } from "react";
 
 interface NomineeCardProps {
   nominee: Nominee;
@@ -11,31 +10,26 @@ interface NomineeCardProps {
   onEdit: (nominee: Nominee) => void;
 }
 
-export const NomineeCard = ({ nominee, onDelete, onEdit }: NomineeCardProps) => {
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    logger.error('Erreur de chargement de l\'image', {
-      nomineeId: nominee.id,
-      imageUrl: nominee.image_url
-    });
-    e.currentTarget.src = '/placeholder.svg';
-    e.currentTarget.className = 'w-full h-full object-contain p-4';
-  };
+const LazyImage = lazy(() => import("../../ui/lazy-image"));
 
+export const NomineeCard = ({ nominee, onDelete, onEdit }: NomineeCardProps) => {
   return (
     <Card className="p-4 space-y-2">
-      <div className="flex justify-between items-start gap-4">
-        <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 relative">
-          <ImageWithFallback
-            src={nominee.image_url || ''}
-            alt={nominee.name}
-            type="profile"
-            className="w-full h-full object-cover"
-            onError={handleImageError}
-          />
-        </div>
+      <div className="flex justify-between items-start">
         <div className="flex-1">
           <h3 className="font-semibold">{nominee.name}</h3>
           <p className="text-sm text-muted-foreground">{nominee.description}</p>
+          {nominee.image_url && (
+            <div className="mt-2">
+              <Suspense fallback={<div className="h-32 bg-muted animate-pulse rounded-md" />}>
+                <LazyImage
+                  src={nominee.image_url}
+                  alt={nominee.name}
+                  className="h-32 w-full object-cover rounded-md"
+                />
+              </Suspense>
+            </div>
+          )}
         </div>
         <div className="flex gap-2">
           <Button

@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { AdminTabs } from "./admin/navigation/AdminTabs";
-import { LoadingState } from "./admin/states/LoadingState";
-import { ErrorState } from "./admin/states/ErrorState";
+import { Loader2 } from "lucide-react";
+import { useAdminData } from "@/hooks/useAdminData";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminSession } from "@/hooks/useAdminSession";
-import { useAdminData } from "@/hooks/useAdminData";
 import { logger } from '@/services/monitoring/logger';
+import { supabase } from "@/integrations/supabase/client";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -17,17 +17,24 @@ export const AdminDashboard = () => {
     scrollingTexts, 
     backgrounds, 
     homeContent, 
+    settings, 
     isLoading,
-    error,
     invalidateQueries 
   } = useAdminData();
 
   useEffect(() => {
     const verifySession = async () => {
       try {
-        logger.info('Vérification de la session admin');
-        const isValid = await checkSession();
+        logger.info('Début de la vérification de session admin');
+        const { data: { session } } = await supabase.auth.getSession();
         
+        if (!session) {
+          logger.warn('Pas de session Supabase active');
+          navigate('/admin');
+          return;
+        }
+
+        const isValid = await checkSession();
         if (!isValid) {
           logger.warn('Session admin invalide, redirection vers la page de connexion');
           toast({
@@ -36,9 +43,10 @@ export const AdminDashboard = () => {
             description: "Veuillez vous reconnecter",
           });
           navigate('/admin');
-        } else {
-          logger.info('Session admin valide');
+          return;
         }
+        
+        logger.info('Session admin valide');
       } catch (error) {
         logger.error('Erreur lors de la vérification de session', error);
         toast({
@@ -54,17 +62,9 @@ export const AdminDashboard = () => {
   }, [checkSession, navigate, toast]);
 
   if (isLoading) {
-    return <LoadingState message="Chargement du tableau de bord..." />;
-  }
-
-  if (error) {
     return (
-      <div className="container mx-auto p-4 md:p-6">
-        <ErrorState 
-          title="Erreur de chargement" 
-          message="Impossible de charger les données du tableau de bord" 
-          onRetry={invalidateQueries}
-        />
+      <div className="container mx-auto p-4 md:p-6 flex items-center justify-center min-h-[200px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -82,6 +82,9 @@ export const AdminDashboard = () => {
         homeContent={homeContent}
         scrollingTexts={scrollingTexts}
         backgrounds={backgrounds}
+        headerLogo={settings?.headerLogo || ""}
+        homeLogo={settings?.homeLogo || ""}
+        homeYearText={settings?.homeYearText || ""}
         onUpdate={invalidateQueries}
       />
     </div>
