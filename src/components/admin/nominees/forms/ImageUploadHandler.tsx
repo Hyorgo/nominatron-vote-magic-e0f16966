@@ -15,6 +15,16 @@ export const useImageUpload = () => {
   const uploadImage = async (file: File): Promise<string | null> => {
     setIsUploading(true);
     try {
+      // Vérification de la taille du fichier (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('Le fichier est trop volumineux (maximum 5MB)');
+      }
+
+      // Vérification du type de fichier
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Le fichier doit être une image');
+      }
+
       logger.info('Début du téléchargement de l\'image', {
         fileName: file.name,
         fileSize: file.size,
@@ -27,7 +37,7 @@ export const useImageUpload = () => {
 
       if (bucketError) {
         logger.error('Erreur lors de la vérification du bucket:', bucketError);
-        throw new Error('Erreur d\'accès au bucket de stockage');
+        throw new Error('Erreur d\'accès au stockage');
       }
 
       const fileExt = file.name.split('.').pop();
@@ -59,7 +69,7 @@ export const useImageUpload = () => {
       logger.error('Erreur lors du téléchargement:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de télécharger l'image. Veuillez réessayer.",
+        description: error.message || "Impossible de télécharger l'image. Veuillez réessayer.",
         variant: "destructive"
       });
       return null;
