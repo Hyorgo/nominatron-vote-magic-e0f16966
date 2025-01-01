@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Category, Nominee } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
+import { ImagePreview } from "./forms/ImagePreview";
+import { UploadButton } from "./forms/UploadButton";
 
 interface EditNomineeFormProps {
   nominee: Nominee;
@@ -18,13 +20,7 @@ interface EditNomineeFormProps {
   onUpdate: () => void;
 }
 
-export const EditNomineeForm = ({ 
-  nominee, 
-  categories, 
-  isOpen, 
-  onClose, 
-  onUpdate 
-}: EditNomineeFormProps) => {
+export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate }: EditNomineeFormProps) => {
   const [formData, setFormData] = useState({
     name: nominee.name,
     description: nominee.description,
@@ -66,8 +62,6 @@ export const EditNomineeForm = ({
         title: "Succès",
         description: "Image téléchargée avec succès"
       });
-      
-      logger.info('Image téléchargée avec succès', { publicUrl });
     } catch (error) {
       logger.error('Erreur lors du téléchargement:', error);
       toast({
@@ -81,11 +75,6 @@ export const EditNomineeForm = ({
   };
 
   const handleSubmit = async () => {
-    logger.info('Début de la mise à jour du nominé', {
-      nomineeId: nominee.id,
-      formData
-    });
-
     setIsSubmitting(true);
     try {
       const { error } = await supabase
@@ -98,12 +87,8 @@ export const EditNomineeForm = ({
         })
         .eq('id', nominee.id);
 
-      if (error) {
-        logger.error('Erreur lors de la mise à jour', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      logger.info('Nominé mis à jour avec succès');
       toast({
         title: "Succès",
         description: "Nominé mis à jour avec succès"
@@ -111,7 +96,6 @@ export const EditNomineeForm = ({
       onUpdate();
       onClose();
     } catch (error) {
-      logger.error('Erreur lors de la mise à jour du nominé:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le nominé",
@@ -129,21 +113,17 @@ export const EditNomineeForm = ({
           <DialogTitle>Modifier le nominé</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="space-y-2">
-            <Input
-              placeholder="Nom du nominé"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            />
-          </div>
+          <Input
+            placeholder="Nom du nominé"
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          />
           
-          <div className="space-y-2">
-            <Textarea
-              placeholder="Description du nominé"
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            />
-          </div>
+          <Textarea
+            placeholder="Description du nominé"
+            value={formData.description}
+            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          />
           
           <Select
             value={formData.category_id}
@@ -162,15 +142,10 @@ export const EditNomineeForm = ({
           </Select>
 
           <div className="space-y-4">
-            {formData.image_url && (
-              <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
-                <img
-                  src={formData.image_url}
-                  alt={formData.name}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
+            <ImagePreview 
+              imageUrl={formData.image_url} 
+              altText={formData.name}
+            />
 
             <div className="flex items-center gap-4">
               <Input
@@ -180,34 +155,11 @@ export const EditNomineeForm = ({
                 className="hidden"
                 id="image-upload-edit"
               />
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-32 border-dashed"
-                disabled={isUploading}
+              <UploadButton
+                hasImage={!!formData.image_url}
+                isUploading={isUploading}
                 onClick={() => document.getElementById('image-upload-edit')?.click()}
-              >
-                {isUploading ? (
-                  <div className="flex flex-col items-center gap-2">
-                    <Loader2 className="h-6 w-6 animate-spin" />
-                    <span>Téléchargement en cours...</span>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-2">
-                    {formData.image_url ? (
-                      <>
-                        <ImageIcon className="h-6 w-6" />
-                        <span>Changer l'image</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="h-6 w-6" />
-                        <span>Cliquez ou déposez une image ici</span>
-                      </>
-                    )}
-                  </div>
-                )}
-              </Button>
+              />
             </div>
           </div>
 
