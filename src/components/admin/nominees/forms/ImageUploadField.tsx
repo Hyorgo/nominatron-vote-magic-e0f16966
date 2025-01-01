@@ -7,7 +7,7 @@ import { ImageActions } from "./ImageActions";
 interface ImageUploadFieldProps {
   imageUrl: string;
   nomineeName: string;
-  onImageUploaded: (url: string) => void;
+  onImageUploaded: (url: string | null) => void;
   isUploading: boolean;
   setIsUploading: (value: boolean) => void;
 }
@@ -40,7 +40,7 @@ export const ImageUploadField = ({
         .from('nominees-images')
         .upload(fileName, file, {
           contentType: file.type,
-          upsert: false
+          upsert: true
         });
 
       if (uploadError) {
@@ -73,11 +73,7 @@ export const ImageUploadField = ({
 
   const handleDeleteImage = () => {
     logger.info('Suppression de l\'image');
-    onImageUploaded('');
-    toast({
-      title: "Succès",
-      description: "Image supprimée avec succès"
-    });
+    onImageUploaded(null);
   };
 
   return (

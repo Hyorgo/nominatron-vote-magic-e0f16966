@@ -70,6 +70,17 @@ export const EditNomineeForm = ({
     }
   };
 
+  const handleImageChange = (url: string | null) => {
+    logger.info('Mise à jour de l\'image:', { url });
+    setFormData(prev => ({ ...prev, image_url: url || '' }));
+    if (!url) {
+      toast({
+        title: "Succès",
+        description: "Image supprimée avec succès"
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -108,7 +119,7 @@ export const EditNomineeForm = ({
           <ImageUploadField
             imageUrl={formData.image_url}
             nomineeName={formData.name}
-            onImageUploaded={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+            onImageUploaded={handleImageChange}
             isUploading={isUploading}
             setIsUploading={setIsUploading}
           />
