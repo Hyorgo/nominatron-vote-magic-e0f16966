@@ -3,13 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Papa from "papaparse";
-import { supabase } from "@/integrations/supabase/client";
-
-interface CsvRow {
-  category_name: string;
-  nominee_name: string;
-  nominee_description: string;
-}
+import { validateCsvData, validateCsvStructure } from "./utils/csvValidator";
+import { importCsvToSupabase } from "./utils/supabaseImporter";
+import { CsvRow } from "./types/csvTypes";
 
 interface CsvImportButtonProps {
   onSuccess: () => void;
@@ -19,44 +15,32 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const processFile = async (file: File) => {
-    return new Promise<CsvRow[]>((resolve, reject) => {
+  const processFile = async (file: File): Promise<CsvRow[]> => {
+    return new Promise((resolve, reject) => {
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
           console.log("Résultats du parsing CSV:", results);
-          const rows = results.data as CsvRow[];
-          if (validateCsvData(rows)) {
-            resolve(rows);
-          } else {
+          
+          // Vérifier la structure du CSV
+          if (!validateCsvStructure(Object.keys(results.data[0] || {}))) {
             reject(new Error("Format CSV invalide - Assurez-vous d'avoir les colonnes category_name, nominee_name, et nominee_description"));
+            return;
+          }
+
+          // Valider les données
+          if (validateCsvData(results.data)) {
+            resolve(results.data as CsvRow[]);
+          } else {
+            reject(new Error("Données CSV invalides - Vérifiez que toutes les lignes contiennent les informations requises"));
           }
         },
         error: (error) => {
           console.error("Erreur lors du parsing CSV:", error);
-          reject(error);
+          reject(new Error("Erreur lors de la lecture du fichier CSV"));
         },
       });
-    });
-  };
-
-  const validateCsvData = (rows: CsvRow[]): boolean => {
-    if (!Array.isArray(rows) || rows.length === 0) {
-      console.error("Le fichier CSV est vide ou n'est pas un tableau");
-      return false;
-    }
-
-    return rows.every((row) => {
-      const hasRequiredFields = 
-        row.category_name?.trim() &&
-        row.nominee_name?.trim() &&
-        row.nominee_description?.trim();
-      
-      if (!hasRequiredFields) {
-        console.error("Ligne invalide:", row);
-      }
-      return hasRequiredFields;
     });
   };
 
@@ -71,62 +55,7 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
     try {
       console.log("Début du traitement du fichier CSV");
       const rows = await processFile(file);
-      console.log("Données CSV validées:", rows);
-      
-      // Créer un Map pour stocker les catégories uniques et leur ordre
-      const categories = new Map<string, number>();
-      rows.forEach((row) => {
-        if (!categories.has(row.category_name)) {
-          categories.set(row.category_name, categories.size + 1);
-        }
-      });
-
-      console.log("Catégories uniques:", Array.from(categories.entries()));
-
-      // Insérer les catégories
-      for (const [categoryName, displayOrder] of categories) {
-        console.log(`Insertion de la catégorie: ${categoryName}`);
-        const { data: categoryData, error: categoryError } = await supabase
-          .from("categories")
-          .insert([
-            {
-              name: categoryName,
-              display_order: displayOrder,
-            },
-          ])
-          .select()
-          .single();
-
-        if (categoryError) {
-          console.error("Erreur lors de l'insertion de la catégorie:", categoryError);
-          throw categoryError;
-        }
-
-        console.log("Catégorie insérée avec succès:", categoryData);
-
-        // Insérer les nominés pour cette catégorie
-        const nomineesForCategory = rows.filter(
-          (row) => row.category_name === categoryName
-        );
-
-        for (const nominee of nomineesForCategory) {
-          console.log(`Insertion du nominé: ${nominee.nominee_name}`);
-          const { error: nomineeError } = await supabase
-            .from("nominees")
-            .insert([
-              {
-                category_id: categoryData.id,
-                name: nominee.nominee_name,
-                description: nominee.nominee_description,
-              },
-            ]);
-
-          if (nomineeError) {
-            console.error("Erreur lors de l'insertion du nominé:", nomineeError);
-            throw nomineeError;
-          }
-        }
-      }
+      await importCsvToSupabase(rows);
 
       toast({
         title: "Import réussi",
@@ -144,7 +73,6 @@ export const CsvImportButton = ({ onSuccess }: CsvImportButtonProps) => {
       });
     } finally {
       setIsLoading(false);
-      // Réinitialiser l'input file
       event.target.value = "";
     }
   };
