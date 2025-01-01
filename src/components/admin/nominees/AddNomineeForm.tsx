@@ -20,6 +20,7 @@ import { Category } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { logger } from '@/services/monitoring/logger';
 
 interface AddNomineeFormProps {
   categories: Category[];
@@ -38,20 +39,38 @@ export const AddNomineeForm = ({ categories, onSubmit }: AddNomineeFormProps) =>
     const file = event.target.files?.[0];
     if (!file) return;
 
+    logger.info('Début du téléchargement de l\'image:', { 
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type 
+    });
+
     setIsUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('nominees-images')
-        .upload(fileName, file);
+      logger.info('Téléchargement vers Supabase:', { fileName });
 
-      if (uploadError) throw uploadError;
+      const { error: uploadError, data } = await supabase.storage
+        .from('nominees-images')
+        .upload(fileName, file, {
+          cacheControl: '0',
+          upsert: false
+        });
+
+      if (uploadError) {
+        logger.error('Erreur lors du téléchargement:', uploadError);
+        throw uploadError;
+      }
+
+      logger.info('Image téléchargée avec succès, récupération de l\'URL publique');
 
       const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
         .getPublicUrl(fileName);
+
+      logger.info('URL publique obtenue:', { publicUrl });
 
       setImageUrl(publicUrl);
       toast({
@@ -59,7 +78,7 @@ export const AddNomineeForm = ({ categories, onSubmit }: AddNomineeFormProps) =>
         description: "Image téléchargée avec succès"
       });
     } catch (error) {
-      console.error('Erreur lors du téléchargement:', error);
+      logger.error('Erreur lors du téléchargement:', error);
       toast({
         title: "Erreur",
         description: "Impossible de télécharger l'image",
@@ -73,6 +92,12 @@ export const AddNomineeForm = ({ categories, onSubmit }: AddNomineeFormProps) =>
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !description.trim() || !categoryId) return;
+
+    logger.info('Soumission du formulaire:', { 
+      name, 
+      categoryId,
+      hasImage: !!imageUrl 
+    });
 
     onSubmit({
       name,
@@ -128,7 +153,7 @@ export const AddNomineeForm = ({ categories, onSubmit }: AddNomineeFormProps) =>
               <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
                 <ImageWithFallback
                   src={imageUrl}
-                  alt={name}
+                  alt={name || 'Image du nominé'}
                   type="profile"
                   className="h-full w-full object-cover"
                 />
