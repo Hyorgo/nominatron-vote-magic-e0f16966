@@ -12,9 +12,9 @@ export const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <img 
-              src="/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png"
-              alt="Lyon d'Or" 
-              className="h-16 w-auto" // Modifié de h-12 à h-16 pour agrandir davantage le logo
+              src="/lovable-uploads/d5e8b4c7-bdd4-4dde-83bd-038a04842793.png"
+              alt="Sortir Lyon" 
+              className="h-16 w-auto"
             />
           </Link>
 
