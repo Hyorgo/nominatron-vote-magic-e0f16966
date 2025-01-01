@@ -12,7 +12,16 @@ interface NomineeCardProps {
 export const NomineeCard = ({ nominee, onDelete, onEdit }: NomineeCardProps) => {
   return (
     <Card className="p-4 space-y-2">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start gap-4">
+        {nominee.image_url && (
+          <div className="w-24 h-24 flex-shrink-0">
+            <img
+              src={nominee.image_url}
+              alt={nominee.name}
+              className="w-full h-full object-cover rounded-lg"
+            />
+          </div>
+        )}
         <div className="flex-1">
           <h3 className="font-semibold">{nominee.name}</h3>
           <p className="text-sm text-muted-foreground">{nominee.description}</p>
