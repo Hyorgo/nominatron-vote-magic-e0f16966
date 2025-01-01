@@ -31,6 +31,12 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
+  // Log l'URL de l'image actuelle au chargement du composant
+  logger.info('URL de l\'image actuelle:', {
+    nomineeId: nominee.id,
+    imageUrl: nominee.image_url
+  });
+
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -46,15 +52,34 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
         fileType: file.type
       });
 
+      // Vérifier si le bucket existe et est accessible
+      const { data: bucketInfo, error: bucketError } = await supabase.storage
+        .getBucket('nominees-images');
+
+      if (bucketError) {
+        logger.error('Erreur lors de la vérification du bucket:', bucketError);
+        throw new Error('Erreur d\'accès au bucket de stockage');
+      }
+
+      logger.info('Bucket info:', bucketInfo);
+
       const { error: uploadError } = await supabase.storage
         .from('nominees-images')
         .upload(fileName, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        logger.error('Erreur lors du téléchargement:', uploadError);
+        throw uploadError;
+      }
 
       const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
         .getPublicUrl(fileName);
+
+      logger.info('Image téléchargée avec succès:', {
+        fileName,
+        publicUrl
+      });
 
       setFormData(prev => ({ ...prev, image_url: publicUrl }));
       
@@ -75,6 +100,7 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
   };
 
   const handleSubmit = async () => {
+    logger.info('Soumission du formulaire avec les données:', formData);
     setIsSubmitting(true);
     try {
       const { error } = await supabase
@@ -96,6 +122,7 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
       onUpdate();
       onClose();
     } catch (error) {
+      logger.error('Erreur lors de la mise à jour:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le nominé",
@@ -142,10 +169,22 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
           </Select>
 
           <div className="space-y-4">
-            <ImagePreview 
-              imageUrl={formData.image_url} 
-              altText={formData.name}
-            />
+            {formData.image_url && (
+              <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-100">
+                <img
+                  src={formData.image_url}
+                  alt={formData.name}
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    logger.error('Erreur de chargement de l\'image dans le preview:', {
+                      imageUrl: formData.image_url
+                    });
+                    e.currentTarget.src = '/placeholder.svg';
+                    e.currentTarget.className = 'h-full w-full object-contain p-4';
+                  }}
+                />
+              </div>
+            )}
 
             <div className="flex items-center gap-4">
               <Input
@@ -155,11 +194,24 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
                 className="hidden"
                 id="image-upload-edit"
               />
-              <UploadButton
-                hasImage={!!formData.image_url}
-                isUploading={isUploading}
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                disabled={isUploading}
                 onClick={() => document.getElementById('image-upload-edit')?.click()}
-              />
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Téléchargement...
+                  </>
+                ) : (
+                  <>
+                    {formData.image_url ? "Changer l'image" : "Ajouter une image"}
+                  </>
+                )}
+              </Button>
             </div>
           </div>
 
