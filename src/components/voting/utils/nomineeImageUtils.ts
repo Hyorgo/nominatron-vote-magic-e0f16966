@@ -59,7 +59,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "tilt": "/lovable-uploads/d6ae541c-f1fb-497e-858a-61b011a835bc.png",
   "loft club": "/lovable-uploads/3d3940b2-b035-4645-88d7-9c0b7b605aa3.png",
   "avenue 45": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
-  "l'avenue 45": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png"
+  "l'avenue 45": "/lovable-uploads/95111bcc-f251-4692-8028-48dfb4d2dbff.png",
+  "drungly": "/lovable-uploads/e1df94b2-d88b-4f72-9c4e-d57872fbc1bf.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -71,5 +72,5 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
-  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly"].includes(normalizedName);
 };
