@@ -36,25 +36,38 @@ const LazyImage = ({
 
     const loadImage = async () => {
       try {
-        // Si l'URL est déjà une URL publique Supabase complète, l'utiliser directement
+        // Si l'URL est déjà une URL publique Supabase complète
         if (src.includes('storage.googleapis.com') || src.includes('supabase.co/storage/v1/object/public')) {
           setImageSrc(src);
         } else {
-          // Sinon, essayer de construire l'URL publique
+          // Extraire le nom du fichier de l'URL ou utiliser l'URL complète
+          const fileName = src.includes('/') ? src.split('/').pop() : src;
+          
+          if (!fileName) {
+            throw new Error('Invalid file name');
+          }
+
+          logger.info('Getting public URL for file:', { fileName });
+          
           const { data } = supabase.storage
             .from('nominees-images')
-            .getPublicUrl(src.split('/').pop() || src);
+            .getPublicUrl(fileName);
           
-          if (data?.publicUrl) {
-            setImageSrc(data.publicUrl);
-          } else {
-            throw new Error('Unable to get public URL');
+          if (!data?.publicUrl) {
+            throw new Error('Failed to get public URL');
           }
-        }
 
-        logger.info('Image source set:', { src: imageSrc });
+          // S'assurer que l'URL contient le bon chemin
+          const publicUrl = data.publicUrl.replace(
+            '/object/public/',
+            '/storage/v1/object/public/'
+          );
+          
+          logger.info('Generated public URL:', { publicUrl });
+          setImageSrc(publicUrl);
+        }
       } catch (error) {
-        logger.error('Error processing image URL:', error);
+        logger.error('Error processing image URL:', { error, originalSrc: src });
         setHasError(true);
         onError?.();
       }
