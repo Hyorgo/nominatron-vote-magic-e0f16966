@@ -1,114 +1,32 @@
+import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Nominee, Category } from "@/types/nominees";
-import { useState } from "react";
-import { useNominees } from "@/hooks/useNominees";
-import { EditNomineeForm } from "./EditNomineeForm";
-import { logger } from '@/services/monitoring/logger';
-import { NomineeFilters } from "./filters/NomineeFilters";
-import { FilteredNominees } from "./filters/FilteredNominees";
+import { Loader2 } from "lucide-react";
+import { AddNomineeForm } from "./AddNomineeForm";
+import { NomineesList } from "./NomineesList";
+import { useNomineesManager } from "@/hooks/useNomineesManager";
 
-interface NomineesListProps {
-  categories: Category[];
-  onDelete: (id: string) => void;
-}
+export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
+  const { categories, loading, fetchData, addNominee, deleteNominee } = useNomineesManager(onUpdate);
 
-export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
-  const {
-    searchTerm,
-    setSearchTerm,
-    sortOrder,
-    setSortOrder,
-    filterAndSortNominees,
-  } = useNominees(() => {});
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  const [selectedNominee, setSelectedNominee] = useState<Nominee | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-
-  // Récupérer tous les nominés avec leurs informations de catégorie
-  const allNominees = categories.flatMap(category => {
-    logger.info(`Traitement de la catégorie ${category.name}:`, {
-      categoryId: category.id,
-      nomineesCount: category.nominees.length,
-      nominees: category.nominees.map(n => ({
-        id: n.id,
-        name: n.name,
-        categoryId: n.category_id
-      }))
-    });
-    
-    return category.nominees.map(nominee => ({
-      ...nominee,
-      categoryName: category.name
-    }));
-  });
-
-  // Filtrer les nominés par catégorie
-  const categoryFilteredNominees = selectedCategory === "all" 
-    ? allNominees 
-    : allNominees.filter(nominee => {
-        const matches = nominee.category_id === selectedCategory;
-        logger.info(`Filtrage du nominé ${nominee.name}:`, {
-          nomineeId: nominee.id,
-          nomineeCategoryId: nominee.category_id,
-          selectedCategory,
-          matches
-        });
-        return matches;
-      });
-
-  // Appliquer les filtres de recherche et de tri
-  const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
-
-  logger.info('Résultat final du filtrage:', {
-    selectedCategory,
-    totalNominees: allNominees.length,
-    filteredCount: categoryFilteredNominees.length,
-    finalCount: filteredNominees.length,
-    nominees: filteredNominees.map(n => ({
-      id: n.id,
-      name: n.name,
-      categoryId: n.category_id
-    }))
-  });
-
-  const handleEdit = (nominee: Nominee) => {
-    setSelectedNominee(nominee);
-  };
-
-  const handleCloseEdit = () => {
-    setSelectedNominee(null);
-  };
+  if (loading) {
+    return (
+      <div className="flex justify-center p-4">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <Card className="p-4 space-y-4">
-      <NomineeFilters
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        sortOrder={sortOrder}
-        onSortChange={setSortOrder}
-      />
-
-      <FilteredNominees
-        nominees={filteredNominees}
-        onDelete={onDelete}
-        onEdit={handleEdit}
-      />
-
-      {selectedNominee && (
-        <EditNomineeForm
-          nominee={selectedNominee}
-          categories={categories}
-          isOpen={!!selectedNominee}
-          onClose={handleCloseEdit}
-          onUpdate={() => {
-            handleCloseEdit();
-            window.location.reload();
-          }}
-        />
-      )}
+    <Card className="p-4">
+      <h3 className="text-lg font-semibold mb-4">Gestion des nominés</h3>
+      <AddNomineeForm categories={categories} onSubmit={addNominee} />
+      <div className="mt-6">
+        <NomineesList categories={categories} onDelete={deleteNominee} />
+      </div>
     </Card>
   );
 };
