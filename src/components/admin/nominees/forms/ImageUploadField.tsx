@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { Upload, Loader2, ImageIcon } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -63,33 +63,37 @@ export const ImageUploadField = ({
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      const filePath = fileName;
 
       logger.info('Téléchargement vers Supabase Storage', {
-        filePath,
+        fileName,
         bucket: 'nominees-images'
       });
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data } = await supabase.storage
         .from('nominees-images')
-        .upload(filePath, file);
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
       if (uploadError) {
         logger.error('Erreur lors du téléchargement', uploadError);
         throw uploadError;
       }
 
-      const { data: urlData } = await supabase.storage
+      const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
 
-      if (!urlData.publicUrl) {
-        throw new Error('Impossible d\'obtenir l\'URL publique');
+      logger.info('URL publique générée', { publicUrl });
+
+      // Vérifier que l'URL est accessible
+      const imageResponse = await fetch(publicUrl);
+      if (!imageResponse.ok) {
+        throw new Error(`Impossible d'accéder à l'image: ${imageResponse.statusText}`);
       }
 
-      logger.info('URL publique générée', { publicUrl: urlData.publicUrl });
-
-      onImageChange(urlData.publicUrl);
+      onImageChange(publicUrl);
       toast({
         title: "Succès",
         description: "Image téléchargée avec succès"
@@ -109,7 +113,7 @@ export const ImageUploadField = ({
 
   return (
     <div className="space-y-4">
-      {imageUrl && !imageError && (
+      {imageUrl && !imageError ? (
         <div className="relative h-32 w-full overflow-hidden rounded-lg border border-gray-200">
           <img
             src={imageUrl}
@@ -123,13 +127,13 @@ export const ImageUploadField = ({
             }}
           />
         </div>
-      )}
-      
-      {imageError && (
+      ) : (
         <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50">
           <div className="text-center">
             <ImageIcon className="mx-auto h-8 w-8 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-500">Erreur de chargement de l'image</p>
+            <p className="mt-2 text-sm text-gray-500">
+              {imageError ? "Erreur de chargement de l'image" : "Aucune image"}
+            </p>
           </div>
         </div>
       )}
