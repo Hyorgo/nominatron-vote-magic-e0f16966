@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload, Loader2, ImageIcon } from "lucide-react";
-import { logger } from '@/services/monitoring/logger';
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useImageUpload } from "@/hooks/useImageUpload";
 
 interface ImageUploadFieldProps {
   imageUrl: string;
@@ -21,101 +18,16 @@ export const ImageUploadField = ({
   isUploading,
   setIsUploading
 }: ImageUploadFieldProps) => {
-  const { toast } = useToast();
-  const [imageError, setImageError] = useState(false);
+  const { uploadImage, imageError, setImageError } = useImageUpload({
+    bucketName: 'nominees-images',
+    onSuccess: onImageChange
+  });
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) {
-      logger.warn('Aucun fichier sélectionné');
-      return;
-    }
-
-    // Vérification de la taille du fichier (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "Erreur",
-        description: "L'image ne doit pas dépasser 5MB",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Vérification du type de fichier
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Erreur",
-        description: "Le fichier doit être une image",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    logger.info('Début du téléchargement de l\'image', {
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type
-    });
-
-    setIsUploading(true);
-    setImageError(false);
-
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${crypto.randomUUID()}.${fileExt}`;
-
-      logger.info('Téléchargement vers Supabase Storage', {
-        fileName,
-        bucket: 'nominees-images'
-      });
-
-      // Ajout des options de cache et CORS
-      const { error: uploadError } = await supabase.storage
-        .from('nominees-images')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false,
-          contentType: file.type
-        });
-
-      if (uploadError) {
-        logger.error('Erreur lors du téléchargement', uploadError);
-        throw uploadError;
-      }
-
-      // Récupération de l'URL avec les bons en-têtes CORS
-      const { data: { publicUrl } } = supabase.storage
-        .from('nominees-images')
-        .getPublicUrl(fileName, {
-          download: true, // Force le téléchargement avec les bons en-têtes
-        });
-
-      logger.info('URL publique générée', { publicUrl });
-
-      // Préchargement de l'image pour vérifier qu'elle est accessible
-      const img = new Image();
-      img.onload = () => {
-        onImageChange(publicUrl);
-        toast({
-          title: "Succès",
-          description: "Image téléchargée avec succès"
-        });
-      };
-      img.onerror = () => {
-        setImageError(true);
-        throw new Error("Impossible de charger l'image");
-      };
-      img.src = publicUrl;
-
-    } catch (error) {
-      logger.error("Erreur lors du téléchargement:", error);
-      setImageError(true);
-      toast({
-        title: "Erreur",
-        description: "Impossible de télécharger l'image",
-        variant: "destructive"
-      });
-    } finally {
+    if (file) {
+      setIsUploading(true);
+      await uploadImage(file);
       setIsUploading(false);
     }
   };
@@ -128,12 +40,7 @@ export const ImageUploadField = ({
             src={imageUrl}
             alt={nomineeName}
             className="h-full w-full object-cover"
-            onError={() => {
-              logger.error('Erreur de chargement de l\'image', {
-                url: imageUrl
-              });
-              setImageError(true);
-            }}
+            onError={() => setImageError(true)}
           />
         </div>
       ) : (
