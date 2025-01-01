@@ -36,36 +36,31 @@ const LazyImage = ({
 
     const loadImage = async () => {
       try {
-        // Si l'URL est déjà une URL publique Supabase complète
-        if (src.includes('storage.googleapis.com') || src.includes('supabase.co/storage/v1/object/public')) {
+        // Si c'est déjà une URL complète, on l'utilise directement
+        if (src.startsWith('http')) {
+          logger.info('Using direct URL:', { src });
           setImageSrc(src);
-        } else {
-          // Extraire le nom du fichier de l'URL ou utiliser l'URL complète
-          const fileName = src.includes('/') ? src.split('/').pop() : src;
-          
-          if (!fileName) {
-            throw new Error('Invalid file name');
-          }
-
-          logger.info('Getting public URL for file:', { fileName });
-          
-          const { data } = supabase.storage
-            .from('nominees-images')
-            .getPublicUrl(fileName);
-          
-          if (!data?.publicUrl) {
-            throw new Error('Failed to get public URL');
-          }
-
-          // S'assurer que l'URL contient le bon chemin
-          const publicUrl = data.publicUrl.replace(
-            '/object/public/',
-            '/storage/v1/object/public/'
-          );
-          
-          logger.info('Generated public URL:', { publicUrl });
-          setImageSrc(publicUrl);
+          return;
         }
+
+        // Sinon, on considère que c'est un nom de fichier
+        const fileName = src.split('/').pop();
+        if (!fileName) {
+          throw new Error('Invalid file name');
+        }
+
+        logger.info('Getting public URL for file:', { fileName });
+        
+        const { data } = supabase.storage
+          .from('nominees-images')
+          .getPublicUrl(fileName);
+
+        if (!data?.publicUrl) {
+          throw new Error('Failed to get public URL');
+        }
+
+        logger.info('Generated public URL:', { publicUrl: data.publicUrl });
+        setImageSrc(data.publicUrl);
       } catch (error) {
         logger.error('Error processing image URL:', { error, originalSrc: src });
         setHasError(true);
