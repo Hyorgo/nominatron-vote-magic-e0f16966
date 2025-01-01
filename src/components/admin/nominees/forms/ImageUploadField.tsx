@@ -30,16 +30,31 @@ export const ImageUploadField = ({
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
+      logger.info('Début du téléchargement de l\'image', {
+        fileName,
+        fileSize: file.size,
+        fileType: file.type
+      });
+
       const { error: uploadError, data } = await supabase.storage
         .from('nominees-images')
-        .upload(fileName, file);
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false,
+          contentType: file.type
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        logger.error('Erreur lors du téléchargement:', uploadError);
+        throw uploadError;
+      }
 
       const { data: { publicUrl } } = supabase.storage
         .from('nominees-images')
         .getPublicUrl(fileName);
 
+      logger.info('Image téléchargée avec succès', { publicUrl });
+      
       onImageUploaded(publicUrl);
       toast({
         title: "Succès",
