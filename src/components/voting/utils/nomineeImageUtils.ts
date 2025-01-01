@@ -104,13 +104,23 @@ const nomineeImageMapping: NomineeImageMapping = {
   "jess my": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
   "JESS MY": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
   "Jess My": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
+  
+  // Ajout des mappings pour ILY
+  "ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+  "ILY": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+  "Ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+  "dj ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+  "DJ ILY": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+  "Dj Ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
+
+  // Ajout des mappings pour VAL DC
+  "val dc": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
+  "VAL DC": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
+  "Val Dc": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
   "dj val dc": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
   "DJ VAL DC": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
   "Dj Val Dc": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
   "DJ Val DC": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
-  "dj ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
-  "DJ ILY": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
-  "Dj Ily": "/lovable-uploads/fbdc21e6-1514-48bb-ba8c-a91a17f2acd8.png",
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
