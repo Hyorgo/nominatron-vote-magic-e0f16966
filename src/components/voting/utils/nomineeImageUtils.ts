@@ -34,7 +34,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "justin": "/lovable-uploads/5477519f-5319-4d96-8c9a-04e5f7a98608.png",
   "biniou": "/lovable-uploads/2619c487-2026-42b6-8a14-c2d4c6585080.png",
   "faute aux ours": "/lovable-uploads/710bdecc-ac55-4766-b1b6-a7951dbc331e.png",
-  "espit chupitos": "/lovable-uploads/6882e33f-5fbb-4b92-8db3-0de73e306450.png",
+  "espit chupitos": "/lovable-uploads/6882e33f-5fbb-4766-b1b6-a7951dbc331e.png",
   "quai 19": "/lovable-uploads/8bc34934-e72d-4f40-b7ea-c5c9c4d1fbf0.png",
   "el sombrero": "/lovable-uploads/2abbb4c6-6d35-47d3-b1a1-b073181b3fe9.png",
   "excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
@@ -50,7 +50,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "casa soho": "/lovable-uploads/24058066-c9a6-40ed-a1f6-6ba620ea36ab.png",
   "cactu bar": "/lovable-uploads/41892430-8fc7-4881-aef5-11cb3075bf72.png",
   "cactus bar": "/lovable-uploads/41892430-8fc7-4881-aef5-11cb3075bf72.png",
-  "voiles du grand large": "/lovable-uploads/90f85e0d-77bc-4f82-92ab-c571db50e3ca.png"
+  "voiles du grand large": "/lovable-uploads/90f85e0d-77bc-4f82-92ab-c571db50e3ca.png",
+  "bistrot brigitte": "/lovable-uploads/93ff9fb3-8967-49d7-a277-5c18863ea880.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
