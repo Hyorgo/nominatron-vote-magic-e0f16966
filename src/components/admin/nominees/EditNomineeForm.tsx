@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
 import { ImageUploadField } from "./forms/ImageUploadField";
+import { getStorageFileName } from "@/lib/storage-utils";
 
 interface EditNomineeFormProps {
   nominee: Nominee;
@@ -77,8 +78,9 @@ export const EditNomineeForm = ({
     if (url === null) {
       // Si il y avait une ancienne image, on la supprime du storage
       if (formData.image_url) {
-        const fileName = formData.image_url.split('/').pop();
+        const fileName = getStorageFileName(formData.image_url);
         if (fileName) {
+          logger.info('Suppression de l\'ancienne image:', fileName);
           const { error } = await supabase.storage
             .from('nominees-images')
             .remove([fileName]);

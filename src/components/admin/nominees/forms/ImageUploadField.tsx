@@ -3,6 +3,7 @@ import { logger } from '@/services/monitoring/logger';
 import { supabase } from "@/integrations/supabase/client";
 import { ImagePreviewField } from "./ImagePreviewField";
 import { ImageActions } from "./ImageActions";
+import { getStorageFileName } from "@/lib/storage-utils";
 
 interface ImageUploadFieldProps {
   imageUrl: string;
@@ -27,13 +28,29 @@ export const ImageUploadField = ({
 
     setIsUploading(true);
     try {
-      // Si une image existe déjà, on la supprime d'abord
+      // Vérifier la taille du fichier (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('Le fichier est trop volumineux (maximum 5MB)');
+      }
+
+      // Vérifier le type de fichier
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Le fichier doit être une image');
+      }
+
+      // Si une image existe déjà, la supprimer d'abord
       if (imageUrl) {
-        const oldFileName = imageUrl.split('/').pop();
+        const oldFileName = getStorageFileName(imageUrl);
         if (oldFileName) {
-          await supabase.storage
+          logger.info('Suppression de l\'ancienne image:', oldFileName);
+          const { error: deleteError } = await supabase.storage
             .from('nominees-images')
             .remove([oldFileName]);
+
+          if (deleteError) {
+            logger.error('Erreur lors de la suppression de l\'ancienne image:', deleteError);
+            // On continue malgré l'erreur pour permettre le téléchargement de la nouvelle image
+          }
         }
       }
 
@@ -73,7 +90,7 @@ export const ImageUploadField = ({
       logger.error('Erreur lors du téléchargement:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de télécharger l'image",
+        description: error.message || "Impossible de télécharger l'image",
         variant: "destructive"
       });
     } finally {
@@ -82,33 +99,39 @@ export const ImageUploadField = ({
   };
 
   const handleDeleteImage = async () => {
-    logger.info('Suppression de l\'image');
-    
-    if (imageUrl) {
-      const fileName = imageUrl.split('/').pop();
-      if (fileName) {
-        setIsUploading(true);
-        try {
-          const { error } = await supabase.storage
-            .from('nominees-images')
-            .remove([fileName]);
+    if (!imageUrl) return;
 
-          if (error) {
-            throw error;
-          }
-
-          onImageUploaded(null);
-        } catch (error) {
-          logger.error('Erreur lors de la suppression:', error);
-          toast({
-            title: "Erreur",
-            description: "Impossible de supprimer l'image",
-            variant: "destructive"
-          });
-        } finally {
-          setIsUploading(false);
-        }
+    setIsUploading(true);
+    try {
+      const fileName = getStorageFileName(imageUrl);
+      if (!fileName) {
+        throw new Error('Nom de fichier invalide');
       }
+
+      logger.info('Suppression de l\'image:', fileName);
+      
+      const { error } = await supabase.storage
+        .from('nominees-images')
+        .remove([fileName]);
+
+      if (error) {
+        throw error;
+      }
+
+      onImageUploaded(null);
+      toast({
+        title: "Succès",
+        description: "Image supprimée avec succès"
+      });
+    } catch (error) {
+      logger.error('Erreur lors de la suppression:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer l'image",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
     }
   };
 
