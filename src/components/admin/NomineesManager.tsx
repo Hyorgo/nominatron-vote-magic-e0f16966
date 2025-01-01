@@ -5,28 +5,21 @@ import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { AddNomineeForm } from "./nominees/AddNomineeForm";
 import { NomineesList } from "./nominees/NomineesList";
-import { PaginationControls } from "../ui/pagination-controls";
 import { Category } from "@/types/nominees";
 import { logger } from '@/services/monitoring/logger';
-
-const ITEMS_PER_PAGE = 10;
 
 export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchData();
-  }, [currentPage]);
+  }, []);
 
   const fetchData = async () => {
     try {
       logger.info('Début du chargement des catégories et nominés');
-      const start = (currentPage - 1) * ITEMS_PER_PAGE;
-      const end = start + ITEMS_PER_PAGE - 1;
 
       // Récupérer d'abord toutes les catégories
       const { data: categoriesData, error: categoriesError } = await supabase
@@ -39,31 +32,16 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
         throw categoriesError;
       }
 
-      // Ensuite, récupérer les nominés avec pagination
+      // Ensuite, récupérer tous les nominés
       const { data: nomineesData, error: nomineesError } = await supabase
         .from("nominees")
         .select("*")
-        .range(start, end)
         .order("created_at", { ascending: false });
 
       if (nomineesError) {
         logger.error('Erreur lors du chargement des nominés:', nomineesError);
         throw nomineesError;
       }
-
-      // Récupérer le nombre total de nominés pour la pagination
-      const { count: totalCount, error: countError } = await supabase
-        .from("nominees")
-        .select("*", { count: "exact", head: true });
-
-      if (countError) {
-        logger.error('Erreur lors du comptage des nominés:', countError);
-        throw countError;
-      }
-
-      // Calculer le nombre total de pages
-      const total = totalCount || 0;
-      setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
 
       // Associer les nominés à leurs catégories respectives
       const categoriesWithNominees = categoriesData.map((category) => ({
@@ -76,7 +54,6 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
       logger.info('Données chargées avec succès:', {
         categoriesCount: categoriesData.length,
         nomineesCount: nomineesData.length,
-        totalPages: Math.ceil(total / ITEMS_PER_PAGE)
       });
 
       setCategories(categoriesWithNominees);
@@ -163,11 +140,6 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
       <h3 className="text-lg font-semibold mb-4">Gestion des nominés</h3>
       <AddNomineeForm categories={categories} onSubmit={addNominee} />
       <NomineesList categories={categories} onDelete={deleteNominee} />
-      <PaginationControls
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
     </Card>
   );
 };
