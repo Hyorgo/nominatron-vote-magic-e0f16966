@@ -25,7 +25,7 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
 
   // Récupérer tous les nominés avec leurs informations de catégorie
   const allNominees = categories.flatMap(category => {
-    logger.info(`Traitement de la catégorie ${category.name}:`, {
+    logger.info(`Processing category ${category.name}:`, {
       categoryId: category.id,
       nomineesCount: category.nominees.length,
       nominees: category.nominees.map(n => ({
@@ -46,7 +46,7 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
     ? allNominees 
     : allNominees.filter(nominee => {
         const matches = nominee.category_id === selectedCategory;
-        logger.info(`Filtrage du nominé ${nominee.name}:`, {
+        logger.info(`Filtering nominee ${nominee.name}:`, {
           nomineeId: nominee.id,
           nomineeCategoryId: nominee.category_id,
           selectedCategory,
@@ -58,7 +58,7 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   // Appliquer les filtres de recherche et de tri
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
 
-  logger.info('Résultat final du filtrage:', {
+  logger.info('Final filtering result:', {
     selectedCategory,
     totalNominees: allNominees.length,
     filteredCount: categoryFilteredNominees.length,
@@ -71,6 +71,11 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   });
 
   const handleEdit = (nominee: Nominee) => {
+    logger.info('Editing nominee:', {
+      nomineeId: nominee.id,
+      nomineeName: nominee.name,
+      categoryId: nominee.category_id
+    });
     setSelectedNominee(nominee);
   };
 
