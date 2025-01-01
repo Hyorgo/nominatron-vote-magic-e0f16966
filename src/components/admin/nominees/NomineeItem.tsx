@@ -18,7 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Nominee } from "@/types/nominees";
-import LazyImage from "@/components/ui/lazy-image";
+import { logger } from '@/services/monitoring/logger';
 
 interface NomineeItemProps {
   nominee: Nominee;
@@ -26,15 +26,25 @@ interface NomineeItemProps {
 }
 
 export const NomineeItem = ({ nominee, onDelete }: NomineeItemProps) => {
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    logger.error('Erreur de chargement de l\'image', {
+      nomineeId: nominee.id,
+      imageUrl: nominee.image_url
+    });
+    e.currentTarget.src = '/placeholder.svg';
+    e.currentTarget.className = 'w-full h-full object-contain p-4';
+  };
+
   return (
     <div className="flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary/50 transition-colors">
       <div className="flex items-center gap-4 flex-1">
         {nominee.image_url && (
-          <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden">
-            <LazyImage
+          <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+            <img
               src={nominee.image_url}
               alt={nominee.name}
               className="w-full h-full object-cover"
+              onError={handleImageError}
             />
           </div>
         )}
