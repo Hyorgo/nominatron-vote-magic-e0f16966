@@ -36,12 +36,11 @@ export const ImageUploadField = ({
         fileType: file.type
       });
 
-      const { error: uploadError, data } = await supabase.storage
+      const { data, error: uploadError } = await supabase.storage
         .from('nominees-images')
         .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false,
-          contentType: file.type
+          contentType: file.type,
+          upsert: false
         });
 
       if (uploadError) {
