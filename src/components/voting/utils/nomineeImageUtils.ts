@@ -103,7 +103,11 @@ const nomineeImageMapping: NomineeImageMapping = {
   "Jess": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
   "jess my": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
   "JESS MY": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
-  "Jess My": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png"
+  "Jess My": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
+  "dj val dc": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
+  "DJ VAL DC": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
+  "Dj Val Dc": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
+  "DJ Val DC": "/lovable-uploads/7c2ddab3-6314-48a1-9985-12537cac9b58.png",
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
