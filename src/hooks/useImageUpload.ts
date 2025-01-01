@@ -9,7 +9,6 @@ interface UseImageUploadOptions {
 }
 
 export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions) => {
-  const [isUploading, setIsUploading] = useState(false);
   const [imageError, setImageError] = useState(false);
   const { toast } = useToast();
 
@@ -19,12 +18,10 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
       return;
     }
 
-    setIsUploading(true);
-    setImageError(false);
-
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `${fileName}`;
 
       logger.info('Début du téléchargement', {
         fileName,
@@ -33,9 +30,9 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
         bucket: bucketName
       });
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data } = await supabase.storage
         .from(bucketName)
-        .upload(fileName, file, {
+        .upload(filePath, file, {
           cacheControl: '3600',
           upsert: false,
           contentType: file.type
@@ -46,9 +43,11 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
         throw uploadError;
       }
 
+      logger.info('Image téléchargée avec succès', { data });
+
       const { data: { publicUrl } } = supabase.storage
         .from(bucketName)
-        .getPublicUrl(fileName);
+        .getPublicUrl(filePath);
 
       // Vérifier que l'image est accessible
       await new Promise((resolve, reject) => {
@@ -68,20 +67,17 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
       });
     } catch (error) {
       logger.error("Erreur lors du téléchargement:", error);
-      setImageError(true);
       toast({
         title: "Erreur",
         description: "Impossible de télécharger l'image",
         variant: "destructive"
       });
-    } finally {
-      setIsUploading(false);
+      throw error;
     }
   };
 
   return {
     uploadImage,
-    isUploading,
     imageError,
     setImageError
   };
