@@ -31,19 +31,29 @@ export const useImageUpload = () => {
         fileType: file.type
       });
 
-      // Vérifier si le bucket existe
+      // Vérifier si le bucket existe et est accessible
       const { data: bucketInfo, error: bucketError } = await supabase.storage
         .getBucket('nominees-images');
 
       if (bucketError) {
-        logger.error('Erreur lors de la vérification du bucket:', bucketError);
-        throw new Error('Erreur d\'accès au stockage');
+        logger.error('Erreur lors de la vérification du bucket:', {
+          error: bucketError,
+          bucket: 'nominees-images'
+        });
+        throw new Error('Le système de stockage est temporairement indisponible. Veuillez réessayer plus tard.');
+      }
+
+      if (!bucketInfo) {
+        logger.error('Bucket non trouvé:', {
+          bucket: 'nominees-images'
+        });
+        throw new Error('Configuration de stockage incorrecte. Veuillez contacter l\'administrateur.');
       }
 
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('nominees-images')
         .upload(fileName, file, {
           cacheControl: '3600',
@@ -51,8 +61,19 @@ export const useImageUpload = () => {
         });
 
       if (uploadError) {
-        logger.error('Erreur lors du téléchargement:', uploadError);
-        throw uploadError;
+        logger.error('Erreur lors du téléchargement:', {
+          error: uploadError,
+          fileName,
+          bucket: 'nominees-images'
+        });
+        
+        if (uploadError.message.includes('Permission denied')) {
+          throw new Error('Accès au stockage refusé. Veuillez vérifier vos permissions.');
+        } else if (uploadError.message.includes('Bucket not found')) {
+          throw new Error('Espace de stockage non trouvé. Veuillez contacter l\'administrateur.');
+        } else {
+          throw new Error('Erreur lors du téléchargement. Veuillez réessayer.');
+        }
       }
 
       const { data: { publicUrl } } = supabase.storage
