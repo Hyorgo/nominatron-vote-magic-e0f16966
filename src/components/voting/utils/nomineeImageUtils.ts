@@ -81,7 +81,8 @@ const nomineeImageMapping: NomineeImageMapping = {
   "loic tilt": "/lovable-uploads/5c4eab83-df2e-4602-8c2b-65ecd465097a.png",
   "flufy la maison": "/lovable-uploads/eefb7ecf-041e-4344-bc21-4d27314e214d.png",
   "micka l'horloge": "/lovable-uploads/9b7fc8ac-e5ac-4116-920b-16ae4daf2ee4.png",
-  "tom": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png"
+  "tom": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png",
+  "jess": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
