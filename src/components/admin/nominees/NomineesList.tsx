@@ -34,10 +34,10 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
 
   // Extraire tous les nominés de toutes les catégories
   const allNominees = categories.flatMap(category => {
-    // Ajouter l'information de la catégorie à chaque nominé
     return category.nominees.map(nominee => ({
       ...nominee,
-      categoryName: category.name // Ajouter le nom de la catégorie pour l'affichage
+      categoryName: category.name,
+      category_id: nominee.category_id || '' // Assurer que category_id n'est jamais undefined
     }));
   });
   
@@ -45,7 +45,11 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   const categoryFilteredNominees = selectedCategory === "all" 
     ? allNominees 
     : allNominees.filter(nominee => {
-        console.log('Nominee category:', nominee.category_id, 'Selected category:', selectedCategory);
+        console.log('Filtering nominee:', {
+          nomineeId: nominee.category_id,
+          selectedCategory: selectedCategory,
+          isMatch: nominee.category_id === selectedCategory
+        });
         return nominee.category_id === selectedCategory;
       });
 
@@ -66,7 +70,10 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
         <div className="w-full md:w-1/3">
           <Select
             value={selectedCategory}
-            onValueChange={setSelectedCategory}
+            onValueChange={(value) => {
+              console.log('Selected category:', value);
+              setSelectedCategory(value);
+            }}
           >
             <SelectTrigger>
               <SelectValue placeholder="Filtrer par catégorie" />
