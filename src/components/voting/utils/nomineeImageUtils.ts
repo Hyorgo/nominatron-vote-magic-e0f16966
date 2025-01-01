@@ -17,7 +17,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "feria": "/lovable-uploads/3bf95b68-9bb0-45da-9a27-ecf3257f50a1.png",
   "mademoiselle simone": "/lovable-uploads/60548362-6418-4f6c-a954-712bc12f6149.png",
   "you": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
-  "la cigale": "/lovable-uploads/f44edba2-f449-423f-911e-7f49b4ec1867.png",
+  "cigale": "/lovable-uploads/f4406e88-333b-4e95-b162-0fd7f2089d9a.png",
   "au bon secours": "/lovable-uploads/8a3e3f29-5841-400e-8127-47159cf04eca.png",
   "casa jaguar": "/lovable-uploads/2bfb7476-b837-47c0-a820-109983e47ae8.png",
   "poisson chat": "/lovable-uploads/83b8592f-a31c-4432-a949-5cecf2f8fe29.png",
