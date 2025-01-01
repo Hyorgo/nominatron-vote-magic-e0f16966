@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Loader2, Image } from "lucide-react";
+import { Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -63,7 +63,7 @@ export const ImageUploadField = ({
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const filePath = fileName;
 
       logger.info('Téléchargement vers Supabase Storage', {
         filePath,
@@ -79,13 +79,17 @@ export const ImageUploadField = ({
         throw uploadError;
       }
 
-      const { data: { publicUrl } } = supabase.storage
+      const { data: urlData } = await supabase.storage
         .from('nominees-images')
         .getPublicUrl(filePath);
 
-      logger.info('URL publique générée', { publicUrl });
+      if (!urlData.publicUrl) {
+        throw new Error('Impossible d\'obtenir l\'URL publique');
+      }
 
-      onImageChange(publicUrl);
+      logger.info('URL publique générée', { publicUrl: urlData.publicUrl });
+
+      onImageChange(urlData.publicUrl);
       toast({
         title: "Succès",
         description: "Image téléchargée avec succès"
@@ -124,7 +128,7 @@ export const ImageUploadField = ({
       {imageError && (
         <div className="flex h-32 w-full items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50">
           <div className="text-center">
-            <Image className="mx-auto h-8 w-8 text-gray-400" />
+            <ImageIcon className="mx-auto h-8 w-8 text-gray-400" />
             <p className="mt-2 text-sm text-gray-500">Erreur de chargement de l'image</p>
           </div>
         </div>
