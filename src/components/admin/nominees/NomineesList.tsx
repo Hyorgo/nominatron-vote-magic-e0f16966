@@ -26,37 +26,63 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Récupérer tous les nominés avec leurs informations de catégorie
-  const allNominees = categories.flatMap(category => 
-    category.nominees.map(nominee => ({
-      ...nominee,
-      categoryName: category.name,
-      category_id: category.id
-    }))
-  );
+  const allNominees = categories.flatMap(category => {
+    logger.info(`Traitement de la catégorie ${category.name}:`, {
+      categoryId: category.id,
+      nomineesCount: category.nominees.length
+    });
+    
+    return category.nominees.map(nominee => {
+      logger.info(`Nominé trouvé dans ${category.name}:`, {
+        nomineeName: nominee.name,
+        nomineeId: nominee.id,
+        categoryId: category.id
+      });
+      
+      return {
+        ...nominee,
+        categoryName: category.name,
+        category_id: category.id
+      };
+    });
+  });
 
-  logger.info('Catégorie sélectionnée:', selectedCategory);
-  logger.info('Nominés disponibles:', allNominees);
+  logger.info('État actuel:', {
+    selectedCategory,
+    totalNominees: allNominees.length,
+    categories: categories.map(c => ({
+      id: c.id,
+      name: c.name,
+      nomineesCount: c.nominees.length
+    }))
+  });
 
   // Filtrer les nominés par catégorie
   const categoryFilteredNominees = selectedCategory === "all" 
     ? allNominees 
     : allNominees.filter(nominee => {
         const matches = nominee.category_id === selectedCategory;
-        logger.info(`Vérification du nominé ${nominee.name}:`, {
+        logger.info(`Filtrage du nominé ${nominee.name}:`, {
           nomineeId: nominee.id,
           nomineeCategoryId: nominee.category_id,
           selectedCategory,
-          matches
+          matches,
+          categoryName: nominee.categoryName
         });
         return matches;
       });
 
-  logger.info('Nominés filtrés par catégorie:', categoryFilteredNominees);
+  logger.info('Résultats du filtrage:', {
+    selectedCategory,
+    filteredCount: categoryFilteredNominees.length,
+    nominees: categoryFilteredNominees.map(n => ({
+      name: n.name,
+      category: n.categoryName
+    }))
+  });
 
   // Appliquer les filtres de recherche et de tri
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
-
-  logger.info('Nominés filtrés et triés:', filteredNominees);
 
   const handleEdit = (nominee: Nominee) => {
     setSelectedNominee(nominee);
@@ -67,7 +93,14 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
   };
 
   const handleCategoryChange = (categoryId: string) => {
-    logger.info('Changement de catégorie:', categoryId);
+    logger.info('Changement de catégorie:', {
+      previousCategory: selectedCategory,
+      newCategory: categoryId,
+      availableCategories: categories.map(c => ({
+        id: c.id,
+        name: c.name
+      }))
+    });
     setSelectedCategory(categoryId);
   };
 
