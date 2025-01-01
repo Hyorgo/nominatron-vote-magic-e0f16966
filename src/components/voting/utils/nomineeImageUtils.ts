@@ -91,7 +91,13 @@ const nomineeImageMapping: NomineeImageMapping = {
   "DJ Bekii": "/lovable-uploads/34221328-587d-4a81-9ee3-bf9f9e60f2fa.png",
   "bekii": "/lovable-uploads/34221328-587d-4a81-9ee3-bf9f9e60f2fa.png",
   "BEKII": "/lovable-uploads/34221328-587d-4a81-9ee3-bf9f9e60f2fa.png",
-  "Bekii": "/lovable-uploads/34221328-587d-4a81-9ee3-bf9f9e60f2fa.png"
+  "Bekii": "/lovable-uploads/34221328-587d-4a81-9ee3-bf9f9e60f2fa.png",
+  "quai 22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
+  "QUAI 22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
+  "Quai 22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
+  "QUAI22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
+  "quai22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png",
+  "Quai22": "/lovable-uploads/7899a30a-b1ae-42f4-b7cd-5a7ed1e3912b.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -119,5 +125,5 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
-  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", "le club by la maison", "club by la maison"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", "le club by la maison", "club by la maison", "rambler", "quai 22"].includes(normalizedName);
 };
