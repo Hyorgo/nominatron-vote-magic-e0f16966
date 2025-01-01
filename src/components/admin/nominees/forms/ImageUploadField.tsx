@@ -72,7 +72,7 @@ export const ImageUploadField = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4">      
       {imageUrl && (
         <div className="relative h-32 w-full overflow-hidden rounded-lg">
           <img
