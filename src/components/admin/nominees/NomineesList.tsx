@@ -29,7 +29,11 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
     logger.info(`Traitement de la catégorie ${category.name}:`, {
       categoryId: category.id,
       nomineesCount: category.nominees.length,
-      nominees: category.nominees
+      nominees: category.nominees.map(n => ({
+        id: n.id,
+        name: n.name,
+        categoryId: n.category_id
+      }))
     });
     
     return category.nominees.map(nominee => ({
@@ -54,6 +58,18 @@ export const NomineesList = ({ categories, onDelete }: NomineesListProps) => {
 
   // Appliquer les filtres de recherche et de tri
   const filteredNominees = filterAndSortNominees(categoryFilteredNominees);
+
+  logger.info('Résultat final du filtrage:', {
+    selectedCategory,
+    totalNominees: allNominees.length,
+    filteredCount: categoryFilteredNominees.length,
+    finalCount: filteredNominees.length,
+    nominees: filteredNominees.map(n => ({
+      id: n.id,
+      name: n.name,
+      categoryId: n.category_id
+    }))
+  });
 
   const handleEdit = (nominee: Nominee) => {
     setSelectedNominee(nominee);
