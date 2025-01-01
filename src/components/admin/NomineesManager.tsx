@@ -10,7 +10,7 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   if (loading) {
     return (
@@ -24,7 +24,9 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     <Card className="p-4">
       <h3 className="text-lg font-semibold mb-4">Gestion des nominés</h3>
       <AddNomineeForm categories={categories} onSubmit={addNominee} />
-      <NomineesList categories={categories} onDelete={deleteNominee} />
+      <div className="mt-6">
+        <NomineesList categories={categories} onDelete={deleteNominee} />
+      </div>
     </Card>
   );
 };
