@@ -51,5 +51,5 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   const normalizedName = nomineeName.toLowerCase().replace(/^(le |la |l'|the )/, '');
-  return ["bacchus", "bambi", "18&10 apero club", "bambolo"].includes(normalizedName);
+  return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile"].includes(normalizedName);
 };
