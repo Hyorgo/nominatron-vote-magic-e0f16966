@@ -128,7 +128,12 @@ const nomineeImageMapping: NomineeImageMapping = {
   "Le Club by La Maison": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png",
   "club by la maison": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png",
   "CLUB BY LA MAISON": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png",
-  "Club by La Maison": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png"
+  "Club by La Maison": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png",
+  "le six": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
+  "LE SIX": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
+  "Le Six": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
+  "six": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png",
+  "SIX": "/lovable-uploads/025113d0-6e48-4e21-8770-e8a33ee4453e.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
@@ -159,5 +164,6 @@ export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
   return ["bacchus", "bambi", "18&10 apero club", "bambolo", "l'ile", "ile", "les assembleurs", 
     "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", 
     "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", 
-    "le club by la maison", "club by la maison", "rambler", "rambler cocktail club", "quai 22"].includes(normalizedName);
+    "le club by la maison", "club by la maison", "rambler", "rambler cocktail club", "quai 22",
+    "six", "le six"].includes(normalizedName);
 };
