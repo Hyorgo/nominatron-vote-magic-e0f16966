@@ -42,18 +42,26 @@ export const useImageUpload = ({ bucketName, onSuccess }: UseImageUploadOptions)
         throw uploadError;
       }
 
-      // Get the full public URL
-      const { data: { publicUrl } } = supabase.storage
+      logger.info('File uploaded successfully', { data });
+
+      // Construct the public URL correctly
+      const { data: publicUrlData } = await supabase.storage
         .from(bucketName)
         .getPublicUrl(fileName);
 
-      logger.info('Image uploaded successfully', { publicUrl });
+      if (!publicUrlData?.publicUrl) {
+        throw new Error('Failed to generate public URL');
+      }
+
+      const publicUrl = publicUrlData.publicUrl;
 
       // Verify the URL is accessible
       const response = await fetch(publicUrl, { method: 'HEAD' });
       if (!response.ok) {
-        throw new Error('Generated URL is not accessible');
+        throw new Error(`Generated URL is not accessible: ${publicUrl}`);
       }
+
+      logger.info('Image URL generated and verified', { publicUrl });
 
       onSuccess(publicUrl);
       toast({

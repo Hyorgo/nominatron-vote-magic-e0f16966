@@ -32,10 +32,13 @@ const LazyImage = ({
       return;
     }
 
+    logger.info('Loading image:', { src });
+
     const img = new Image();
     img.src = src;
     
     img.onload = () => {
+      logger.info('Image loaded successfully:', { src });
       setIsLoaded(true);
       setHasError(false);
     };
@@ -69,6 +72,7 @@ const LazyImage = ({
         alt={alt}
         className={`${className} ${!isLoaded ? 'hidden' : ''}`}
         onError={() => {
+          logger.error('Image load error in img element:', { src });
           setHasError(true);
           onError?.();
         }}
