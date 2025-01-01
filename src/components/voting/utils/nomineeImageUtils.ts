@@ -23,7 +23,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "poisson chat": "/lovable-uploads/83b8592f-a31c-4432-a949-5cecf2f8fe29.png",
   "lockers": "/lovable-uploads/c6245aa1-5be4-4779-b999-54dd43ac850f.png",
   "javoo": "/lovable-uploads/b629982b-e48e-44c0-a28e-407b800addab.png",
-  "le bar by la maison": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png",
+  "bar by la maison": "/lovable-uploads/70a42996-e268-4b83-a96b-ac2873ef9805.png",
   "bambi": "/lovable-uploads/0570d5b2-d774-4316-a6c5-9ff288a86131.png",
 };
 
