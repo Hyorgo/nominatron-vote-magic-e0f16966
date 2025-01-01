@@ -14,7 +14,7 @@ export const Navigation = () => {
             <img 
               src="/lovable-uploads/d5e8b4c7-bdd4-4dde-83bd-038a04842793.png"
               alt="Sortir Lyon" 
-              className="h-16 w-auto"
+              className="h-20 w-auto" // Augmenté de h-16 à h-20 pour agrandir le logo
             />
           </Link>
 
