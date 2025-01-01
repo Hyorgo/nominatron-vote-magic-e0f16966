@@ -67,7 +67,11 @@ const nomineeImageMapping: NomineeImageMapping = {
   "club by la maison": "/lovable-uploads/1e76ce64-2375-44d0-a518-034ee1c2f5e9.png",
   "matinale brigitte": "/lovable-uploads/6cef5d7d-a653-40a7-aca3-0073db1371c5.png",
   "la matinale brigitte": "/lovable-uploads/6cef5d7d-a653-40a7-aca3-0073db1371c5.png",
-  "la matinale de folie": "/lovable-uploads/6cef5d7d-a653-40a7-aca3-0073db1371c5.png"
+  "la matinale de folie": "/lovable-uploads/6cef5d7d-a653-40a7-aca3-0073db1371c5.png",
+  "pool beach": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
+  "pool beach club": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
+  "pool beach club lyon": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png",
+  "pool beach party": "/lovable-uploads/15715c93-8b8c-48e4-8cda-60a57a0b9ccf.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
