@@ -103,7 +103,26 @@ const nomineeImageMapping: NomineeImageMapping = {
   "Rambler": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
   "rambler cocktail club": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
   "RAMBLER COCKTAIL CLUB": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
-  "Rambler Cocktail Club": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png"
+  "Rambler Cocktail Club": "/lovable-uploads/f4fa3741-de0d-4036-b027-3efc17995ff6.png",
+  "les assembleurs": "/lovable-uploads/6f21c914-775b-42ed-9737-8e8375c8ed4b.png",
+  "LES ASSEMBLEURS": "/lovable-uploads/6f21c914-775b-42ed-9737-8e8375c8ed4b.png",
+  "Les Assembleurs": "/lovable-uploads/6f21c914-775b-42ed-9737-8e8375c8ed4b.png",
+  "assembleurs": "/lovable-uploads/6f21c914-775b-42ed-9737-8e8375c8ed4b.png",
+  "le petit bleu": "/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png",
+  "LE PETIT BLEU": "/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png",
+  "Le Petit Bleu": "/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png",
+  "petit bleu": "/lovable-uploads/64f527a4-72a8-4d81-ac97-405a93d7d159.png",
+  "le voxx": "/lovable-uploads/58e4d1a2-4dfb-4c0d-a74d-edf7b9133d2e.png",
+  "LE VOXX": "/lovable-uploads/58e4d1a2-4dfb-4c0d-a74d-edf7b9133d2e.png",
+  "Le Voxx": "/lovable-uploads/58e4d1a2-4dfb-4c0d-a74d-edf7b9133d2e.png",
+  "voxx": "/lovable-uploads/58e4d1a2-4dfb-4c0d-a74d-edf7b9133d2e.png",
+  "casa soho": "/lovable-uploads/b41ac4da-fdbd-4f16-9d17-f2694c647080.png",
+  "CASA SOHO": "/lovable-uploads/b41ac4da-fdbd-4f16-9d17-f2694c647080.png",
+  "Casa Soho": "/lovable-uploads/b41ac4da-fdbd-4f16-9d17-f2694c647080.png",
+  "cactus bar": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
+  "CACTUS BAR": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
+  "Cactus Bar": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png",
+  "cactus": "/lovable-uploads/460b9f1b-4243-4eaa-a1bb-13d19c1cb988.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
