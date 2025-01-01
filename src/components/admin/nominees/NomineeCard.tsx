@@ -14,15 +14,19 @@ export const NomineeCard = ({ nominee, onDelete, onEdit }: NomineeCardProps) => 
   return (
     <Card className="p-4 space-y-2">
       <div className="flex justify-between items-start gap-4">
-        {nominee.image_url && (
-          <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+        <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+          {nominee.image_url ? (
             <LazyImage
               src={nominee.image_url}
               alt={nominee.name}
               className="w-full h-full object-cover"
             />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="text-sm text-gray-400">Pas d'image</span>
+            </div>
+          )}
+        </div>
         <div className="flex-1">
           <h3 className="font-semibold">{nominee.name}</h3>
           <p className="text-sm text-muted-foreground">{nominee.description}</p>
