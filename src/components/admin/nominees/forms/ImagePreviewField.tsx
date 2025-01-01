@@ -1,26 +1,33 @@
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface ImagePreviewFieldProps {
-  imageUrl: string | null;
+  imageUrl: string;
   altText: string;
-  className?: string;
+  onDelete?: () => void;
 }
 
-export const ImagePreviewField = ({
-  imageUrl,
-  altText,
-  className = "h-32 w-full"
-}: ImagePreviewFieldProps) => {
-  if (!imageUrl) return null;
-
+export const ImagePreviewField = ({ imageUrl, altText, onDelete }: ImagePreviewFieldProps) => {
   return (
-    <div className={`relative overflow-hidden rounded-lg bg-gray-100 ${className}`}>
+    <div className="relative w-32 h-32 mx-auto">
       <ImageWithFallback
         src={imageUrl}
         alt={altText}
         type="profile"
-        className="h-full w-full object-cover"
+        className="w-full h-full object-cover rounded-lg"
       />
+      {imageUrl && onDelete && (
+        <Button
+          type="button"
+          variant="destructive"
+          size="icon"
+          className="absolute -top-2 -right-2"
+          onClick={onDelete}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 };

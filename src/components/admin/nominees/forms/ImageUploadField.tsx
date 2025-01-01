@@ -72,11 +72,20 @@ export const ImageUploadField = ({
     }
   };
 
+  const handleDeleteImage = () => {
+    onImageUploaded('');
+    toast({
+      title: "Succès",
+      description: "Image supprimée avec succès"
+    });
+  };
+
   return (
     <div className="space-y-4">
       <ImagePreviewField
         imageUrl={imageUrl}
         altText={nomineeName}
+        onDelete={imageUrl ? handleDeleteImage : undefined}
       />
       <ImageActions
         onUploadClick={() => document.getElementById('image-upload')?.click()}
