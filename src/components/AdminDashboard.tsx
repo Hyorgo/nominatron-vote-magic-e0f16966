@@ -7,7 +7,6 @@ import { useAdminData } from "@/hooks/useAdminData";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminSession } from "@/hooks/useAdminSession";
 import { logger } from '@/services/monitoring/logger';
-import { supabase } from "@/integrations/supabase/client";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -24,16 +23,9 @@ export const AdminDashboard = () => {
   useEffect(() => {
     const verifySession = async () => {
       try {
-        logger.info('Début de la vérification de session admin');
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session) {
-          logger.warn('Pas de session Supabase active');
-          navigate('/admin');
-          return;
-        }
-
+        logger.info('Vérification de la session admin');
         const isValid = await checkSession();
+        
         if (!isValid) {
           logger.warn('Session admin invalide, redirection vers la page de connexion');
           toast({
@@ -42,10 +34,9 @@ export const AdminDashboard = () => {
             description: "Veuillez vous reconnecter",
           });
           navigate('/admin');
-          return;
+        } else {
+          logger.info('Session admin valide');
         }
-        
-        logger.info('Session admin valide');
       } catch (error) {
         logger.error('Erreur lors de la vérification de session', error);
         toast({
