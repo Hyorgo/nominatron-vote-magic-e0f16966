@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { CategoryList } from "./categories/CategoryList";
 import { CategoryForm } from "./categories/CategoryForm";
 import { DeleteAllButton } from "./categories/DeleteAllButton";
+import { CsvImportButton } from "./categories/CsvImportButton";
 
 // Définir un type local pour les catégories telles qu'elles sont reçues de Supabase
 interface CategoryData {
@@ -148,7 +149,10 @@ export const CategoriesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     <Card className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">Gestion des catégories</h3>
-        <DeleteAllButton isLoading={deleteLoading} onDelete={deleteAllData} />
+        <div className="flex gap-2">
+          <CsvImportButton onSuccess={fetchCategories} />
+          <DeleteAllButton isLoading={deleteLoading} onDelete={deleteAllData} />
+        </div>
       </div>
       
       <CategoryForm
