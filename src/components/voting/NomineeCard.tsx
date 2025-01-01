@@ -47,6 +47,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
   const isCigaleNominee = nomineeName === "la cigale";
   const isBonSecoursNominee = nomineeName === "au bon secours";
   const isCasaJaguarNominee = nomineeName === "casa jaguar";
+  const isPoissonChatNominee = nomineeName === "poisson chat";
   
   const imageUrl = isMyNominee 
     ? "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
@@ -78,6 +79,8 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
     ? "/lovable-uploads/8a3e3f29-5841-400e-8127-47159cf04eca.png"
     : isCasaJaguarNominee
     ? "/lovable-uploads/2bfb7476-b837-47c0-a820-109983e47ae8.png"
+    : isPoissonChatNominee
+    ? "/lovable-uploads/83b8592f-a31c-4432-a949-5cecf2f8fe29.png"
     : nominee.image_url;
   
   return (
@@ -109,7 +112,7 @@ export const NomineeCard = ({ nominee, isSelected, onClick }: NomineeCardProps) 
                 "object-contain w-full h-full transition-transform duration-500",
                 "group-hover:scale-110",
                 isSelected && "brightness-110",
-                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee || isNelsClubNominee || isMaisonBleueNominee || isFeriaNominee || isSimoneNominee || isYouNominee || isCigaleNominee || isBonSecoursNominee || isCasaJaguarNominee) && "bg-black p-4"
+                (isMyNominee || isPlanBNominee || isMazeNominee || isFKNominee || isIleNominee || isParadiseNominee || isKaiaNominee || isNelsClubNominee || isMaisonBleueNominee || isFeriaNominee || isSimoneNominee || isYouNominee || isCigaleNominee || isBonSecoursNominee || isCasaJaguarNominee || isPoissonChatNominee) && "bg-black p-4"
               )}
             />
             {isSelected && (
