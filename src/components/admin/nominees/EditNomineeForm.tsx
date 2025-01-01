@@ -7,10 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Category, Nominee } from "@/types/nominees";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, ImageIcon } from "lucide-react";
 import { logger } from '@/services/monitoring/logger';
-import { ImagePreview } from "./forms/ImagePreview";
-import { UploadButton } from "./forms/UploadButton";
+import { ImageUploadHandler } from "./forms/ImageUploadHandler";
 
 interface EditNomineeFormProps {
   nominee: Nominee;
@@ -28,76 +27,7 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
     image_url: nominee.image_url || ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
-
-  // Log l'URL de l'image actuelle au chargement du composant
-  logger.info('URL de l\'image actuelle:', {
-    nomineeId: nominee.id,
-    imageUrl: nominee.image_url
-  });
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${crypto.randomUUID()}.${fileExt}`;
-
-      logger.info('Début du téléchargement de l\'image', {
-        fileName,
-        fileSize: file.size,
-        fileType: file.type
-      });
-
-      // Vérifier si le bucket existe et est accessible
-      const { data: bucketInfo, error: bucketError } = await supabase.storage
-        .getBucket('nominees-images');
-
-      if (bucketError) {
-        logger.error('Erreur lors de la vérification du bucket:', bucketError);
-        throw new Error('Erreur d\'accès au bucket de stockage');
-      }
-
-      logger.info('Bucket info:', bucketInfo);
-
-      const { error: uploadError } = await supabase.storage
-        .from('nominees-images')
-        .upload(fileName, file);
-
-      if (uploadError) {
-        logger.error('Erreur lors du téléchargement:', uploadError);
-        throw uploadError;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('nominees-images')
-        .getPublicUrl(fileName);
-
-      logger.info('Image téléchargée avec succès:', {
-        fileName,
-        publicUrl
-      });
-
-      setFormData(prev => ({ ...prev, image_url: publicUrl }));
-      
-      toast({
-        title: "Succès",
-        description: "Image téléchargée avec succès"
-      });
-    } catch (error) {
-      logger.error('Erreur lors du téléchargement:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de télécharger l'image",
-        variant: "destructive"
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   const handleSubmit = async () => {
     logger.info('Soumission du formulaire avec les données:', formData);
@@ -176,7 +106,7 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
                   alt={formData.name}
                   className="h-full w-full object-cover"
                   onError={(e) => {
-                    logger.error('Erreur de chargement de l\'image dans le preview:', {
+                    logger.error('Erreur de chargement de l\'image:', {
                       imageUrl: formData.image_url
                     });
                     e.currentTarget.src = '/placeholder.svg';
@@ -187,30 +117,18 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
             )}
 
             <div className="flex items-center gap-4">
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                id="image-upload-edit"
+              <ImageUploadHandler
+                currentImageUrl={formData.image_url}
+                onImageUploaded={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
               />
               <Button
                 type="button"
                 variant="outline"
                 className="w-full"
-                disabled={isUploading}
                 onClick={() => document.getElementById('image-upload-edit')?.click()}
               >
-                {isUploading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Téléchargement...
-                  </>
-                ) : (
-                  <>
-                    {formData.image_url ? "Changer l'image" : "Ajouter une image"}
-                  </>
-                )}
+                <ImageIcon className="mr-2 h-4 w-4" />
+                {formData.image_url ? "Changer l'image" : "Ajouter une image"}
               </Button>
             </div>
           </div>
@@ -218,7 +136,7 @@ export const EditNomineeForm = ({ nominee, categories, isOpen, onClose, onUpdate
           <Button 
             onClick={handleSubmit} 
             className="w-full"
-            disabled={isSubmitting || isUploading}
+            disabled={isSubmitting}
           >
             {isSubmitting ? (
               <>
