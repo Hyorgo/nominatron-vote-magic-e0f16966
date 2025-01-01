@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Nominee } from "@/types/nominees";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { logger } from '@/services/monitoring/logger';
 
 interface NomineeItemProps {
@@ -38,16 +39,15 @@ export const NomineeItem = ({ nominee, onDelete }: NomineeItemProps) => {
   return (
     <div className="flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary/50 transition-colors">
       <div className="flex items-center gap-4 flex-1">
-        {nominee.image_url && (
-          <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-            <img
-              src={nominee.image_url}
-              alt={nominee.name}
-              className="w-full h-full object-cover"
-              onError={handleImageError}
-            />
-          </div>
-        )}
+        <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+          <ImageWithFallback
+            src={nominee.image_url || ''}
+            alt={nominee.name}
+            type="profile"
+            className="w-full h-full object-cover"
+            onError={handleImageError}
+          />
+        </div>
         <div>
           <h4 className="font-medium">{nominee.name}</h4>
           <p className="text-sm text-muted-foreground">
