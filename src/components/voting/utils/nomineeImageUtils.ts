@@ -42,6 +42,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "el sombrero": "/lovable-uploads/2abbb4c6-6d35-47d3-b1a1-b073181b3fe9.png",
   "excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
   "ted": "/lovable-uploads/9d47d1ed-ebc9-4819-b481-5e9870d7a8dc.png",
+  "TED": "/lovable-uploads/9d47d1ed-ebc9-4819-b481-5e9870d7a8dc.png",
   "addict": "/lovable-uploads/0307341d-08e8-4b10-afe9-59804d2bbc08.png",
   "bambolo": "/lovable-uploads/b41ac4da-fdbd-4f16-9d17-f2694c647080.png",
   "les assembleurs": "/lovable-uploads/691fd4d5-094e-4c9d-816e-5cbedf786a67.png",
@@ -84,15 +85,30 @@ const nomineeImageMapping: NomineeImageMapping = {
   "micka l'horloge": "/lovable-uploads/9b7fc8ac-e5ac-4116-920b-16ae4daf2ee4.png",
   "tom": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png",
   "TOM": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png",
+  "Tom": "/lovable-uploads/eaa1a287-addb-487e-9591-c0f2419a2ef7.png",
   "jess": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
-  "JESS": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png"
+  "JESS": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png",
+  "Jess": "/lovable-uploads/bb8c27bb-133a-4031-a4c6-a89ef43e67e5.png"
 };
 
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
-  const normalizedName = nomineeName.toLowerCase().trim();
-  console.log('Normalized name:', normalizedName);
+  // On utilise directement le nom sans transformation pour chercher dans le mapping
+  console.log('Original name:', nomineeName);
   console.log('Available mappings:', Object.keys(nomineeImageMapping));
-  return nomineeImageMapping[normalizedName] || defaultImageUrl || "";
+  
+  // D'abord essayer avec le nom exact
+  if (nomineeImageMapping[nomineeName]) {
+    return nomineeImageMapping[nomineeName];
+  }
+  
+  // Si pas trouvé, essayer avec le nom en minuscules
+  const lowerCaseName = nomineeName.toLowerCase();
+  if (nomineeImageMapping[lowerCaseName]) {
+    return nomineeImageMapping[lowerCaseName];
+  }
+  
+  // Si toujours pas trouvé, retourner l'URL par défaut ou une chaîne vide
+  return defaultImageUrl || "";
 };
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
