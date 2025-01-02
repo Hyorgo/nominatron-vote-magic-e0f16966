@@ -128,5 +128,11 @@ export const blackBackgroundNominees = [
   "Bambolo",
   "bambolo brasserie",
   "BAMBOLO BRASSERIE",
-  "Bambolo Brasserie"
+  "Bambolo Brasserie",
+  "les assembleurs",
+  "LES ASSEMBLEURS",
+  "Les Assembleurs",
+  "assembleurs",
+  "ASSEMBLEURS",
+  "Assembleurs"
 ];

@@ -130,5 +130,11 @@ export const digitalMapping: NomineeImageMapping = {
   "Bambolo": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
   "bambolo brasserie": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
   "BAMBOLO BRASSERIE": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
-  "Bambolo Brasserie": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png"
+  "Bambolo Brasserie": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
+  "les assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
+  "LES ASSEMBLEURS": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
+  "Les Assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
+  "assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
+  "ASSEMBLEURS": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
+  "Assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png"
 };
