@@ -1,9 +1,9 @@
 import { NomineeImageMapping } from '../imageTypes';
 
 export const digitalMapping: NomineeImageMapping = {
-  "bus paradise": "/lovable-uploads/eb3d3e9e-7cb8-49d1-8928-d065fe28c664.png",
-  "BUS PARADISE": "/lovable-uploads/eb3d3e9e-7cb8-49d1-8928-d065fe28c664.png",
-  "Bus Paradise": "/lovable-uploads/eb3d3e9e-7cb8-49d1-8928-d065fe28c664.png",
+  "bus paradise": "/lovable-uploads/BUS PARADIS.JPG",
+  "BUS PARADISE": "/lovable-uploads/BUS PARADIS.JPG",
+  "Bus Paradise": "/lovable-uploads/BUS PARADIS.JPG",
   "kaia": "/lovable-uploads/0570d5b2-d774-4316-a6c5-9ff288a86131.png",
   "KAIA": "/lovable-uploads/0570d5b2-d774-4316-a6c5-9ff288a86131.png",
   "Kaia": "/lovable-uploads/0570d5b2-d774-4316-a6c5-9ff288a86131.png",
