@@ -36,5 +36,8 @@ export const digitalMapping: NomineeImageMapping = {
   "Poisson Chat": "/lovable-uploads/28fb070c-7713-49f5-bd15-6c9b58d77805.png",
   "lockers": "/lovable-uploads/0df10ec0-fdad-4701-bd20-e03530581a1b.png",
   "LOCKERS": "/lovable-uploads/0df10ec0-fdad-4701-bd20-e03530581a1b.png",
-  "Lockers": "/lovable-uploads/0df10ec0-fdad-4701-bd20-e03530581a1b.png"
+  "Lockers": "/lovable-uploads/0df10ec0-fdad-4701-bd20-e03530581a1b.png",
+  "javoo": "/lovable-uploads/ad8a8971-beec-49b4-93d8-2dc76b3bd4ab.png",
+  "JAVOO": "/lovable-uploads/ad8a8971-beec-49b4-93d8-2dc76b3bd4ab.png",
+  "Javoo": "/lovable-uploads/ad8a8971-beec-49b4-93d8-2dc76b3bd4ab.png"
 };
