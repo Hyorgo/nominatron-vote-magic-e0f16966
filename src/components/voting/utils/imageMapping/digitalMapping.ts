@@ -97,5 +97,11 @@ export const digitalMapping: NomineeImageMapping = {
   "Justin": "/lovable-uploads/e1028e81-2336-4d99-99bb-e03b4dc63b0c.png",
   "biniou": "/lovable-uploads/d3e22274-dcc3-4e7b-a24e-6d1b4a0eccf9.png",
   "BINIOU": "/lovable-uploads/d3e22274-dcc3-4e7b-a24e-6d1b4a0eccf9.png",
-  "Biniou": "/lovable-uploads/d3e22274-dcc3-4e7b-a24e-6d1b4a0eccf9.png"
+  "Biniou": "/lovable-uploads/d3e22274-dcc3-4e7b-a24e-6d1b4a0eccf9.png",
+  "faute aux ours": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
+  "FAUTE AUX OURS": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
+  "Faute aux Ours": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
+  "fao": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
+  "FAO": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
+  "Fao": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png"
 };
