@@ -46,6 +46,9 @@ export const digitalMapping: NomineeImageMapping = {
   "le bar by la maison": "/lovable-uploads/2b6f291a-d39c-4f62-a1f0-07a977fa76d7.png",
   "LE BAR BY LA MAISON": "/lovable-uploads/2b6f291a-d39c-4f62-a1f0-07a977fa76d7.png",
   "Le Bar by La Maison": "/lovable-uploads/2b6f291a-d39c-4f62-a1f0-07a977fa76d7.png",
+  "my": "/lovable-uploads/98e8adbd-017b-44b5-9b98-ad8ca19ddc9e.png",
+  "MY": "/lovable-uploads/98e8adbd-017b-44b5-9b98-ad8ca19ddc9e.png",
+  "My": "/lovable-uploads/98e8adbd-017b-44b5-9b98-ad8ca19ddc9e.png",
   "bambi": "/lovable-uploads/d65dbeef-d65f-41d4-b53a-744dfa1cb8a8.png",
   "BAMBI": "/lovable-uploads/d65dbeef-d65f-41d4-b53a-744dfa1cb8a8.png",
   "Bambi": "/lovable-uploads/d65dbeef-d65f-41d4-b53a-744dfa1cb8a8.png"

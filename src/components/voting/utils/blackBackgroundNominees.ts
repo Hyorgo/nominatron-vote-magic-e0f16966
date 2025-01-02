@@ -46,5 +46,8 @@ export const blackBackgroundNominees = [
   "Le Bar by La Maison",
   "bambi",
   "BAMBI",
-  "Bambi"
+  "Bambi",
+  "my",
+  "MY",
+  "My"
 ];
