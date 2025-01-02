@@ -85,5 +85,8 @@ export const digitalMapping: NomineeImageMapping = {
   "18&10 Apero Club": "/lovable-uploads/dd0058dd-54d2-42e8-9e1c-c62956cc1823.png",
   "glam club": "/lovable-uploads/3c7e9c7a-6f15-4948-a443-99d52c1be67b.png",
   "GLAM CLUB": "/lovable-uploads/3c7e9c7a-6f15-4948-a443-99d52c1be67b.png",
-  "Glam Club": "/lovable-uploads/3c7e9c7a-6f15-4948-a443-99d52c1be67b.png"
+  "Glam Club": "/lovable-uploads/3c7e9c7a-6f15-4948-a443-99d52c1be67b.png",
+  "klub": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png",
+  "KLUB": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png",
+  "Klub": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png"
 };

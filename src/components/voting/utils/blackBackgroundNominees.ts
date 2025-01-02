@@ -83,5 +83,8 @@ export const blackBackgroundNominees = [
   "18&10 Apero Club",
   "glam club",
   "GLAM CLUB",
-  "Glam Club"
+  "Glam Club",
+  "klub",
+  "KLUB",
+  "Klub"
 ];
