@@ -58,5 +58,12 @@ export const blackBackgroundNominees = [
   "Le Plan B",
   "the maze",
   "THE MAZE",
-  "The Maze"
+  "The Maze",
+  "f&k",
+  "F&K",
+  "F&k",
+  "f&K",
+  "f&k bistro club",
+  "F&K BISTRO CLUB",
+  "F&K Bistro Club"
 ];

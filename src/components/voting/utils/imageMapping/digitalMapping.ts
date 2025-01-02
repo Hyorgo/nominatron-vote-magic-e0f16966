@@ -60,5 +60,12 @@ export const digitalMapping: NomineeImageMapping = {
   "Le Plan B": "/lovable-uploads/8933c8a8-e7b2-434a-855f-a520959d36fc.png",
   "the maze": "/lovable-uploads/0a8f387e-6cef-46a0-83bc-f370af14cb66.png",
   "THE MAZE": "/lovable-uploads/0a8f387e-6cef-46a0-83bc-f370af14cb66.png",
-  "The Maze": "/lovable-uploads/0a8f387e-6cef-46a0-83bc-f370af14cb66.png"
+  "The Maze": "/lovable-uploads/0a8f387e-6cef-46a0-83bc-f370af14cb66.png",
+  "f&k": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
+  "F&K": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
+  "F&k": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
+  "f&K": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
+  "f&k bistro club": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
+  "F&K BISTRO CLUB": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
+  "F&K Bistro Club": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png"
 };
