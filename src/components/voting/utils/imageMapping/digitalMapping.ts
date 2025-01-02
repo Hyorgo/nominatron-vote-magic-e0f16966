@@ -106,5 +106,11 @@ export const digitalMapping: NomineeImageMapping = {
   "Fao": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
   "espit chupitos": "/lovable-uploads/b4f54555-1ffd-48b7-a7a2-271156938c52.png",
   "ESPIT CHUPITOS": "/lovable-uploads/b4f54555-1ffd-48b7-a7a2-271156938c52.png",
-  "Espit Chupitos": "/lovable-uploads/b4f54555-1ffd-48b7-a7a2-271156938c52.png"
+  "Espit Chupitos": "/lovable-uploads/b4f54555-1ffd-48b7-a7a2-271156938c52.png",
+  "l'excuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
+  "L'EXCUSE": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
+  "L'Excuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
+  "lexcuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
+  "LEXCUSE": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
+  "Lexcuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png"
 };
