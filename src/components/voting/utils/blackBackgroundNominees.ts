@@ -134,5 +134,11 @@ export const blackBackgroundNominees = [
   "Les Assembleurs",
   "assembleurs",
   "ASSEMBLEURS",
-  "Assembleurs"
+  "Assembleurs",
+  "le petit bleu",
+  "LE PETIT BLEU",
+  "Le Petit Bleu",
+  "petit bleu",
+  "PETIT BLEU",
+  "Petit Bleu"
 ];

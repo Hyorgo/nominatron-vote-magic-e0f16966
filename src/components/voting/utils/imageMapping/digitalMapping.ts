@@ -136,5 +136,11 @@ export const digitalMapping: NomineeImageMapping = {
   "Les Assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
   "assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
   "ASSEMBLEURS": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
-  "Assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png"
+  "Assembleurs": "/lovable-uploads/f83afe97-3d28-4ff2-83ca-d454da62469f.png",
+  "le petit bleu": "/lovable-uploads/328a5a18-c6df-4e14-b9a6-69328eae4868.png",
+  "LE PETIT BLEU": "/lovable-uploads/328a5a18-c6df-4e14-b9a6-69328eae4868.png",
+  "Le Petit Bleu": "/lovable-uploads/328a5a18-c6df-4e14-b9a6-69328eae4868.png",
+  "petit bleu": "/lovable-uploads/328a5a18-c6df-4e14-b9a6-69328eae4868.png",
+  "PETIT BLEU": "/lovable-uploads/328a5a18-c6df-4e14-b9a6-69328eae4868.png",
+  "Petit Bleu": "/lovable-uploads/328a5a18-c6df-4e14-b9a6-69328eae4868.png"
 };
