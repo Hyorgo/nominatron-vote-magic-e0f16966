@@ -31,6 +31,9 @@ const nomineeImageMapping: NomineeImageMapping = {
   "mademoiselle simone": "/lovable-uploads/60548362-6418-4f6c-a954-712bc12f6149.png",
   "you": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
   "cigale": "/lovable-uploads/f4406e88-333b-4e95-b162-0fd7f2089d9a.png",
+  "la cigale": "/lovable-uploads/f4406e88-333b-4e95-b162-0fd7f2089d9a.png",
+  "LA CIGALE": "/lovable-uploads/f4406e88-333b-4e95-b162-0fd7f2089d9a.png",
+  "La Cigale": "/lovable-uploads/f4406e88-333b-4e95-b162-0fd7f2089d9a.png",
   "au bon secours": "/lovable-uploads/8a3e3f29-5841-400e-8127-47159cf04eca.png",
   "casa jaguar": "/lovable-uploads/2bfb7476-b837-47c0-a820-109983e47ae8.png",
   "poisson chat": "/lovable-uploads/83b8592f-a31c-4432-a949-5cecf2f8fe29.png",
@@ -182,5 +185,5 @@ export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
     "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", 
     "le club by la maison", "club by la maison", "rambler", "rambler cocktail club", "quai 22",
     "six", "le six", "horloge", "l'horloge", "antonin", "maison bleue", "la maison bleue", 
-    "feria", "la feria"].includes(normalizedName);
+    "feria", "la feria", "cigale", "la cigale"].includes(normalizedName);
 };
