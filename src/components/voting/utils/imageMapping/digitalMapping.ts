@@ -57,5 +57,8 @@ export const digitalMapping: NomineeImageMapping = {
   "Plan B": "/lovable-uploads/8933c8a8-e7b2-434a-855f-a520959d36fc.png",
   "le plan b": "/lovable-uploads/8933c8a8-e7b2-434a-855f-a520959d36fc.png",
   "LE PLAN B": "/lovable-uploads/8933c8a8-e7b2-434a-855f-a520959d36fc.png",
-  "Le Plan B": "/lovable-uploads/8933c8a8-e7b2-434a-855f-a520959d36fc.png"
+  "Le Plan B": "/lovable-uploads/8933c8a8-e7b2-434a-855f-a520959d36fc.png",
+  "the maze": "/lovable-uploads/0a8f387e-6cef-46a0-83bc-f370af14cb66.png",
+  "THE MAZE": "/lovable-uploads/0a8f387e-6cef-46a0-83bc-f370af14cb66.png",
+  "The Maze": "/lovable-uploads/0a8f387e-6cef-46a0-83bc-f370af14cb66.png"
 };
