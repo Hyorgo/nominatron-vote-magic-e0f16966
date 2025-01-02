@@ -25,6 +25,9 @@ const nomineeImageMapping: NomineeImageMapping = {
   "LA MAISON BLEUE": "/lovable-uploads/0cc1b90b-3287-43ee-b754-cce61a14aab8.png",
   "La Maison Bleue": "/lovable-uploads/0cc1b90b-3287-43ee-b754-cce61a14aab8.png",
   "feria": "/lovable-uploads/3bf95b68-9bb0-45da-9a27-ecf3257f50a1.png",
+  "la feria": "/lovable-uploads/3bf95b68-9bb0-45da-9a27-ecf3257f50a1.png",
+  "LA FERIA": "/lovable-uploads/3bf95b68-9bb0-45da-9a27-ecf3257f50a1.png",
+  "La Feria": "/lovable-uploads/3bf95b68-9bb0-45da-9a27-ecf3257f50a1.png",
   "mademoiselle simone": "/lovable-uploads/60548362-6418-4f6c-a954-712bc12f6149.png",
   "you": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
   "cigale": "/lovable-uploads/f4406e88-333b-4e95-b162-0fd7f2089d9a.png",
@@ -178,5 +181,6 @@ export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
     "assembleurs", "petit bleu", "le petit bleu", "plouf", "bistrot des celestins", "bdc", 
     "tilt", "loft club", "avenue 45", "l'avenue 45", "drungly", "club la maison", "le club", 
     "le club by la maison", "club by la maison", "rambler", "rambler cocktail club", "quai 22",
-    "six", "le six", "horloge", "l'horloge", "antonin", "maison bleue", "la maison bleue"].includes(normalizedName);
+    "six", "le six", "horloge", "l'horloge", "antonin", "maison bleue", "la maison bleue", 
+    "feria", "la feria"].includes(normalizedName);
 };
