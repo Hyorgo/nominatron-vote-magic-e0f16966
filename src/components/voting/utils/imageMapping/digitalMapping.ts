@@ -27,5 +27,8 @@ export const digitalMapping: NomineeImageMapping = {
   "La Cigale": "/lovable-uploads/87daf1e8-4f5e-42dc-9b60-6372584da2ce.png",
   "au bon secours": "/lovable-uploads/1c9566a9-c104-4010-af5d-c8f32aaff311.png",
   "AU BON SECOURS": "/lovable-uploads/1c9566a9-c104-4010-af5d-c8f32aaff311.png",
-  "Au Bon Secours": "/lovable-uploads/1c9566a9-c104-4010-af5d-c8f32aaff311.png"
+  "Au Bon Secours": "/lovable-uploads/1c9566a9-c104-4010-af5d-c8f32aaff311.png",
+  "casa jaguar": "/lovable-uploads/d7bd5221-09d6-4c5c-869a-d39a120f0b91.png",
+  "CASA JAGUAR": "/lovable-uploads/d7bd5221-09d6-4c5c-869a-d39a120f0b91.png",
+  "Casa Jaguar": "/lovable-uploads/d7bd5221-09d6-4c5c-869a-d39a120f0b91.png"
 };
