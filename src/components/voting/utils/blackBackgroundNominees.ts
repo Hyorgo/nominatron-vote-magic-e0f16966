@@ -65,5 +65,11 @@ export const blackBackgroundNominees = [
   "f&K",
   "f&k bistro club",
   "F&K BISTRO CLUB",
-  "F&K Bistro Club"
+  "F&K Bistro Club",
+  "l'ile",
+  "L'ILE",
+  "L'Ile",
+  "l'ile restaurant",
+  "L'ILE RESTAURANT",
+  "L'Ile Restaurant"
 ];

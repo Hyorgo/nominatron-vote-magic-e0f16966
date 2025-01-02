@@ -67,5 +67,11 @@ export const digitalMapping: NomineeImageMapping = {
   "f&K": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
   "f&k bistro club": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
   "F&K BISTRO CLUB": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
-  "F&K Bistro Club": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png"
+  "F&K Bistro Club": "/lovable-uploads/923da8b9-01f1-41b4-89d9-8e3c51ac7ea2.png",
+  "l'ile": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
+  "L'ILE": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
+  "L'Ile": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
+  "l'ile restaurant": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
+  "L'ILE RESTAURANT": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
+  "L'Ile Restaurant": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png"
 };
