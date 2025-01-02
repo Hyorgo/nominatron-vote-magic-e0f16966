@@ -21,5 +21,8 @@ export const digitalMapping: NomineeImageMapping = {
   "Mademoiselle Simone": "/lovable-uploads/583985de-c76f-426b-b975-91c311a83107.png",
   "you": "/lovable-uploads/9082cbc5-36f0-42d1-afae-09e85ec332ed.png",
   "YOU": "/lovable-uploads/9082cbc5-36f0-42d1-afae-09e85ec332ed.png",
-  "You": "/lovable-uploads/9082cbc5-36f0-42d1-afae-09e85ec332ed.png"
+  "You": "/lovable-uploads/9082cbc5-36f0-42d1-afae-09e85ec332ed.png",
+  "la cigale": "/lovable-uploads/87daf1e8-4f5e-42dc-9b60-6372584da2ce.png",
+  "LA CIGALE": "/lovable-uploads/87daf1e8-4f5e-42dc-9b60-6372584da2ce.png",
+  "La Cigale": "/lovable-uploads/87daf1e8-4f5e-42dc-9b60-6372584da2ce.png"
 };
