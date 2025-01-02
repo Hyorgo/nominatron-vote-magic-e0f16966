@@ -116,5 +116,11 @@ export const blackBackgroundNominees = [
   "Ted",
   "le ted",
   "LE TED",
-  "Le Ted"
+  "Le Ted",
+  "addict",
+  "ADDICT",
+  "Addict",
+  "l'addict",
+  "L'ADDICT",
+  "L'Addict"
 ];

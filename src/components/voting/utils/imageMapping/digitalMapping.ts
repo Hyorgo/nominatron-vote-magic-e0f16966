@@ -118,5 +118,11 @@ export const digitalMapping: NomineeImageMapping = {
   "Ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
   "le ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
   "LE TED": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
-  "Le Ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png"
+  "Le Ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
+  "addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
+  "ADDICT": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
+  "Addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
+  "l'addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
+  "L'ADDICT": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
+  "L'Addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png"
 };
