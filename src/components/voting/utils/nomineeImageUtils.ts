@@ -2,6 +2,7 @@ import { NomineeName, NomineeImageMapping } from './imageTypes';
 import { blackBackgroundNominees } from './blackBackgroundNominees';
 
 const nomineeImageMapping: NomineeImageMapping = {
+  // Digital & Réseaux Sociaux
   "ily": "/lovable-uploads/5428f0a9-4da8-48af-a2d3-54b788a6c786.png",
   "ILY": "/lovable-uploads/5428f0a9-4da8-48af-a2d3-54b788a6c786.png",
   "Ily": "/lovable-uploads/5428f0a9-4da8-48af-a2d3-54b788a6c786.png",
@@ -24,6 +25,7 @@ const nomineeImageMapping: NomineeImageMapping = {
   "excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
   "EXCUSE": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
   "Excuse": "/lovable-uploads/5202b2b2-3423-4440-997d-271c9b1fdcfb.png",
+
   "el sombrero": "/lovable-uploads/2abbb4c6-6d35-47d3-b1a1-b073181b3fe9.png",
   "EL SOMBRERO": "/lovable-uploads/2abbb4c6-6d35-47d3-b1a1-b073181b3fe9.png",
   "El Sombrero": "/lovable-uploads/2abbb4c6-6d35-47d3-b1a1-b073181b3fe9.png",
