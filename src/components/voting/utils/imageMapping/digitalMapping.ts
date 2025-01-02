@@ -10,9 +10,9 @@ export const digitalMapping: NomineeImageMapping = {
   "nel's club": "/lovable-uploads/9cc9e7af-24f6-49f3-b197-575bf342e071.png",
   "NEL'S CLUB": "/lovable-uploads/9cc9e7af-24f6-49f3-b197-575bf342e071.png",
   "Nel's Club": "/lovable-uploads/9cc9e7af-24f6-49f3-b197-575bf342e071.png",
-  "la maison bleue": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
-  "LA MAISON BLEUE": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
-  "La Maison Bleue": "/lovable-uploads/c757b973-bfbb-478a-bf32-8e7f8363eb76.png",
+  "la maison bleue": "/lovable-uploads/de2daad9-cc7e-4c33-93e0-9662b53a0005.png",
+  "LA MAISON BLEUE": "/lovable-uploads/de2daad9-cc7e-4c33-93e0-9662b53a0005.png",
+  "La Maison Bleue": "/lovable-uploads/de2daad9-cc7e-4c33-93e0-9662b53a0005.png",
   "la feria": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png",
   "LA FERIA": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png",
   "La Feria": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
