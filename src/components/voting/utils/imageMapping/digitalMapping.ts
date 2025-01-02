@@ -13,7 +13,7 @@ export const digitalMapping: NomineeImageMapping = {
   "la maison bleue": "/lovable-uploads/de2daad9-cc7e-4c33-93e0-9662b53a0005.png",
   "LA MAISON BLEUE": "/lovable-uploads/de2daad9-cc7e-4c33-93e0-9662b53a0005.png",
   "La Maison Bleue": "/lovable-uploads/de2daad9-cc7e-4c33-93e0-9662b53a0005.png",
-  "la feria": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png",
-  "LA FERIA": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png",
-  "La Feria": "/lovable-uploads/d58b4350-a0b2-4d6a-a124-3d2724665647.png"
+  "la feria": "/lovable-uploads/aa81eeaf-c5b0-42ea-b01f-77aae53f2dba.png",
+  "LA FERIA": "/lovable-uploads/aa81eeaf-c5b0-42ea-b01f-77aae53f2dba.png",
+  "La Feria": "/lovable-uploads/aa81eeaf-c5b0-42ea-b01f-77aae53f2dba.png"
 };
