@@ -101,5 +101,8 @@ export const blackBackgroundNominees = [
   "Faute aux Ours",
   "fao",
   "FAO",
-  "Fao"
+  "Fao",
+  "espit chupitos",
+  "ESPIT CHUPITOS",
+  "Espit Chupitos"
 ];

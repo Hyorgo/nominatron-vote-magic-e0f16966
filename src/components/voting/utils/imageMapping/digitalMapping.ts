@@ -103,5 +103,8 @@ export const digitalMapping: NomineeImageMapping = {
   "Faute aux Ours": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
   "fao": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
   "FAO": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
-  "Fao": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png"
+  "Fao": "/lovable-uploads/15f8a2f5-2e92-43eb-9cb1-4cb00a868f33.png",
+  "espit chupitos": "/lovable-uploads/b4f54555-1ffd-48b7-a7a2-271156938c52.png",
+  "ESPIT CHUPITOS": "/lovable-uploads/b4f54555-1ffd-48b7-a7a2-271156938c52.png",
+  "Espit Chupitos": "/lovable-uploads/b4f54555-1ffd-48b7-a7a2-271156938c52.png"
 };
