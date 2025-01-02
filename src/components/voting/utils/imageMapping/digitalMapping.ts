@@ -124,5 +124,11 @@ export const digitalMapping: NomineeImageMapping = {
   "Addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
   "l'addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
   "L'ADDICT": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
-  "L'Addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png"
+  "L'Addict": "/lovable-uploads/e2b37053-ac2f-4120-85d6-9e2affb02acc.png",
+  "bambolo": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
+  "BAMBOLO": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
+  "Bambolo": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
+  "bambolo brasserie": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
+  "BAMBOLO BRASSERIE": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png",
+  "Bambolo Brasserie": "/lovable-uploads/139e5ed4-df7a-47a0-860d-eb7ed0fc1347.png"
 };
