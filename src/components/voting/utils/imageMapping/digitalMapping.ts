@@ -88,5 +88,8 @@ export const digitalMapping: NomineeImageMapping = {
   "Glam Club": "/lovable-uploads/3c7e9c7a-6f15-4948-a443-99d52c1be67b.png",
   "klub": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png",
   "KLUB": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png",
-  "Klub": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png"
+  "Klub": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png",
+  "club 400": "/lovable-uploads/e7527b21-9724-4cc3-bb6e-489393157d22.png",
+  "CLUB 400": "/lovable-uploads/e7527b21-9724-4cc3-bb6e-489393157d22.png",
+  "Club 400": "/lovable-uploads/e7527b21-9724-4cc3-bb6e-489393157d22.png"
 };
