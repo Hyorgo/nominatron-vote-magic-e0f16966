@@ -79,5 +79,8 @@ export const digitalMapping: NomineeImageMapping = {
   "L'Ile": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
   "l'ile restaurant": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
   "L'ILE RESTAURANT": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
-  "L'Ile Restaurant": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png"
+  "L'Ile Restaurant": "/lovable-uploads/b13225fd-0be8-42c1-9da4-432cf7024949.png",
+  "18&10": "/lovable-uploads/dd0058dd-54d2-42e8-9e1c-c62956cc1823.png",
+  "18&10 APERO CLUB": "/lovable-uploads/dd0058dd-54d2-42e8-9e1c-c62956cc1823.png",
+  "18&10 Apero Club": "/lovable-uploads/dd0058dd-54d2-42e8-9e1c-c62956cc1823.png"
 };
