@@ -18,5 +18,8 @@ export const digitalMapping: NomineeImageMapping = {
   "La Feria": "/lovable-uploads/aa81eeaf-c5b0-42ea-b01f-77aae53f2dba.png",
   "mademoiselle simone": "/lovable-uploads/583985de-c76f-426b-b975-91c311a83107.png",
   "MADEMOISELLE SIMONE": "/lovable-uploads/583985de-c76f-426b-b975-91c311a83107.png",
-  "Mademoiselle Simone": "/lovable-uploads/583985de-c76f-426b-b975-91c311a83107.png"
+  "Mademoiselle Simone": "/lovable-uploads/583985de-c76f-426b-b975-91c311a83107.png",
+  "you": "/lovable-uploads/9082cbc5-36f0-42d1-afae-09e85ec332ed.png",
+  "YOU": "/lovable-uploads/9082cbc5-36f0-42d1-afae-09e85ec332ed.png",
+  "You": "/lovable-uploads/9082cbc5-36f0-42d1-afae-09e85ec332ed.png"
 };
