@@ -30,5 +30,8 @@ export const digitalMapping: NomineeImageMapping = {
   "Au Bon Secours": "/lovable-uploads/1c9566a9-c104-4010-af5d-c8f32aaff311.png",
   "casa jaguar": "/lovable-uploads/d7bd5221-09d6-4c5c-869a-d39a120f0b91.png",
   "CASA JAGUAR": "/lovable-uploads/d7bd5221-09d6-4c5c-869a-d39a120f0b91.png",
-  "Casa Jaguar": "/lovable-uploads/d7bd5221-09d6-4c5c-869a-d39a120f0b91.png"
+  "Casa Jaguar": "/lovable-uploads/d7bd5221-09d6-4c5c-869a-d39a120f0b91.png",
+  "poisson chat": "/lovable-uploads/28fb070c-7713-49f5-bd15-6c9b58d77805.png",
+  "POISSON CHAT": "/lovable-uploads/28fb070c-7713-49f5-bd15-6c9b58d77805.png",
+  "Poisson Chat": "/lovable-uploads/28fb070c-7713-49f5-bd15-6c9b58d77805.png"
 };
