@@ -71,5 +71,11 @@ export const blackBackgroundNominees = [
   "L'Ile",
   "l'ile restaurant",
   "L'ILE RESTAURANT",
-  "L'Ile Restaurant"
+  "L'Ile Restaurant",
+  "bacchus",
+  "BACCHUS",
+  "Bacchus",
+  "bacchus plaza",
+  "BACCHUS PLAZA",
+  "Bacchus Plaza"
 ];
