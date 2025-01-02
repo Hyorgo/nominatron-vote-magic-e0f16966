@@ -112,5 +112,11 @@ export const digitalMapping: NomineeImageMapping = {
   "L'Excuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
   "lexcuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
   "LEXCUSE": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
-  "Lexcuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png"
+  "Lexcuse": "/lovable-uploads/88b31dea-0248-42bc-970a-e21a9a7e83f8.png",
+  "ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
+  "TED": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
+  "Ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
+  "le ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
+  "LE TED": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png",
+  "Le Ted": "/lovable-uploads/8b390714-1ea8-45eb-b2fe-e3ab38c21008.png"
 };
