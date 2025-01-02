@@ -5,6 +5,12 @@ import { blackBackgroundNominees } from './blackBackgroundNominees';
 export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: string): string => {
   console.log('Recherche image pour:', nomineeName);
   
+  // Vérifier d'abord l'URL directe si fournie
+  if (defaultImageUrl) {
+    console.log('URL directe fournie:', defaultImageUrl);
+    return defaultImageUrl;
+  }
+  
   if (nomineeImageMapping[nomineeName]) {
     console.log('Trouvé avec le nom exact:', nomineeName);
     return nomineeImageMapping[nomineeName];
@@ -17,7 +23,7 @@ export const getNomineeImageUrl = (nomineeName: NomineeName, defaultImageUrl?: s
   }
   
   console.log('Image non trouvée pour:', nomineeName);
-  return defaultImageUrl || "";
+  return "";
 };
 
 export const shouldUseBlackBackground = (nomineeName: NomineeName): boolean => {
