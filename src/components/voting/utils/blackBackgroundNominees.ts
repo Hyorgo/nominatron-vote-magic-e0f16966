@@ -89,5 +89,8 @@ export const blackBackgroundNominees = [
   "Klub",
   "club 400",
   "CLUB 400",
-  "Club 400"
+  "Club 400",
+  "justin",
+  "JUSTIN",
+  "Justin"
 ];

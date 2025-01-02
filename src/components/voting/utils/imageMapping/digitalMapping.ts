@@ -91,5 +91,8 @@ export const digitalMapping: NomineeImageMapping = {
   "Klub": "/lovable-uploads/a4883cb3-ffc4-47fc-98ff-ab5dff4b1b1c.png",
   "club 400": "/lovable-uploads/e7527b21-9724-4cc3-bb6e-489393157d22.png",
   "CLUB 400": "/lovable-uploads/e7527b21-9724-4cc3-bb6e-489393157d22.png",
-  "Club 400": "/lovable-uploads/e7527b21-9724-4cc3-bb6e-489393157d22.png"
+  "Club 400": "/lovable-uploads/e7527b21-9724-4cc3-bb6e-489393157d22.png",
+  "justin": "/lovable-uploads/e1028e81-2336-4d99-99bb-e03b4dc63b0c.png",
+  "JUSTIN": "/lovable-uploads/e1028e81-2336-4d99-99bb-e03b4dc63b0c.png",
+  "Justin": "/lovable-uploads/e1028e81-2336-4d99-99bb-e03b4dc63b0c.png"
 };
