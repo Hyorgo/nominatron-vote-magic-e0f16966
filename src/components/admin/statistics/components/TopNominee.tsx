@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Trophy, Star, Award, PartyPopper, Sparkles } from "lucide-react";
+import { Trophy, Star, Award, Sparkles } from "lucide-react";
 
 interface TopNomineeProps {
   name: string;
@@ -43,19 +43,12 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
           <>
             <Trophy className="h-6 w-6" />
             <Sparkles className="h-5 w-5 absolute -top-1 -right-1 text-gold animate-pulse" />
-            <PartyPopper className="h-4 w-4 absolute -bottom-1 -right-1 text-[#D946EF] animate-bounce" />
           </>
         );
       case 2:
         return (
           <>
             <Star className="h-6 w-6" />
-</lov-replace>
-
-<lov-search>
-            <PartyPopper className="h-4 w-4 absolute -bottom-1 -right-1 text-[#D946EF] animate-bounce" />
-</lov-search>
-<lov-replace>
             <Sparkles className="h-4 w-4 absolute -bottom-1 -right-1 text-gold animate-pulse" />
           </>
         );
@@ -64,7 +57,6 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
           <>
             <Award className="h-6 w-6" />
             <Sparkles className="h-5 w-5 absolute -top-1 -right-1 text-amber-700 animate-pulse" />
-            <PartyPopper className="h-4 w-4 absolute -bottom-1 -right-1 text-[#D946EF] animate-bounce" />
           </>
         );
       default:
