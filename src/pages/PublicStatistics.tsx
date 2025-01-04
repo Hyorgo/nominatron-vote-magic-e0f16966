@@ -8,13 +8,19 @@ interface VoteStats {
   nominee_name: string;
   category_name: string;
   vote_count: number;
-  trend?: 'up' | 'down' | null;
+  trend?: "up" | "down" | null;
+}
+
+interface RawVoteStats {
+  nominee_name: string;
+  category_name: string;
+  vote_count: number;
 }
 
 const PublicStatistics = () => {
   const [previousStats, setPreviousStats] = useState<Record<string, number>>({});
 
-  const { data: stats = [], refetch } = useQuery({
+  const { data: stats = [], refetch } = useQuery<VoteStats[]>({
     queryKey: ['public-vote-statistics'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -25,16 +31,17 @@ const PublicStatistics = () => {
       if (error) throw error;
 
       // Calculate trends by comparing with previous stats
-      const newStats = (data || []).map((stat: VoteStats) => {
+      const newStats = (data as RawVoteStats[] || []).map((stat): VoteStats => {
         const previousCount = previousStats[stat.nominee_name] || 0;
-        const trend = stat.vote_count > previousCount ? 'up' : 
-                     stat.vote_count < previousCount ? 'down' : null;
+        const trend = stat.vote_count > previousCount ? 'up' as const : 
+                     stat.vote_count < previousCount ? 'down' as const : 
+                     null;
         return { ...stat, trend };
       });
 
       // Update previous stats for next comparison
       const newPreviousStats = Object.fromEntries(
-        newStats.map((stat: VoteStats) => [stat.nominee_name, stat.vote_count])
+        newStats.map((stat) => [stat.nominee_name, stat.vote_count])
       );
       setPreviousStats(newPreviousStats);
 
@@ -66,10 +73,10 @@ const PublicStatistics = () => {
   }, [refetch]);
 
   // Get top 5 overall
-  const top5Overall = stats.slice(0, 5);
+  const top5Overall = stats?.slice(0, 5) || [];
 
   // Get winners by category
-  const winnersByCategory = stats.reduce((acc: VoteStats[], curr: VoteStats) => {
+  const winnersByCategory = (stats || []).reduce<VoteStats[]>((acc, curr) => {
     const existingCategory = acc.find(item => item.category_name === curr.category_name);
     if (!existingCategory) {
       acc.push(curr);
@@ -77,7 +84,7 @@ const PublicStatistics = () => {
     return acc;
   }, []);
 
-  const TrendIcon = ({ trend }: { trend?: 'up' | 'down' | null }) => {
+  const TrendIcon = ({ trend }: { trend?: "up" | "down" | null }) => {
     if (trend === 'up') return <ArrowUp className="text-green-500" />;
     if (trend === 'down') return <ArrowDown className="text-red-500" />;
     return null;
