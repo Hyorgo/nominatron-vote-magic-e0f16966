@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { ArrowUp, ArrowDown, Trophy } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface VoteStats {
   nominee_name: string;
@@ -17,8 +18,15 @@ interface RawVoteStats {
   vote_count: number;
 }
 
+interface TrendData {
+  timestamp: string;
+  votes: number;
+  nominee: string;
+}
+
 const PublicStatistics = () => {
   const [previousStats, setPreviousStats] = useState<Record<string, number>>({});
+  const [trendData, setTrendData] = useState<TrendData[]>([]);
 
   const { data: stats = [], refetch } = useQuery<VoteStats[]>({
     queryKey: ['public-vote-statistics'],
@@ -45,38 +53,34 @@ const PublicStatistics = () => {
       );
       setPreviousStats(newPreviousStats);
 
+      // Update trend data
+      const timestamp = new Date().toLocaleTimeString();
+      const top5Trend = newStats.slice(0, 5).map(stat => ({
+        timestamp,
+        votes: stat.vote_count,
+        nominee: stat.nominee_name
+      }));
+      setTrendData(prevData => {
+        const newData = [...prevData, ...top5Trend];
+        // Keep only last 10 timestamps
+        const uniqueTimestamps = [...new Set(newData.map(d => d.timestamp))];
+        if (uniqueTimestamps.length > 10) {
+          const timestampsToKeep = uniqueTimestamps.slice(-10);
+          return newData.filter(d => timestampsToKeep.includes(d.timestamp));
+        }
+        return newData;
+      });
+
       return newStats;
     },
     refetchInterval: 5000, // Refresh every 5 seconds
   });
 
-  // Subscribe to real-time changes
-  useEffect(() => {
-    const channel = supabase
-      .channel('vote-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'votes'
-        },
-        () => {
-          refetch();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [refetch]);
-
   // Get top 5 overall
   const top5Overall = stats?.slice(0, 5) || [];
 
   // Get winners by category
-  const winnersByCategory = (stats || []).reduce<VoteStats[]>((acc, curr) => {
+  const winnersByCategory = stats?.reduce<VoteStats[]>((acc, curr) => {
     const existingCategory = acc.find(item => item.category_name === curr.category_name);
     if (!existingCategory) {
       acc.push(curr);
@@ -95,6 +99,38 @@ const PublicStatistics = () => {
       <h1 className="text-4xl font-bold text-center mb-12 text-gold">
         Statistiques des Votes en Direct
       </h1>
+
+      {/* Trend Chart */}
+      <Card className="p-6">
+        <h2 className="text-2xl font-semibold mb-4">Tendance des Votes</h2>
+        <div className="h-[400px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={trendData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey="timestamp"
+                tick={{ fill: '#888888' }}
+              />
+              <YAxis 
+                tick={{ fill: '#888888' }}
+              />
+              <Tooltip />
+              {top5Overall.map((nominee, index) => (
+                <Line
+                  key={nominee.nominee_name}
+                  type="monotone"
+                  dataKey="votes"
+                  data={trendData.filter(d => d.nominee === nominee.nominee_name)}
+                  name={nominee.nominee_name}
+                  stroke={`hsl(${index * 60}, 70%, 50%)`}
+                  strokeWidth={2}
+                  dot={false}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
 
       {/* Top 5 Overall */}
       <div className="space-y-6">
