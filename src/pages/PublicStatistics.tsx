@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { StatisticsHeader } from "@/components/statistics/StatisticsHeader";
 import { TopNomineesSection } from "@/components/statistics/TopNomineesSection";
 import { CategoryLeadersSection } from "@/components/statistics/CategoryLeadersSection";
+import BackgroundHalos from "@/components/effects/BackgroundHalos";
+import BokehEffect from "@/components/effects/BokehEffect";
 
 interface VoteStats {
   nominee_name: string;
@@ -75,15 +77,19 @@ const PublicStatistics = () => {
   }, []);
 
   return (
-    <div className="container max-w-7xl py-24 sm:py-32 space-y-12 animate-fade-in">
-      <StatisticsHeader 
-        title="Statistiques des Votes en Direct"
-        subtitle="Découvrez en temps réel l'évolution des votes et les tendances qui se dessinent pour chaque catégorie"
-      />
-      
-      <TopNomineesSection topNominees={top5Overall} />
-      
-      <CategoryLeadersSection leaders={winnersByCategory} />
+    <div className="relative min-h-screen overflow-hidden">
+      <BackgroundHalos />
+      <BokehEffect />
+      <div className="container max-w-7xl py-24 sm:py-32 space-y-12 animate-fade-in relative z-10">
+        <StatisticsHeader 
+          title="Statistiques des Votes en Direct"
+          subtitle="Découvrez en temps réel l'évolution des votes et les tendances qui se dessinent pour chaque catégorie"
+        />
+        
+        <TopNomineesSection topNominees={top5Overall} />
+        
+        <CategoryLeadersSection leaders={winnersByCategory} />
+      </div>
     </div>
   );
 };
