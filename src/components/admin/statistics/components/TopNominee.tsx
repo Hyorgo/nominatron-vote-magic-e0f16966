@@ -17,7 +17,7 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
       case 2:
         return "text-gray-300";
       case 3:
-        return "text-amber-700";
+        return "text-[#CD7F32]"; // Couleur bronze
       default:
         return "text-gray-400";
     }
