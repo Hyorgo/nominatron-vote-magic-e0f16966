@@ -18,17 +18,16 @@ export const VotingHistoryChart = () => {
 
   useEffect(() => {
     const fetchHistoricalData = async () => {
-      const { data, error } = await supabase
+      const { data: historyData, error } = await supabase
         .from('vote_history_view')
-        .select('*')
-        .order('date', { ascending: true });
+        .select('nominee_name, category_name, vote_count, date, time');
 
       if (error) {
         console.error('Erreur lors du chargement de l\'historique:', error);
         return;
       }
 
-      setHistoricalData(data || []);
+      setHistoricalData(historyData || []);
     };
 
     fetchHistoricalData();
