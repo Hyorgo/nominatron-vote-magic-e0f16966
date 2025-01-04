@@ -18,29 +18,31 @@ export const VoteStatistics = () => {
   }
 
   return (
-    <div className="space-y-8 p-4 sm:p-8 max-w-[1400px] mx-auto animate-fade-in">
-      <h1 className="text-3xl font-bold text-gold mb-8 text-center">
+    <div className="space-y-8 p-4 sm:p-8 max-w-[1400px] mx-auto">
+      <h1 className="text-4xl font-bold text-gold mb-12 text-center animate-fade-in">
         Statistiques des Votes
       </h1>
 
-      <VotesSummary
-        totalVotes={summaryData.totalVotes}
-        participationRate={summaryData.participationRate}
-        votingTrend={summaryData.votingTrend}
-        isLoading={loading}
-      />
+      <div className="animate-fade-in [animation-delay:200ms]">
+        <VotesSummary
+          totalVotes={summaryData.totalVotes}
+          participationRate={summaryData.participationRate}
+          votingTrend={summaryData.votingTrend}
+          isLoading={loading}
+        />
+      </div>
 
       {topNominees.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-semibold text-gold mb-6">
+        <div className="mt-16 animate-fade-in [animation-delay:400ms]">
+          <h2 className="text-2xl font-semibold text-gold mb-8">
             Top des Nominés
           </h2>
           <TopNominees nominees={topNominees} />
         </div>
       )}
 
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold text-gold mb-6">
+      <div className="mt-16 animate-fade-in [animation-delay:600ms]">
+        <h2 className="text-2xl font-semibold text-gold mb-8">
           Distribution des Votes
         </h2>
         <VotesChart
@@ -51,7 +53,7 @@ export const VoteStatistics = () => {
         />
       </div>
 
-      <div className="mt-12">
+      <div className="mt-16 animate-fade-in [animation-delay:800ms]">
         <VotesTable statistics={statistics} />
       </div>
     </div>

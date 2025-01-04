@@ -40,10 +40,10 @@ export const VotesChart = ({ data }: VotesChartProps) => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-navy p-3 rounded-lg border border-gold/20 shadow-xl">
-          <p className="text-gold font-medium mb-1">{label}</p>
+        <div className="bg-navy p-4 rounded-lg border border-gold/20 shadow-xl animate-fade-in">
+          <p className="text-gold font-medium mb-2">{label}</p>
           <p className="text-sm text-foreground">
-            {payload[0].value} votes
+            {payload[0].value.toLocaleString()} votes
           </p>
         </div>
       );
@@ -52,7 +52,7 @@ export const VotesChart = ({ data }: VotesChartProps) => {
   };
 
   return (
-    <Card className="p-6 bg-navy/50 backdrop-blur-sm">
+    <Card className="p-6 bg-navy/50 backdrop-blur-sm hover:bg-navy/60 transition-colors duration-300">
       <div className="h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -64,10 +64,13 @@ export const VotesChart = ({ data }: VotesChartProps) => {
               dataKey="name" 
               tick={{ fill: '#999' }}
               axisLine={{ stroke: '#333' }}
+              tickLine={{ stroke: '#333' }}
             />
             <YAxis 
               tick={{ fill: '#999' }}
               axisLine={{ stroke: '#333' }}
+              tickLine={{ stroke: '#333' }}
+              tickFormatter={(value) => value.toLocaleString()}
             />
             <Tooltip content={<CustomTooltip />} />
             {data.map((entry, index) => (
@@ -79,7 +82,7 @@ export const VotesChart = ({ data }: VotesChartProps) => {
                 onMouseLeave={handleMouseLeave}
                 opacity={activeIndex === null || activeIndex === index ? 1 : 0.3}
                 radius={[4, 4, 0, 0]}
-                className="transition-opacity duration-300"
+                className="transition-all duration-300 hover:brightness-110"
               />
             ))}
           </BarChart>

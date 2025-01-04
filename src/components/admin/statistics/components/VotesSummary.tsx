@@ -19,7 +19,7 @@ export const VotesSummary = ({
     {
       icon: <BarChart3 className="h-8 w-8 text-gold" />,
       title: "Total des votes",
-      value: totalVotes.toString(),
+      value: totalVotes.toLocaleString(),
       description: "votes enregistrés",
     },
     {
@@ -42,21 +42,21 @@ export const VotesSummary = ({
       {summaryItems.map((item, index) => (
         <Card 
           key={index} 
-          className="p-6 bg-navy/50 backdrop-blur-sm hover:bg-navy/70 transition-colors duration-300"
+          className="group p-6 bg-navy/50 backdrop-blur-sm hover:bg-navy/70 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
           style={{ animationDelay: `${index * 100}ms` }}
         >
           <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-full bg-gold/10">
+            <div className="p-3 rounded-full bg-gold/10 group-hover:bg-gold/20 transition-colors">
               {item.icon}
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground/60">
+              <p className="text-sm font-medium text-foreground/60 group-hover:text-foreground/80 transition-colors">
                 {item.title}
               </p>
-              <h3 className="text-2xl font-bold text-gold mt-1">
+              <h3 className="text-2xl font-bold text-gold mt-1 group-hover:text-gold-light transition-colors">
                 {item.value}
               </h3>
-              <p className="text-xs text-foreground/60 mt-1">
+              <p className="text-xs text-foreground/60 mt-1 group-hover:text-foreground/80 transition-colors">
                 {item.description}
               </p>
             </div>
