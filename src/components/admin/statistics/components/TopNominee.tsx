@@ -17,7 +17,7 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
       case 2:
         return "text-gray-300";
       case 3:
-        return "text-amber-700"; // Changement ici pour une couleur bronze plus prononcée
+        return "text-amber-700/90"; // Ajustement de l'opacité pour un meilleur rendu du bronze
       default:
         return "text-gray-400";
     }
