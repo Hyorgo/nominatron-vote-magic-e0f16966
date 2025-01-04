@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Award, Users, TrendingUp } from "lucide-react";
+import { Award, Users, TrendingUp, PartyPopper, Sparkles } from "lucide-react";
 
 interface VotesSummaryProps {
   totalVotes: number;
@@ -18,6 +18,7 @@ export const VotesSummary = ({
   const summaryItems = [
     {
       icon: <Award className="h-8 w-8" />,
+      decorativeIcon: <Sparkles className="h-5 w-5 absolute -top-2 -right-2 text-[#F97316] animate-pulse" />,
       title: "Total des votes",
       value: totalVotes.toLocaleString(),
       description: "votes enregistrés",
@@ -25,6 +26,7 @@ export const VotesSummary = ({
     },
     {
       icon: <Users className="h-8 w-8" />,
+      decorativeIcon: <PartyPopper className="h-5 w-5 absolute -top-2 -right-2 text-[#D946EF] animate-bounce" />,
       title: "Taux de participation",
       value: `${participationRate.toFixed(1)}%`,
       description: "des votants attendus",
@@ -32,6 +34,7 @@ export const VotesSummary = ({
     },
     {
       icon: <TrendingUp className="h-8 w-8" />,
+      decorativeIcon: <Sparkles className="h-5 w-5 absolute -top-2 -right-2 text-gold animate-pulse" />,
       title: "Tendance",
       value: `${votingTrend > 0 ? '+' : ''}${votingTrend}%`,
       description: "depuis hier",
@@ -45,12 +48,14 @@ export const VotesSummary = ({
       {summaryItems.map((item, index) => (
         <Card 
           key={index} 
-          className="group p-6 bg-navy/50 backdrop-blur-sm hover:bg-navy/70 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl animate-fade-in"
+          className="group p-6 bg-navy/50 backdrop-blur-sm hover:bg-navy/70 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl animate-fade-in overflow-hidden relative"
           style={{ animationDelay: `${index * 100}ms` }}
         >
+          <div className="absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-br from-gold/20 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
           <div className="flex items-center space-x-4">
-            <div className={`p-3 rounded-full ${item.color} group-hover:scale-110 transition-all duration-300`}>
+            <div className={`p-3 rounded-full ${item.color} group-hover:scale-110 transition-all duration-300 relative`}>
               {item.icon}
+              {item.decorativeIcon}
             </div>
             <div>
               <p className="text-sm font-medium text-foreground/60 group-hover:text-foreground/80 transition-colors">

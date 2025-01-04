@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Trophy, Star, Award } from "lucide-react";
+import { Trophy, Star, Award, PartyPopper, Sparkles } from "lucide-react";
 
 interface TopNomineeProps {
   name: string;
@@ -17,7 +17,7 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
       case 2:
         return "text-[#D946EF] bg-[#D946EF]/10";
       case 3:
-        return "text-[#F97316] bg-[#F97316]/10";
+        return "text-amber-700/90 bg-amber-700/10";
       default:
         return "text-gray-400 bg-gray-400/10";
     }
@@ -39,20 +39,36 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy className="h-6 w-6" />;
+        return (
+          <>
+            <Trophy className="h-6 w-6" />
+            <Sparkles className="h-4 w-4 absolute -top-1 -right-1 text-gold animate-pulse" />
+          </>
+        );
       case 2:
-        return <Star className="h-6 w-6" />;
+        return (
+          <>
+            <Star className="h-6 w-6" />
+            <PartyPopper className="h-4 w-4 absolute -top-1 -right-1 text-[#D946EF] animate-bounce" />
+          </>
+        );
       case 3:
-        return <Award className="h-6 w-6" />;
+        return (
+          <>
+            <Award className="h-6 w-6" />
+            <Sparkles className="h-4 w-4 absolute -top-1 -right-1 text-amber-700/90 animate-pulse" />
+          </>
+        );
       default:
         return <Trophy className="h-6 w-6" />;
     }
   };
 
   return (
-    <Card className={`group p-6 bg-gradient-to-br from-navy-light to-navy hover:from-navy hover:to-navy-dark transition-all duration-300 hover:scale-[1.02] hover:shadow-xl animate-fade-in`}>
+    <Card className={`group p-6 bg-gradient-to-br from-navy-light to-navy hover:from-navy hover:to-navy-dark transition-all duration-300 hover:scale-[1.02] hover:shadow-xl animate-fade-in overflow-hidden relative`}>
+      <div className="absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-br from-gold/20 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
       <div className="flex items-center gap-4">
-        <div className={`p-3 rounded-full ${getRankColor(rank)} transition-colors duration-300 group-hover:scale-110`}>
+        <div className={`p-3 rounded-full ${getRankColor(rank)} transition-colors duration-300 group-hover:scale-110 relative`}>
           {getRankIcon(rank)}
         </div>
         <div className="flex-1">
