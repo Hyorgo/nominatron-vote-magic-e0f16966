@@ -21,7 +21,6 @@ export const VoteStatistics = () => {
     <div className="space-y-8 p-4 sm:p-8 max-w-[1400px] mx-auto">
       <div className="relative">
         <h1 className="text-4xl font-bold text-gold mb-12 text-center animate-fade-in flex items-center justify-center gap-4">
-          <PartyPopper className="h-8 w-8 text-[#D946EF] animate-bounce" />
           Statistiques des Votes
           <Sparkles className="h-8 w-8 text-gold animate-pulse" />
         </h1>

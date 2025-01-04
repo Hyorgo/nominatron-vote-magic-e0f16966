@@ -117,7 +117,6 @@ const PublicStatistics = () => {
     <div className="container max-w-7xl py-24 sm:py-32 space-y-8 animate-fade-in">
       <div className="relative">
         <h1 className="text-4xl font-bold text-center mb-12 text-gold flex items-center justify-center gap-4">
-          <PartyPopper className="h-8 w-8 text-[#D946EF] animate-bounce" />
           Statistiques des Votes en Direct
           <Sparkles className="h-8 w-8 text-gold animate-pulse" />
         </h1>
