@@ -39,11 +39,11 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
   const getRankLabel = (rank: number) => {
     switch (rank) {
       case 1:
-        return "🏆 Champion";
+        return "🥇 Champion";
       case 2:
-        return "✨ Vice-champion";
+        return "🥈 Vice-champion";
       case 3:
-        return "🌟 Troisième";
+        return "🥉 Troisième";
       default:
         return `${rank}ème position`;
     }
@@ -54,11 +54,13 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
       className="group p-6 bg-gradient-to-br from-navy/80 via-navy to-navy-dark 
                 hover:from-navy-dark hover:via-navy hover:to-navy-light
                 transition-all duration-700 hover:scale-[1.02] hover:shadow-xl
-                border border-gold/20 hover:border-gold/40
-                animate-fade-in cursor-pointer"
+                border border-gold/20 hover:border-gold/40 rounded-xl
+                animate-fade-in cursor-pointer relative overflow-hidden"
       style={{ animationDelay: `${rank * 150}ms` }}
     >
-      <div className="flex items-center gap-4">
+      <div className="absolute inset-0 bg-gradient-to-r from-gold/5 via-transparent to-transparent 
+                    group-hover:from-gold/10 transition-all duration-500" />
+      <div className="flex items-center gap-4 relative z-10">
         <div className="relative p-4 bg-gold/10 rounded-full group-hover:bg-gold/20 
                       transition-colors duration-500 transform group-hover:rotate-12">
           {getRankIcon(rank)}
@@ -80,7 +82,7 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
           </p>
           <div className="mt-3 flex items-center gap-2">
             <span className="text-2xl font-bold text-gold group-hover:text-gold-light 
-                          transition-colors duration-500 animate-pulse">
+                          transition-colors duration-500">
               {votes.toLocaleString()}
             </span>
             <span className="text-sm text-foreground/60 group-hover:text-foreground/80">votes</span>
