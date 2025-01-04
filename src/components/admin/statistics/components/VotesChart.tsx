@@ -18,12 +18,12 @@ interface VotesChartProps {
 }
 
 const CHART_COLORS = [
-  "#c9a55c", // Gold
   "#D946EF", // Magenta
-  "#0EA5E9", // Blue
   "#F97316", // Orange
-  "#10B981", // Emerald
-  "#F59E0B", // Amber
+  "#0EA5E9", // Bleu
+  "#c9a55c", // Or
+  "#10B981", // Émeraude
+  "#F59E0B", // Ambre
 ];
 
 export const VotesChart = ({ data }: VotesChartProps) => {
@@ -52,7 +52,7 @@ export const VotesChart = ({ data }: VotesChartProps) => {
   };
 
   return (
-    <Card className="p-6 bg-navy/50 backdrop-blur-sm hover:bg-navy/60 transition-colors duration-300">
+    <Card className="p-6 bg-navy/50 backdrop-blur-sm hover:bg-navy/60 transition-all duration-500 animate-fade-in">
       <div className="h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -82,7 +82,7 @@ export const VotesChart = ({ data }: VotesChartProps) => {
                 onMouseLeave={handleMouseLeave}
                 opacity={activeIndex === null || activeIndex === index ? 1 : 0.3}
                 radius={[4, 4, 0, 0]}
-                className="transition-all duration-300 hover:brightness-110"
+                className="transition-all duration-300 hover:brightness-110 cursor-pointer"
               />
             ))}
           </BarChart>
