@@ -39,9 +39,8 @@ export const VoteStatistics = () => {
       {topNominees.length > 0 && (
         <div className="mt-16 animate-fade-in [animation-delay:400ms] relative">
           <div className="absolute -top-20 right-0 w-72 h-72 bg-gradient-to-bl from-gold/10 via-[#D946EF]/10 to-transparent rounded-full blur-2xl -z-10" />
-          <h2 className="text-2xl font-semibold text-gold mb-8 flex items-center gap-3">
+          <h2 className="text-2xl font-semibold text-gold mb-8">
             Top des Nominés
-            <PartyPopper className="h-6 w-6 text-[#D946EF] animate-bounce" />
           </h2>
           <TopNominees nominees={topNominees} />
         </div>

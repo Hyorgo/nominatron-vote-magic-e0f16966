@@ -50,7 +50,12 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
         return (
           <>
             <Star className="h-6 w-6" />
-            <PartyPopper className="h-5 w-5 absolute -top-1 -right-1 text-[#D946EF] animate-bounce" />
+</lov-replace>
+
+<lov-search>
+            <PartyPopper className="h-4 w-4 absolute -bottom-1 -right-1 text-[#D946EF] animate-bounce" />
+</lov-search>
+<lov-replace>
             <Sparkles className="h-4 w-4 absolute -bottom-1 -right-1 text-gold animate-pulse" />
           </>
         );
