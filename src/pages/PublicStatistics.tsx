@@ -153,7 +153,7 @@ const PublicStatistics = () => {
                       {stat.vote_count} votes
                     </span>
                     <TrendIcon trend={stat.trend} />
-                    <span className="inline-block animate-bounce">🎉</span>
+                    <Sparkles className="h-4 w-4 text-gold animate-pulse" />
                   </div>
                 </div>
               </div>
@@ -185,7 +185,7 @@ const PublicStatistics = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-gold-light">{stat.vote_count} votes</span>
                     <TrendIcon trend={stat.trend} />
-                    <span className="inline-block animate-bounce">✨</span>
+                    <Sparkles className="h-4 w-4 text-gold animate-pulse" />
                   </div>
                 </div>
               </div>

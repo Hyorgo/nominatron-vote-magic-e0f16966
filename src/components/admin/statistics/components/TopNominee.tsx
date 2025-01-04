@@ -26,11 +26,11 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
   const getRankLabel = (rank: number) => {
     switch (rank) {
       case 1:
-        return "1ère position 🏆";
+        return "1ère position";
       case 2:
-        return "2ème position ⭐";
+        return "2ème position";
       case 3:
-        return "3ème position 🌟";
+        return "3ème position";
       default:
         return `${rank}ème position`;
     }
@@ -87,7 +87,7 @@ export const TopNominee = ({ name, category, votes, rank }: TopNomineeProps) => 
           </p>
           <p className="mt-2 text-sm font-medium text-gold group-hover:text-gold-light transition-colors flex items-center gap-2">
             {votes} votes
-            <span className="inline-block animate-bounce">🎉</span>
+            <Sparkles className="h-4 w-4 text-gold animate-pulse" />
           </p>
         </div>
       </div>
