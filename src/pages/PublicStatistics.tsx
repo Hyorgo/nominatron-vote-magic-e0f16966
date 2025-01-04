@@ -91,7 +91,7 @@ const PublicStatistics = () => {
   };
 
   return (
-    <div className="container max-w-7xl py-12 space-y-8 animate-fade-in">
+    <div className="container max-w-7xl py-24 sm:py-32 space-y-8 animate-fade-in">
       <h1 className="text-4xl font-bold text-center mb-12 text-gold">
         Statistiques des Votes en Direct
       </h1>
