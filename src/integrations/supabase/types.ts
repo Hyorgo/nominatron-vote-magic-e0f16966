@@ -480,6 +480,65 @@ export type Database = {
         }
         Relationships: []
       }
+      vote_history: {
+        Row: {
+          category_id: string | null
+          category_name: string | null
+          id: string
+          nominee_id: string | null
+          nominee_name: string | null
+          recorded_at: string | null
+          vote_count: number | null
+        }
+        Insert: {
+          category_id?: string | null
+          category_name?: string | null
+          id?: string
+          nominee_id?: string | null
+          nominee_name?: string | null
+          recorded_at?: string | null
+          vote_count?: number | null
+        }
+        Update: {
+          category_id?: string | null
+          category_name?: string | null
+          id?: string
+          nominee_id?: string | null
+          nominee_name?: string | null
+          recorded_at?: string | null
+          vote_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vote_history_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vote_history_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "vote_statistics"
+            referencedColumns: ["category_id"]
+          },
+          {
+            foreignKeyName: "vote_history_nominee_id_fkey"
+            columns: ["nominee_id"]
+            isOneToOne: false
+            referencedRelation: "nominees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vote_history_nominee_id_fkey"
+            columns: ["nominee_id"]
+            isOneToOne: false
+            referencedRelation: "vote_statistics"
+            referencedColumns: ["nominee_id"]
+          },
+        ]
+      }
       vote_opening_notifications: {
         Row: {
           created_at: string | null
@@ -577,6 +636,30 @@ export type Database = {
       }
     }
     Views: {
+      vote_history_view: {
+        Row: {
+          category_name: string | null
+          date: string | null
+          nominee_name: string | null
+          time: string | null
+          vote_count: number | null
+        }
+        Insert: {
+          category_name?: string | null
+          date?: never
+          nominee_name?: string | null
+          time?: never
+          vote_count?: number | null
+        }
+        Update: {
+          category_name?: string | null
+          date?: never
+          nominee_name?: string | null
+          time?: never
+          vote_count?: number | null
+        }
+        Relationships: []
+      }
       vote_statistics: {
         Row: {
           category_id: string | null

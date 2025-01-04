@@ -11,14 +11,18 @@ export const VoteStatistics = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center p-12">
+      <div className="flex justify-center items-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-gold" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-4 sm:p-8 max-w-[1400px] mx-auto animate-fade-in">
+      <h1 className="text-3xl font-bold text-gold mb-8 text-center">
+        Statistiques des Votes
+      </h1>
+
       <VotesSummary
         totalVotes={summaryData.totalVotes}
         participationRate={summaryData.participationRate}
@@ -27,17 +31,29 @@ export const VoteStatistics = () => {
       />
 
       {topNominees.length > 0 && (
-        <TopNominees nominees={topNominees} />
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-gold mb-6">
+            Top des Nominés
+          </h2>
+          <TopNominees nominees={topNominees} />
+        </div>
       )}
 
-      <VotesChart
-        data={statistics.map((stat) => ({
-          name: stat.categoryName,
-          votes: stat.totalVotes,
-        }))}
-      />
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold text-gold mb-6">
+          Distribution des Votes
+        </h2>
+        <VotesChart
+          data={statistics.map((stat) => ({
+            name: stat.categoryName,
+            votes: stat.totalVotes,
+          }))}
+        />
+      </div>
 
-      <VotesTable statistics={statistics} />
+      <div className="mt-12">
+        <VotesTable statistics={statistics} />
+      </div>
     </div>
   );
 };

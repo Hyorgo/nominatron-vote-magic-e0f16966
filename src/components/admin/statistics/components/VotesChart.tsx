@@ -18,14 +18,12 @@ interface VotesChartProps {
 }
 
 const CHART_COLORS = [
-  "#8B5CF6", // Vivid Purple
-  "#D946EF", // Magenta Pink
-  "#F97316", // Bright Orange
-  "#0EA5E9", // Ocean Blue
+  "#c9a55c", // Gold
+  "#D946EF", // Magenta
+  "#0EA5E9", // Blue
+  "#F97316", // Orange
   "#10B981", // Emerald
   "#F59E0B", // Amber
-  "#EC4899", // Pink
-  "#6366F1", // Indigo
 ];
 
 export const VotesChart = ({ data }: VotesChartProps) => {
@@ -42,7 +40,7 @@ export const VotesChart = ({ data }: VotesChartProps) => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-navy p-3 rounded-lg border border-border/20 shadow-xl">
+        <div className="bg-navy p-3 rounded-lg border border-gold/20 shadow-xl">
           <p className="text-gold font-medium mb-1">{label}</p>
           <p className="text-sm text-foreground">
             {payload[0].value} votes
@@ -54,10 +52,7 @@ export const VotesChart = ({ data }: VotesChartProps) => {
   };
 
   return (
-    <Card className="p-6 animate-fade-in delay-100">
-      <h3 className="text-lg font-semibold mb-6 text-gold">
-        Distribution des votes par catégorie
-      </h3>
+    <Card className="p-6 bg-navy/50 backdrop-blur-sm">
       <div className="h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
