@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { ArrowUp, ArrowDown, Trophy } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface VoteStats {
   nominee_name: string;
@@ -18,15 +20,39 @@ interface RawVoteStats {
   vote_count: number;
 }
 
-interface TrendData {
-  timestamp: string;
-  votes: number;
-  nominee: string;
+interface HistoricalData {
+  nominee_name: string;
+  category_name: string;
+  vote_count: number;
+  recorded_at: string;
 }
 
 const PublicStatistics = () => {
   const [previousStats, setPreviousStats] = useState<Record<string, number>>({});
-  const [trendData, setTrendData] = useState<TrendData[]>([]);
+  const [historicalData, setHistoricalData] = useState<HistoricalData[]>([]);
+
+  // Fetch historical data
+  useEffect(() => {
+    const fetchHistoricalData = async () => {
+      const { data, error } = await supabase
+        .from('vote_history_view')
+        .select('*')
+        .order('recorded_at', { ascending: true });
+
+      if (error) {
+        console.error('Erreur lors du chargement de l\'historique:', error);
+        return;
+      }
+
+      setHistoricalData(data || []);
+    };
+
+    fetchHistoricalData();
+    
+    // Mettre à jour toutes les 5 minutes
+    const interval = setInterval(fetchHistoricalData, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const { data: stats = [], refetch } = useQuery<VoteStats[]>({
     queryKey: ['public-vote-statistics'],
@@ -38,7 +64,6 @@ const PublicStatistics = () => {
 
       if (error) throw error;
 
-      // Calculate trends by comparing with previous stats
       const newStats = (data as RawVoteStats[] || []).map((stat): VoteStats => {
         const previousCount = previousStats[stat.nominee_name] || 0;
         const trend = stat.vote_count > previousCount ? 'up' as const : 
@@ -47,33 +72,14 @@ const PublicStatistics = () => {
         return { ...stat, trend };
       });
 
-      // Update previous stats for next comparison
       const newPreviousStats = Object.fromEntries(
         newStats.map((stat) => [stat.nominee_name, stat.vote_count])
       );
       setPreviousStats(newPreviousStats);
 
-      // Update trend data
-      const timestamp = new Date().toLocaleTimeString();
-      const top5Trend = newStats.slice(0, 5).map(stat => ({
-        timestamp,
-        votes: stat.vote_count,
-        nominee: stat.nominee_name
-      }));
-      setTrendData(prevData => {
-        const newData = [...prevData, ...top5Trend];
-        // Keep only last 10 timestamps
-        const uniqueTimestamps = [...new Set(newData.map(d => d.timestamp))];
-        if (uniqueTimestamps.length > 10) {
-          const timestampsToKeep = uniqueTimestamps.slice(-10);
-          return newData.filter(d => timestampsToKeep.includes(d.timestamp));
-        }
-        return newData;
-      });
-
       return newStats;
     },
-    refetchInterval: 5000, // Refresh every 5 seconds
+    refetchInterval: 5000,
   });
 
   // Get top 5 overall
@@ -94,33 +100,56 @@ const PublicStatistics = () => {
     return null;
   };
 
+  // Préparer les données pour le graphique historique
+  const chartData = historicalData.reduce<Record<string, any>[]>((acc, curr) => {
+    const date = format(new Date(curr.recorded_at), 'dd/MM HH:mm', { locale: fr });
+    const existingData = acc.find(d => d.date === date);
+    
+    if (existingData) {
+      existingData[curr.nominee_name] = curr.vote_count;
+    } else {
+      acc.push({
+        date,
+        [curr.nominee_name]: curr.vote_count,
+      });
+    }
+    
+    return acc;
+  }, []);
+
   return (
     <div className="container max-w-7xl py-24 sm:py-32 space-y-8 animate-fade-in">
       <h1 className="text-4xl font-bold text-center mb-12 text-gold">
         Statistiques des Votes en Direct
       </h1>
 
-      {/* Trend Chart */}
+      {/* Historical Chart */}
       <Card className="p-6">
-        <h2 className="text-2xl font-semibold mb-4">Tendance des Votes</h2>
+        <h2 className="text-2xl font-semibold mb-4">Historique des Votes</h2>
         <div className="h-[400px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.1} />
               <XAxis 
-                dataKey="timestamp"
+                dataKey="date"
                 tick={{ fill: '#888888' }}
+                interval="preserveStartEnd"
               />
               <YAxis 
                 tick={{ fill: '#888888' }}
               />
-              <Tooltip />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1a1b1e',
+                  border: '1px solid #333',
+                  borderRadius: '8px'
+                }}
+              />
               {top5Overall.map((nominee, index) => (
                 <Line
                   key={nominee.nominee_name}
                   type="monotone"
-                  dataKey="votes"
-                  data={trendData.filter(d => d.nominee === nominee.nominee_name)}
+                  dataKey={nominee.nominee_name}
                   name={nominee.nominee_name}
                   stroke={`hsl(${index * 60}, 70%, 50%)`}
                   strokeWidth={2}
