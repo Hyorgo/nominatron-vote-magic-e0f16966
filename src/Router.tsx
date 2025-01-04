@@ -15,6 +15,7 @@ import { ScrollingText } from "@/components/ScrollingText";
 import { Footer } from "@/components/Footer";
 import BackgroundHalos from "@/components/effects/BackgroundHalos";
 import { Navigation } from "@/components/Navigation";
+import PublicStatistics from "@/pages/PublicStatistics";
 
 export const Router = () => {
   const location = useLocation();
@@ -49,6 +50,7 @@ export const Router = () => {
           <Route path="/payment-status" element={<PaymentStatus />} />
           <Route path="/mentions-legales" element={<LegalNotice />} />
           <Route path="/politique-de-confidentialite" element={<PrivacyPolicy />} />
+          <Route path="/statistiques" element={<PublicStatistics />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
