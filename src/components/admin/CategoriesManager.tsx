@@ -7,7 +7,6 @@ import { CategoryList } from "./categories/CategoryList";
 import { CategoryForm } from "./categories/CategoryForm";
 import { DeleteAllButton } from "./categories/DeleteAllButton";
 
-// Définir un type local pour les catégories telles qu'elles sont reçues de Supabase
 interface CategoryData {
   id: string;
   name: string;
@@ -126,6 +125,50 @@ export const CategoriesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     }
   };
 
+  const handleReorder = async (startIndex: number, endIndex: number) => {
+    const reorderedCategories = Array.from(categories);
+    const [removed] = reorderedCategories.splice(startIndex, 1);
+    reorderedCategories.splice(endIndex, 0, removed);
+    
+    // Mettre à jour l'ordre d'affichage
+    const updatedCategories = reorderedCategories.map((category, index) => ({
+      ...category,
+      display_order: index + 1,
+    }));
+
+    setCategories(updatedCategories);
+
+    try {
+      // Mettre à jour l'ordre dans la base de données
+      const updates = updatedCategories.map((category) => ({
+        id: category.id,
+        display_order: category.display_order,
+      }));
+
+      const { error } = await supabase
+        .from('categories')
+        .upsert(updates, { onConflict: 'id' });
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "Ordre des catégories mis à jour",
+      });
+
+      onUpdate();
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'ordre:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de mettre à jour l'ordre des catégories",
+      });
+      // Recharger les catégories en cas d'erreur
+      await fetchCategories();
+    }
+  };
+
   const deleteAllData = async () => {
     setDeleteLoading(true);
     try {
@@ -187,6 +230,7 @@ export const CategoriesManager = ({ onUpdate }: { onUpdate: () => void }) => {
         categories={categories} 
         onDelete={deleteCategory}
         onEdit={editCategory}
+        onReorder={handleReorder}
       />
     </Card>
   );
