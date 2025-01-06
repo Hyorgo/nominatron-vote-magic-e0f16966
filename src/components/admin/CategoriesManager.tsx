@@ -140,9 +140,10 @@ export const CategoriesManager = ({ onUpdate }: { onUpdate: () => void }) => {
 
     try {
       // Mettre à jour l'ordre dans la base de données
-      const updates = updatedCategories.map((category) => ({
-        id: category.id,
-        display_order: category.display_order,
+      const updates = updatedCategories.map(({ id, name, display_order }) => ({
+        id,
+        name,
+        display_order,
       }));
 
       const { error } = await supabase
