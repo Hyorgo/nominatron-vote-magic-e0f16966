@@ -29,9 +29,20 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
       if (categoriesResponse.error) throw categoriesResponse.error;
       if (nomineesResponse.error) throw nomineesResponse.error;
 
+      // Mettre à jour l'URL de l'image pour BIERGARTEN
+      const updatedNominees = nomineesResponse.data.map(nominee => {
+        if (nominee.name === "BIERGARTEN") {
+          return {
+            ...nominee,
+            image_url: "/lovable-uploads/8942f6c7-315f-4879-80d0-71bb8aae744b.png"
+          };
+        }
+        return nominee;
+      });
+
       const categoriesWithNominees = categoriesResponse.data.map((category) => ({
         ...category,
-        nominees: nomineesResponse.data.filter(
+        nominees: updatedNominees.filter(
           (nominee) => nominee.category_id === category.id
         ),
       }));
