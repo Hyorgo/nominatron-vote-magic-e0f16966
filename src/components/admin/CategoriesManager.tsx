@@ -77,6 +77,32 @@ export const CategoriesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     }
   };
 
+  const editCategory = async (id: string, newName: string) => {
+    try {
+      const { error } = await supabase
+        .from("categories")
+        .update({ name: newName })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "Catégorie modifiée avec succès",
+      });
+
+      onUpdate();
+      await fetchCategories();
+    } catch (error) {
+      console.error("Erreur lors de la modification de la catégorie:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de modifier la catégorie",
+      });
+    }
+  };
+
   const deleteCategory = async (id: string) => {
     try {
       const { error } = await supabase.from("categories").delete().eq("id", id);
@@ -157,7 +183,11 @@ export const CategoriesManager = ({ onUpdate }: { onUpdate: () => void }) => {
         onSubmit={addCategory}
       />
 
-      <CategoryList categories={categories} onDelete={deleteCategory} />
+      <CategoryList 
+        categories={categories} 
+        onDelete={deleteCategory}
+        onEdit={editCategory}
+      />
     </Card>
   );
 };
