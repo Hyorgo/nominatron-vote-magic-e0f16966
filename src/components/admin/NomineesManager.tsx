@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { CategoryList } from "./categories/CategoryList";
+import { CategoryForm } from "./categories/CategoryForm";
+import { DeleteAllButton } from "./categories/DeleteAllButton";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { AddNomineeForm } from "./nominees/AddNomineeForm";
 import { NomineesList } from "./nominees/NomineesList";
-import { Category, Nominee } from "@/types/nominees";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import type { Category, Nominee } from "@/types/nominees";
 
 export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -86,6 +89,7 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
           name: nominee.name,
           description: nominee.description,
           category_id: nominee.category_id,
+          image_url: nominee.image_url
         })
         .eq("id", nominee.id);
 
@@ -142,8 +146,17 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
 
   return (
     <Card className="p-4">
-      <h3 className="text-lg font-semibold mb-4">Gestion des nominés</h3>
-      <AddNomineeForm categories={categories} onSubmit={addNominee} />
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Gestion des nominés</h3>
+        <DeleteAllButton isLoading={loading} onDelete={deleteNominee} />
+      </div>
+      
+      <CategoryForm
+        newCategoryName=""
+        onNameChange={() => {}}
+        onSubmit={() => {}}
+      />
+
       <NomineesList 
         categories={categories} 
         onDelete={deleteNominee}
@@ -155,7 +168,7 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
           {editingNominee && (
             <AddNomineeForm
               categories={categories}
-              onSubmit={(nominee) => updateNominee({ ...nominee, id: editingNominee.id })}
+              onSubmit={(nominee) => updateNominee({ ...nominee, id: editingNominee.id, image_url: editingNominee.image_url })}
               initialValues={editingNominee}
             />
           )}
