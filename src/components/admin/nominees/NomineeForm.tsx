@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,20 +9,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trophy, PlusCircle } from "lucide-react";
-import { Category } from "../../../types/nominees";
+import { Trophy, PlusCircle, Save } from "lucide-react";
+import { Category, Nominee } from "@/types/nominees";
 
 interface NomineeFormProps {
   categories: Category[];
   onSubmit: (nominee: { name: string; description: string; category_id: string }) => void;
+  initialValues?: Nominee;
 }
 
-export const NomineeForm = ({ categories, onSubmit }: NomineeFormProps) => {
+export const NomineeForm = ({ categories, onSubmit, initialValues }: NomineeFormProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [newNominee, setNewNominee] = useState({
     name: "",
     description: "",
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      setNewNominee({
+        name: initialValues.name,
+        description: initialValues.description,
+      });
+      setSelectedCategory(initialValues.category_id || "");
+    }
+  }, [initialValues]);
 
   const handleSubmit = () => {
     if (!newNominee.name.trim() || !newNominee.description.trim() || !selectedCategory) return;
@@ -32,8 +43,10 @@ export const NomineeForm = ({ categories, onSubmit }: NomineeFormProps) => {
       category_id: selectedCategory,
     });
 
-    setNewNominee({ name: "", description: "" });
-    setSelectedCategory("");
+    if (!initialValues) {
+      setNewNominee({ name: "", description: "" });
+      setSelectedCategory("");
+    }
   };
 
   return (
@@ -69,9 +82,18 @@ export const NomineeForm = ({ categories, onSubmit }: NomineeFormProps) => {
         </SelectContent>
       </Select>
 
-      <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
-        <PlusCircle className="h-4 w-4 mr-2" />
-        Ajouter le nominé
+      <Button onClick={handleSubmit} className={initialValues ? "bg-blue-600 hover:bg-blue-700" : "bg-green-600 hover:bg-green-700"}>
+        {initialValues ? (
+          <>
+            <Save className="h-4 w-4 mr-2" />
+            Mettre à jour le nominé
+          </>
+        ) : (
+          <>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Ajouter le nominé
+          </>
+        )}
       </Button>
     </div>
   );

@@ -5,11 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { AddNomineeForm } from "./nominees/AddNomineeForm";
 import { NomineesList } from "./nominees/NomineesList";
-import { Category } from "@/types/nominees";
+import { Category, Nominee } from "@/types/nominees";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingNominee, setEditingNominee] = useState<Nominee | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -76,6 +78,37 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     }
   };
 
+  const updateNominee = async (nominee: Nominee) => {
+    try {
+      const { error } = await supabase
+        .from("nominees")
+        .update({
+          name: nominee.name,
+          description: nominee.description,
+          category_id: nominee.category_id,
+        })
+        .eq("id", nominee.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "Nominé mis à jour avec succès",
+      });
+
+      setEditingNominee(null);
+      onUpdate();
+      await fetchData();
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du nominé:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de mettre à jour le nominé",
+      });
+    }
+  };
+
   const deleteNominee = async (id: string) => {
     try {
       const { error } = await supabase.from("nominees").delete().eq("id", id);
@@ -111,7 +144,23 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     <Card className="p-4">
       <h3 className="text-lg font-semibold mb-4">Gestion des nominés</h3>
       <AddNomineeForm categories={categories} onSubmit={addNominee} />
-      <NomineesList categories={categories} onDelete={deleteNominee} />
+      <NomineesList 
+        categories={categories} 
+        onDelete={deleteNominee}
+        onEdit={setEditingNominee}
+      />
+      
+      <Dialog open={!!editingNominee} onOpenChange={() => setEditingNominee(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          {editingNominee && (
+            <AddNomineeForm
+              categories={categories}
+              onSubmit={(nominee) => updateNominee({ ...nominee, id: editingNominee.id })}
+              initialValues={editingNominee}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
