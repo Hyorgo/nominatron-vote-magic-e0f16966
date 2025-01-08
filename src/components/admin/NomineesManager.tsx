@@ -29,7 +29,11 @@ export const NomineesManager = ({ onUpdate }: { onUpdate: () => void }) => {
     <Card className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">Gestion des nominés</h3>
-        <DeleteAllButton isLoading={loading} onDelete={deleteNominee} />
+        {/* Nous passons maintenant une fonction qui appelle deleteNominee avec l'ID */}
+        <DeleteAllButton 
+          isLoading={loading} 
+          onDelete={() => deleteNominee('')} 
+        />
       </div>
       
       <CategoryForm
